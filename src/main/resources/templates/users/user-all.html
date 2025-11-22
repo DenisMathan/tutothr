@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+<head>
+    <title>All Users</title>
+</head>
+
+<section layout:fragment="mybody">
+    <div class="container mt-4">
+        <h2>Benutzerliste</h2>
+        <p th:text="'Gefundene Benutzer: ' + ${totalItems}"></p>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Login</th>
+                <th>Email</th>
+                <th>Active</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.id}">1</td>
+                <td th:text="${user.login}">login</td>
+                <td th:text="${user.email}">email</td>
+                <td th:text="${user.active}">true</td>
+                <td>
+                    <a th:href="@{'/user/' + ${user.id}}">Details</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <a th:href="@{/}" class="btn btn-secondary">Zurück</a>
+    </div>
+</section>
+
+</html>
