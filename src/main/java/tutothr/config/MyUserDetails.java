@@ -39,19 +39,21 @@ public class MyUserDetails implements UserDetails {
 		this.roles = myRoles;
 		authorities = new ArrayList<>();
 
-		//passing the authorities of each Profile from the DB to the Spring Security collection UserDetails.authorities
-		for (int i=0; i< myRoles.size(); i++){
+		// passing the authorities of each Profile from the DB to the Spring Security collection UserDetails.authorities
+		for (int i = 0; i < myRoles.size(); i++) {
 			// add role itself as a granted authority using the ROLE_ prefix so hasRole("ADMIN") works
-			// String roleName = myRoles.get(i).getDescription();
-			// if (roleName != null && !roleName.isBlank()) {
-			// 	authorities.add(new SimpleGrantedAuthority(("ROLE_" + roleName).toUpperCase()));
-			// 	System.out.println("added role authority ROLE_" + roleName + " for user " + user.getLogin());
-			// }
+			String roleName = myRoles.get(i).getDescription();
+			if (roleName != null && !roleName.isBlank()) {
+				authorities.add(new SimpleGrantedAuthority(("ROLE_" + roleName).toUpperCase()));
+				System.out.println("added role authority ROLE_" + roleName + " for user " + user.getLogin());
+			}
 
-			List <Authority> myAuthsProfile = (List<Authority>) myRoles.get(i).getAuthorities();
+			List<Authority> myAuthsProfile = (List<Authority>) myRoles.get(i).getAuthorities();
 			for (Authority auth : myAuthsProfile) {
 				authorities.add(new SimpleGrantedAuthority(auth.getDescription().toUpperCase()));
-				System.out.println("the authority" + i + " of the profile "+myRoles.get(i).getDescription()+" of the user " +user.getLogin() + " is "+ auth.getDescription());
+				System.out.println(
+					"the authority" + i + " of the profile " + myRoles.get(i).getDescription() + " of the user "
+					+ user.getLogin() + " is " + auth.getDescription());
 			}
 
 		}

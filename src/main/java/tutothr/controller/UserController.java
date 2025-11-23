@@ -17,15 +17,14 @@ public class UserController {
 
     public UserController(UserRepositoryI userRepository) {
         super();
-        System.out.println("controller is here");
         this.userRepository = userRepository;
     }
 
     @GetMapping(value = {"", "/all" })
     public String showUserList( Model model, 
-                                @RequestParam(name = "keyword", required = false) String keyword, 
-                                @RequestParam(name = "page", required = false, defaultValue = "1") int page, 
-                                @RequestParam(name = "size", required = false, defaultValue = "5") int size) {
+                                @RequestParam(required = false) String keyword, 
+                                @RequestParam(required = false, defaultValue = "1") int page, 
+                                @RequestParam(required = false, defaultValue = "5") int size) {
         System.out.println("where is list?");
         try {
             

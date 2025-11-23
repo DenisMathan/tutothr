@@ -27,7 +27,7 @@ public class StudentController {
         this.courseService = courseService;
     }
 
-    @GetMapping(value = {"/list" })
+    @GetMapping(value = {"/student" })
     public String showUserList(Model model, @RequestParam(required = false) String keyword, @RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "5") int size) {
         System.out.println("where is list?");
         try {

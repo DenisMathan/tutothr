@@ -29,9 +29,7 @@ public class Authority implements Serializable {
     @ManyToMany(mappedBy = "authorities")
     private Collection<Role> roles;
 
-
-
-
+	
 	public Collection<Role> getRoles() {
 		return roles;
 	}

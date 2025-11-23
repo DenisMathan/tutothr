@@ -38,10 +38,10 @@ public class SecurityConfig {
 
         http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/resources/**", "/api/**", "/api/workshops/**", "/student/**",
+                .requestMatchers("/resources/**", "/api/**", "/api/workshops/**",
                         "/webjars/**", "/h2-console/**", "/login", "/register", "/logout", "/404", "/all")
                 .permitAll()
-                .requestMatchers("/home").authenticated()
+                .requestMatchers("/home", "student").authenticated()
                 // .requestMatchers("/all").hasRole("ADMIN")
                 .requestMatchers("/registration/**").hasAuthority("REGISTRATION"));
 

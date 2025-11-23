@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import tutothr.repository.UserRepositoryI;
+import tutothr.repository.RoleRepositoryI;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
 
 class RegistrationForm {
     private String username;
@@ -57,59 +59,75 @@ class RegistrationForm {
 
 @Controller
 public class AuthenticationController {
-    UserRepositoryI userRepository;
-    public AuthenticationController(UserRepositoryI userRepository) {
+    private final UserRepositoryI userRepository;
+    private final RoleRepositoryI roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+
+    public AuthenticationController(UserRepositoryI userRepository,
+            RoleRepositoryI roleRepository,
+            PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
     }
 
     public boolean alreadyLoggedIn(Authentication auth) {
         return auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken);
     }
 
-    // @PostMapping("/register")
-    // public String registerNewUser(@ModelAttribute("registrationForm") RegistrationForm form,
-    //         BindingResult bindingResult,
-    //         HttpServletRequest request,
-    //         HttpServletResponse response) {
-    //     if (bindingResult.hasErrors())
-    //         return "register";
-    //     if (!form.getPassword().equals(form.getConfirmPassword())) {
-    //         // best practise: add FieldError and return view so errors show in form
-    //         return "redirect:/register?error";
-    //     }
+    @PostMapping("/register")
+    public String registerNewUser(@ModelAttribute("registrationForm") RegistrationForm form,
+            BindingResult bindingResult,
+            HttpServletRequest request,
+            HttpServletResponse response) {
 
-    //     // username unique prüfen
-    //     if (userRepository.findByLoginIgnoreCase(form.getUsername()).isPresent()) {
-    //         return "redirect:/register?error"; // oder bessere Fehlermeldung
-    //     }
+        if (bindingResult.hasErrors())
+            return "register";
 
-    //     // Benutzer anlegen
-    //     User u = new User();
-    //     u.setLogin(form.getUsername());
-    //     u.setEmail(form.getEmail());
-    //     u.setPassword(passwordEncoder.encode(form.getPassword()));
-    //     u.setActive(true);
+        if (form.getUsername() == null || form.getUsername().isBlank()) {
+            return "redirect:/register?error";
+        }
 
-    //     // Rolle holen und zuweisen (z.B. STUDENT)
-    //     roleRepository.findByDescriptionIgnoreCase("STUDENT").ifPresent(r -> {
-    //         u.getRoles().add(r);
-    //     });
+        if (form.getPassword() == null || !form.getPassword().equals(form.getConfirmPassword())) {
+            // best practise: add FieldError and return view so errors show in form
+            return "redirect:/register?error";
+        }
 
-    //     userRepository.save(u);
+        // username unique prüfen
+        if (userRepository.findByLoginIgnoreCase(form.getUsername()).isPresent()) {
+            return "redirect:/register?error"; // oder bessere Fehlermeldung
+        }
 
-    //     // Optional: Auto-Login
-    //     try {
-    //         UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(form.getUsername(),
-    //                 form.getPassword());
-    //         Authentication auth = authenticationManager.authenticate(authReq);
-    //         SecurityContextHolder.getContext().setAuthentication(auth);
-    //     } catch (Exception ex) {
-    //         return "redirect:/login?registered";
-    //     }
+        // Benutzer anlegen
+        tutothr.model.User u = new tutothr.model.User();
+        u.setLogin(form.getUsername());
+        u.setEmail(form.getEmail());
+        u.setPassword(passwordEncoder.encode(form.getPassword()));
+        u.setActive(true);
 
-    //     // redirect zur Startseite oder SavedRequest
-    //     return "redirect:/home";
-    // }
+        // Rolle holen und zuweisen (z.B. STUDENT)
+        roleRepository.findByDescriptionIgnoreCase("STUDENT").ifPresent(r -> {
+            u.getRoles().add(r);
+        });
+
+        userRepository.save(u);
+
+        // Optional: Auto-Login
+        try {
+            UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(form.getUsername(),
+                    form.getPassword());
+            Authentication auth = authenticationManager.authenticate(authReq);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        } catch (Exception ex) {
+            return "redirect:/login?registered";
+        }
+
+        // redirect zur Startseite oder SavedRequest
+        return "redirect:/home";
+    }
 
     @GetMapping({ "/register" })
     public String showRegister(Authentication authentication, Model model) {
