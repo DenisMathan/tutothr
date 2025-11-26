@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import tutothr.repository.UserRepositoryI;
+import tutothr.forms.RegisterUserForm;
 import tutothr.repository.RoleRepositoryI;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -79,7 +80,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public String registerNewUser(@ModelAttribute("registrationForm") RegistrationForm form,
+    public String registerNewUser(@ModelAttribute("registrationForm") RegisterUserForm form,
             BindingResult bindingResult,
             HttpServletRequest request,
             HttpServletResponse response) {
@@ -97,13 +98,13 @@ public class AuthenticationController {
         }
 
         // username unique prüfen
-        if (userRepository.findByLoginIgnoreCase(form.getUsername()).isPresent()) {
+        if (userRepository.findByEmailIgnoreCase(form.getEmail()).isPresent()) {
             return "redirect:/register?error"; // oder bessere Fehlermeldung
         }
 
         // Benutzer anlegen
         tutothr.model.User u = new tutothr.model.User();
-        u.setLogin(form.getUsername());
+        u.setUsername(form.getUsername());
         u.setEmail(form.getEmail());
         u.setPassword(passwordEncoder.encode(form.getPassword()));
         u.setActive(true);

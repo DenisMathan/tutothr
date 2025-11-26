@@ -18,23 +18,25 @@ public class MyUserDetails implements UserDetails {
 
 	private String userName;
 	private String password;
+	private String email;
 	private boolean active;
 	private List<GrantedAuthority> authorities;
 	private List <Role> roles;
 
 
 	public MyUserDetails(User user) {
-		this.userName= user.getLogin();
+		this.userName= user.getUsername();
 		this.password= user.getPassword();
-		System.out.println("password of the user is="+password);
-		System.out.println("userName of the user is="+this.userName);
 		this.active = user.isActive();
+		System.out.println(user);
 
 		//getting roles from the DB
 		List<Role> myRoles = (List<Role>) user.getRoles();
-		System.out.println("the user "+  user.getLogin() +" has "+
+		System.out.println("the user "+  user.getUsername() +" has "+
 				myRoles.size() +" roles");
 
+		this.email = user.getEmail();
+		System.out.println(this.email);
 		//authorities is required by Userdetails from Spring Security
 		this.roles = myRoles;
 		authorities = new ArrayList<>();
@@ -45,7 +47,7 @@ public class MyUserDetails implements UserDetails {
 			String roleName = myRoles.get(i).getDescription();
 			if (roleName != null && !roleName.isBlank()) {
 				authorities.add(new SimpleGrantedAuthority(("ROLE_" + roleName).toUpperCase()));
-				System.out.println("added role authority ROLE_" + roleName + " for user " + user.getLogin());
+				System.out.println("added role authority ROLE_" + roleName + " for user " + user.getUsername());
 			}
 
 			List<Authority> myAuthsProfile = (List<Authority>) myRoles.get(i).getAuthorities();
@@ -53,7 +55,7 @@ public class MyUserDetails implements UserDetails {
 				authorities.add(new SimpleGrantedAuthority(auth.getDescription().toUpperCase()));
 				System.out.println(
 					"the authority" + i + " of the profile " + myRoles.get(i).getDescription() + " of the user "
-					+ user.getLogin() + " is " + auth.getDescription());
+					+ user.getUsername() + " is " + auth.getDescription());
 			}
 
 		}

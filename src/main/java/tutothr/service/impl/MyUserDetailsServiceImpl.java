@@ -21,10 +21,10 @@ public class MyUserDetailsServiceImpl implements UserDetailsService{
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<User> oUser= userRepository.findByLoginIgnoreCase(username);
-		oUser.orElseThrow(()-> new UsernameNotFoundException("Not found "+username));
-		System.out.println("User found at the UserDetailsService="+ oUser.get().getLogin());
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		Optional<User> oUser= userRepository.findByEmailIgnoreCase(email);
+		oUser.orElseThrow(()-> new UsernameNotFoundException("Not found "+email));
+		System.out.println("User found at the UserDetailsService="+ oUser.get().getEmail());
 		return new MyUserDetails(oUser.get());
 	}
 }

@@ -32,12 +32,7 @@ public class User implements Serializable{
 	// String email;
 	String firstName;
 	String lastName;
-	String username;
-
 	ArrayList<Long> myCourses;
-	// ArrayList<> bookedCourses; -> TODO
-	// timeSlots -> TODO
-
 	/**
 	 * 
 	 */
@@ -47,14 +42,15 @@ public class User implements Serializable{
 	@GeneratedValue (strategy = GenerationType.IDENTITY)
 	Long id;
 	
-	@NotBlank(message = "login is mandatory")
-	private String login;
+	@NotBlank(message = "username is mandatory")
+	private String username;
 	
 	@NotBlank(message = "password is mandatory")
 	private String password;
 		
 	@NotBlank(message = "Email is mandatory")
 	private String email;
+
 	
 	private boolean active = true;
 	
@@ -103,12 +99,12 @@ public class User implements Serializable{
 		this.id = id;
 	}
 
-	public String getLogin() {
-		return login;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {
@@ -118,7 +114,4 @@ public class User implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
-	
 }
