@@ -1,4 +1,4 @@
-package tutothr.config;
+package tutothr.common.config;
 
 import java.util.ArrayList;
 
@@ -16,7 +16,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import tutothr.service.impl.UserServiceImpl;
+import tutothr.user.implementations.UserServiceImpl;
 
 
 

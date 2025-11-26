@@ -1,4 +1,4 @@
-package tutothr.model;
+package tutothr.role;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import tutothr.user.User;
 
 @Entity
 @Table(name="role")
@@ -34,7 +35,7 @@ public class Role implements Serializable {
         joinColumns = @JoinColumn(name = "idrole", referencedColumnName = "id"), 
         inverseJoinColumns = @JoinColumn(
           name = "idauthority", referencedColumnName = "id"))
-    private Collection<Authority> authorities;
+    // private Collection<Authority> authorities;
 
 	public Long getId() {
 		return id;
@@ -60,13 +61,13 @@ public class Role implements Serializable {
 		this.users = users;
 	}
 
-	public Collection<Authority> getAuthorities() {
-		return authorities;
-	}
+	// public Collection<Authority> getAuthorities() {
+	// 	return authorities;
+	// }
 
-	public void setAuthorities(Collection<Authority> authorities) {
-		this.authorities = authorities;
-	}
+	// public void setAuthorities(Collection<Authority> authorities) {
+	// 	this.authorities = authorities;
+	// }
     
     
     

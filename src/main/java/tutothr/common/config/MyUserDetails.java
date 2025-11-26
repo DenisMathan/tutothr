@@ -1,4 +1,4 @@
-package tutothr.config;
+package tutothr.common.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,9 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import tutothr.model.Authority;
-import tutothr.model.Role;
-import tutothr.model.User;
+import tutothr.role.Role;
+import tutothr.user.User;
 
 public class MyUserDetails implements UserDetails {
 
@@ -39,26 +38,26 @@ public class MyUserDetails implements UserDetails {
 		System.out.println(this.email);
 		//authorities is required by Userdetails from Spring Security
 		this.roles = myRoles;
-		authorities = new ArrayList<>();
+		// authorities = new ArrayList<>();
 
 		// passing the authorities of each Profile from the DB to the Spring Security collection UserDetails.authorities
-		for (int i = 0; i < myRoles.size(); i++) {
-			// add role itself as a granted authority using the ROLE_ prefix so hasRole("ADMIN") works
-			String roleName = myRoles.get(i).getDescription();
-			if (roleName != null && !roleName.isBlank()) {
-				authorities.add(new SimpleGrantedAuthority(("ROLE_" + roleName).toUpperCase()));
-				System.out.println("added role authority ROLE_" + roleName + " for user " + user.getUsername());
-			}
+	// 	for (int i = 0; i < myRoles.size(); i++) {
+	// 		// add role itself as a granted authority using the ROLE_ prefix so hasRole("ADMIN") works
+	// 		String roleName = myRoles.get(i).getDescription();
+	// 		if (roleName != null && !roleName.isBlank()) {
+	// 			authorities.add(new SimpleGrantedAuthority(("ROLE_" + roleName).toUpperCase()));
+	// 			System.out.println("added role authority ROLE_" + roleName + " for user " + user.getUsername());
+	// 		}
 
-			List<Authority> myAuthsProfile = (List<Authority>) myRoles.get(i).getAuthorities();
-			for (Authority auth : myAuthsProfile) {
-				authorities.add(new SimpleGrantedAuthority(auth.getDescription().toUpperCase()));
-				System.out.println(
-					"the authority" + i + " of the profile " + myRoles.get(i).getDescription() + " of the user "
-					+ user.getUsername() + " is " + auth.getDescription());
-			}
+	// 		List<Authority> myAuthsProfile = (List<Authority>) myRoles.get(i).getAuthorities();
+	// 		for (Authority auth : myAuthsProfile) {
+	// 			authorities.add(new SimpleGrantedAuthority(auth.getDescription().toUpperCase()));
+	// 			System.out.println(
+	// 				"the authority" + i + " of the profile " + myRoles.get(i).getDescription() + " of the user "
+	// 				+ user.getUsername() + " is " + auth.getDescription());
+	// 		}
 
-		}
+	// 	}
 
 	}
 

@@ -1,4 +1,4 @@
-package tutothr.utils;
+package tutothr.common.utils;
 
 import java.util.List;
 

@@ -40,10 +40,10 @@ INSERT INTO userrole(iduser, idrole) VALUES (5,3);
 
 
 
-INSERT INTO course (description) VALUES ( 'Business Administration');
-INSERT INTO course (description) VALUES ( 'Computer Science');
-INSERT INTO course (description) VALUES ( 'Law');
-INSERT INTO course (description) VALUES ( 'Mathematic');
+-- INSERT INTO course (description) VALUES ( 'Business Administration');
+-- INSERT INTO course (description) VALUES ( 'Computer Science');
+-- INSERT INTO course (description) VALUES ( 'Law');
+-- INSERT INTO course (description) VALUES ( 'Mathematic');
 
 
 

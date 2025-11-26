@@ -1,4 +1,4 @@
-package tutothr.controller;
+package tutothr.user;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import tutothr.model.User;
-import tutothr.repository.UserRepositoryI;
+import tutothr.user.interfaces.UserRepositoryI;
 
 @Controller
 public class UserController {

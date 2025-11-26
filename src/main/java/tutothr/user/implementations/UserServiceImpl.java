@@ -1,4 +1,4 @@
-package tutothr.service.impl;
+package tutothr.user.implementations;
 
 import java.util.Optional;
 
@@ -9,11 +9,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import tutothr.config.MyUserDetails;
-import tutothr.model.User;
-import tutothr.model.User;
-import tutothr.repository.UserRepositoryI;
-import tutothr.service.UserServiceI;
+import tutothr.common.config.MyUserDetails;
+import tutothr.user.User;
+import tutothr.user.interfaces.UserRepositoryI;
+import tutothr.user.interfaces.UserServiceI;
 
 @Service
 public class UserServiceImpl implements UserServiceI{

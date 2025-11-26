@@ -1,4 +1,4 @@
-package tutothr.controller;
+package tutothr.auth;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import tutothr.repository.UserRepositoryI;
-import tutothr.forms.RegisterUserForm;
-import tutothr.repository.RoleRepositoryI;
+import tutothr.role.RoleRepositoryI;
+import tutothr.user.User;
+import tutothr.user.interfaces.UserRepositoryI;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationManager;
 
@@ -103,7 +104,7 @@ public class AuthenticationController {
         }
 
         // Benutzer anlegen
-        tutothr.model.User u = new tutothr.model.User();
+        tutothr.user.User u = new tutothr.user.User();
         u.setUsername(form.getUsername());
         u.setEmail(form.getEmail());
         u.setPassword(passwordEncoder.encode(form.getPassword()));

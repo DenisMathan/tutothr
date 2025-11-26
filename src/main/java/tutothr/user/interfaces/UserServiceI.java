@@ -1,12 +1,11 @@
-package tutothr.service;
+package tutothr.user.interfaces;
 
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import tutothr.model.User;
-import tutothr.model.User;
+import tutothr.user.User;
 
 public interface UserServiceI {
     Page<User> getAllUsers(String name, Pageable pageable);

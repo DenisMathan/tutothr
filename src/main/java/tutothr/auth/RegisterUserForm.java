@@ -1,4 +1,4 @@
-package tutothr.forms;
+package tutothr.auth;
 
 
 public class RegisterUserForm {

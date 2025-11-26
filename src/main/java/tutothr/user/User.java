@@ -1,4 +1,4 @@
-package tutothr.model;
+package tutothr.user;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,6 +16,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import tutothr.role.Role;
 import jakarta.persistence.JoinColumn;
 
 // @Entity

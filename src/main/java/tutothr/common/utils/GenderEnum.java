@@ -1,4 +1,4 @@
-package tutothr.utils;
+package tutothr.common.utils;
 
 public enum GenderEnum {
 	
