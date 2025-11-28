@@ -23,8 +23,10 @@ import tutothr.user.implementations.UserServiceImpl;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    String[] permitAllways = {"/resources/**", "/api/**", "/api/workshops/**","/webjars/**", "/h2-console/**", "/login", "/register", "/logout", "/404", "/all"};
-
+    //String[] permitAllways = {"/resources/**", "/api/**", "/api/workshops/**","/webjars/**", "/h2-console/**", "/login", "/register", "/logout", "/404", "/all"};
+    public static final String[] PUBLIC_ENDPOINTS = {
+        "/resources/**", "/api/**", "/api/workshops/**","/webjars/**", "/h2-console/**", "/login", "/register", "/logout", "/404", "/all"
+    };
     private UserServiceImpl userDetailsService;
 
     public SecurityConfig(UserServiceImpl myUserDetailsServiceImpl) {
@@ -42,7 +44,7 @@ public class SecurityConfig {
 
         http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
         http.authorizeHttpRequests(auth -> auth
-            .requestMatchers("/resources/**", "/api/**", "/api/workshops/**","/webjars/**", "/h2-console/**", "/login", "/register", "/logout", "/404", "/all").permitAll()
+            .requestMatchers(PUBLIC_ENDPOINTS).permitAll() //"/resources/**", "/api/**", "/api/workshops/**","/webjars/**", "/h2-console/**", "/login", "/register", "/logout", "/404", "/all").permitAll()
             .requestMatchers("/home", "/student").authenticated()
             // .requestMatchers("/all").hasRole("ADMIN")
             .requestMatchers("/registration/**").hasAuthority("REGISTRATION")
