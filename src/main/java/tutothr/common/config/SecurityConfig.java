@@ -16,7 +16,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import tutothr.user.implementations.UserServiceImpl;
+import tutothr.user.implementations.UserService;
 
 
 
@@ -27,9 +27,9 @@ public class SecurityConfig {
     public static final String[] PUBLIC_ENDPOINTS = {
         "/resources/**", "/api/**", "/api/workshops/**","/webjars/**", "/h2-console/**", "/login", "/register", "/logout", "/404", "/all"
     };
-    private UserServiceImpl userDetailsService;
+    private UserService userDetailsService;
 
-    public SecurityConfig(UserServiceImpl myUserDetailsServiceImpl) {
+    public SecurityConfig(UserService myUserDetailsServiceImpl) {
         this.userDetailsService = myUserDetailsServiceImpl;
     }
 
