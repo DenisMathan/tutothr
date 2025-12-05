@@ -35,22 +35,22 @@
 
                 <div class="mb-3">
                     <label for="username" class="form-label">Benutzername</label>
-                    <input id="username" th:field="*{username}" type="text" class="form-control" required minlength="3"
-                           placeholder="z. B. max.mustermann" autofocus/>
+                    <input id="username" value="test" th:field="*{username}" type="text" class="form-control" required minlength="3"
+                           placeholder="z. B. max.mustermann"  autofocus/>
                     <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
                 </div>
 
                 <div class="mb-3">
                     <label for="email" class="form-label">E‑Mail</label>
                     <input id="email" th:field="*{email}" type="email" class="form-control" required
-                           placeholder="name@beispiel.de"/>
+                           placeholder="name@beispiel.de" value="test@test.de" />
                     <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                 </div>
 
                 <div class="mb-3">
                     <label for="password" class="form-label">Passwort</label>
                     <input id="password" th:field="*{password}" type="password" class="form-control" required minlength="8"
-                           placeholder="Mind. 8 Zeichen"/>
+                           placeholder="Mind. 8 Zeichen" value="123"/>
                     <div class="pw-note mt-1">Mindestens 8 Zeichen. Groß-/Kleinbuchstaben und Zahlen empfohlen.</div>
                     <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
                 </div>
@@ -58,7 +58,7 @@
                 <div class="mb-3">
                     <label for="confirmPassword" class="form-label">Passwort wiederholen</label>
                     <input id="confirmPassword" th:field="*{confirmPassword}" type="password" class="form-control" required
-                           placeholder="Passwort erneut eingeben"/>
+                           placeholder="Passwort erneut eingeben" value="123"/>
                     <div id="pwMismatch" class="form-text text-danger" th:if="${#fields.hasErrors('confirmPassword')}">
                         <span th:errors="*{confirmPassword}"></span>
                     </div>

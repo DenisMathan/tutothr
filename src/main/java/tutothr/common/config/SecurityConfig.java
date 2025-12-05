@@ -1,11 +1,8 @@
 package tutothr.common.config;
 
-import java.util.ArrayList;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,22 +13,16 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import tutothr.user.implementations.UserService;
-
 
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    //String[] permitAllways = {"/resources/**", "/api/**", "/api/workshops/**","/webjars/**", "/h2-console/**", "/login", "/register", "/logout", "/404", "/all"};
     public static final String[] PUBLIC_ENDPOINTS = {
         "/resources/**", "/api/**", "/api/workshops/**","/webjars/**", "/h2-console/**", "/login", "/register", "/logout", "/404", "/all"
     };
-    private UserService userDetailsService;
 
-    public SecurityConfig(UserService myUserDetailsServiceImpl) {
-        this.userDetailsService = myUserDetailsServiceImpl;
-    }
+    public SecurityConfig() {}
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -51,7 +42,6 @@ public class SecurityConfig {
             .anyRequest().authenticated()
         );
 
-        // http.formLogin(Customizer.withDefaults());
         http.formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login") // POST /login wird verarbeitet
@@ -65,7 +55,6 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll());
-        // http.httpBasic(Customizer.withDefaults());
 
         http.exceptionHandling(ex -> ex.accessDeniedPage("/404"));
 

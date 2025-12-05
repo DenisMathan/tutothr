@@ -2,23 +2,19 @@ package tutothr.auth;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import tutothr.role.RoleRepositoryI;
-import tutothr.user.User;
-import tutothr.user.interfaces.UserRepositoryI;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.authentication.AuthenticationManager;
 
 class RegistrationForm {
     private String username;
@@ -61,18 +57,11 @@ class RegistrationForm {
 
 @Controller
 public class AuthenticationController {
-    private final UserRepositoryI userRepository;
-    private final RoleRepositoryI roleRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final AuthService authService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationController(UserRepositoryI userRepository,
-            RoleRepositoryI roleRepository,
-            PasswordEncoder passwordEncoder,
-            AuthenticationManager authenticationManager) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
+    public AuthenticationController(AuthService authService, AuthenticationManager authenticationManager) {
+        this.authService = authService;
         this.authenticationManager = authenticationManager;
     }
 
@@ -86,49 +75,27 @@ public class AuthenticationController {
             HttpServletRequest request,
             HttpServletResponse response) {
 
-        if (bindingResult.hasErrors())
+        if (bindingResult.hasErrors()) {
             return "register";
+        }
 
-        if (form.getUsername() == null || form.getUsername().isBlank()) {
+        if(!authService.register(form)) {
             return "redirect:/register?error";
         }
-
-        if (form.getPassword() == null || !form.getPassword().equals(form.getConfirmPassword())) {
-            // best practise: add FieldError and return view so errors show in form
-            return "redirect:/register?error";
-        }
-
-        // username unique prüfen
-        if (userRepository.findByEmailIgnoreCase(form.getEmail()).isPresent()) {
-            return "redirect:/register?error"; // oder bessere Fehlermeldung
-        }
-
-        // Benutzer anlegen
-        tutothr.user.User u = new tutothr.user.User();
-        u.setUsername(form.getUsername());
-        u.setEmail(form.getEmail());
-        u.setPassword(passwordEncoder.encode(form.getPassword()));
-        u.setActive(true);
-
-        // Rolle holen und zuweisen (z.B. STUDENT)
-        roleRepository.findByDescriptionIgnoreCase("STUDENT").ifPresent(r -> {
-            u.getRoles().add(r);
-        });
-
-        userRepository.save(u);
 
         // Optional: Auto-Login
         try {
-            UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(form.getUsername(),
-                    form.getPassword());
+            UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(form.getEmail(),form.getPassword());
             Authentication auth = authenticationManager.authenticate(authReq);
             SecurityContextHolder.getContext().setAuthentication(auth);
+            System.out.println(auth.isAuthenticated());
+            request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+            return "redirect:/home";
         } catch (Exception ex) {
+            System.out.println(ex);
             return "redirect:/login?registered";
         }
 
-        // redirect zur Startseite oder SavedRequest
-        return "redirect:/home";
     }
 
     @GetMapping({ "/register" })
@@ -153,6 +120,7 @@ public class AuthenticationController {
         // nicht angemeldet -> Registrierungsseite zeigen
         return "login";
     }
+    
 
     @GetMapping("/logout")
     public String postMethodName(Authentication auth) {
