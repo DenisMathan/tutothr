@@ -19,7 +19,7 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping(value = {"", "/all" })
+    @GetMapping(value = {"", "/admin/all" })
     public String showUserList( Model model, 
                                 @RequestParam(required = false) String keyword, 
                                 @RequestParam(required = false, defaultValue = "1") int page, 
@@ -28,10 +28,7 @@ public class UserController {
         try {
             
             // simple path: list all users instead of paginated students
-            Iterable<User> usersIter = userRepository.findAll();
-            List<User> users = new ArrayList<>();
-            usersIter.forEach(users::add);
-
+            List<User> users = userRepository.findAll();
             model.addAttribute("keyword", keyword);
             model.addAttribute("users", users);
             // no pagination in this simple view

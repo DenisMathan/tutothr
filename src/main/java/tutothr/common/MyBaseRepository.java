@@ -1,6 +1,7 @@
 package tutothr.common;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -11,7 +12,7 @@ public interface MyBaseRepository <T, ID extends Serializable> {
     
 	Optional<T> findById(ID id);
 
-	Iterable<T> findAll();
+	List<T> findAll();
 	   
 	void delete(T entity);
 	
