@@ -19,7 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
     public static final String[] PUBLIC_ENDPOINTS = {
-        "/resources/**", "/api/**", "/api/workshops/**","/webjars/**", "/h2-console/**", "/login", "/register", "/logout", "/404", "/all"
+        "/resources/**", "/api/**", "/api/workshops/**","/webjars/**", "/h2-console/**", "/login", "/register", "/logout", "/404"
     };
 
     public SecurityConfig() {}
@@ -37,7 +37,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
             .requestMatchers(PUBLIC_ENDPOINTS).permitAll() //"/resources/**", "/api/**", "/api/workshops/**","/webjars/**", "/h2-console/**", "/login", "/register", "/logout", "/404", "/all").permitAll()
             .requestMatchers("/home", "/student").authenticated()
-            // .requestMatchers("/all").hasRole("ADMIN")
+            .requestMatchers("/all").hasRole("ADMIN")
             .requestMatchers("/registration/**").hasAuthority("REGISTRATION")
             .anyRequest().authenticated()
         );
