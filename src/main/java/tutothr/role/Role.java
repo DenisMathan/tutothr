@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.GeneratedValue;
@@ -12,38 +14,23 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import tutothr.common.utils.enums.RolesEnum;
 import tutothr.user.User;
 
 @Entity
 @Table(name="role")
-public class Role implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+public class Role {
+    @Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	private String description;
 
-    private String description;
-    
-    @ManyToMany(mappedBy = "roles")
+	@ManyToMany(mappedBy = "roles")
     private Collection<User> users;
-    
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "roleauthority", 
-        joinColumns = @JoinColumn(name = "idrole", referencedColumnName = "id"), 
-        inverseJoinColumns = @JoinColumn(
-          name = "idauthority", referencedColumnName = "id"))
-    // private Collection<Authority> authorities;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
+	@Enumerated(EnumType.STRING)
+	private RolesEnum type;
 
 	public String getDescription() {
 		return description;
@@ -53,24 +40,14 @@ public class Role implements Serializable {
 		this.description = description;
 	}
 
-	public Collection<User> getUsers() {
-		return users;
+	public void setType(RolesEnum type) {
+		this.type = type;
 	}
 
-	public void setUsers(Collection<User> users) {
-		this.users = users;
+	public RolesEnum getType() {
+		return type;
 	}
 
-	// public Collection<Authority> getAuthorities() {
-	// 	return authorities;
-	// }
-
-	// public void setAuthorities(Collection<Authority> authorities) {
-	// 	this.authorities = authorities;
-	// }
-    
-    
-    
 }
 
 

@@ -2,7 +2,9 @@ package tutothr.user;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import groovyjarjarantlr4.v4.parse.ANTLRParser.id_return;
 import jakarta.persistence.Entity;
@@ -26,13 +28,7 @@ import jakarta.persistence.JoinColumn;
 
 @Entity
 @Table(name="user")
-@Inheritance(strategy=InheritanceType.JOINED)
-//more about: https://stackabuse.com/guide-to-jpa-with-hibernate-inheritance-mapping/
 public class User implements Serializable{
-	// Long id;
-	// String email;
-	String firstName;
-	String lastName;
 	ArrayList<Long> myCourses;
 	/**
 	 * 
@@ -61,14 +57,17 @@ public class User implements Serializable{
 			joinColumns = @JoinColumn(name="iduser"),
 			inverseJoinColumns = @JoinColumn(name="idrole")
 			)
-	private List<Role> roles = new ArrayList<Role>();
+	private Set<Role> roles = new HashSet<>();
 
-	
-	public List<Role> getRoles() {
+	private String firstName;
+	private String lastName;
+	private String schedule;
+
+	public Set<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(List<Role> roles) {
+	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
 

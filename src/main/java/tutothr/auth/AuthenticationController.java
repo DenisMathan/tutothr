@@ -70,7 +70,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public String registerNewUser(@ModelAttribute("registrationForm") RegisterUserForm form,
+    public String registerNewUser(@ModelAttribute("registrationForm") RegisterUserDTO form,
             BindingResult bindingResult,
             HttpServletRequest request,
             HttpServletResponse response) {

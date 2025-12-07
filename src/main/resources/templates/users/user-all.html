@@ -15,6 +15,7 @@
                 <th>ID</th>
                 <th>Login</th>
                 <th>Email</th>
+                <th>Roles</th>
                 <th>Active</th>
                 <th>Actions</th>
             </tr>
@@ -24,6 +25,11 @@
                 <td th:text="${user.id}">1</td>
                 <td th:text="${user.username}">login</td>
                 <td th:text="${user.email}">email</td>
+                <td>
+                    <span th:each="role, iter : ${user.roles}" 
+                          th:text="${role.type} + (${iter.last} ? '' : ', ')">
+                    </span>
+                </td>
                 <td th:text="${user.active}">true</td>
                 <td>
                     <a th:href="@{'/user/' + ${user.id}}">Details</a>

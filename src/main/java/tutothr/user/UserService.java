@@ -1,14 +1,14 @@
-package tutothr.user.implementations;
+package tutothr.user;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import tutothr.user.User;
+
 import tutothr.user.interfaces.UserRepositoryI;
 import tutothr.user.interfaces.UserServiceI;
 
 @Service
-public class UserService implements UserServiceI{
+public class UserService implements UserServiceI {
 
 	UserRepositoryI userRepository;
 

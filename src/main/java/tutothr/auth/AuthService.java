@@ -39,7 +39,7 @@ public class AuthService implements UserDetailsService {
 		return new MyUserDetails(oUser.get());
 	}
 
-    public boolean register(RegisterUserForm form){
+    public boolean register(RegisterUserDTO form){
 
         if (form.getUsername() == null || form.getUsername().isBlank()) {
             return false;

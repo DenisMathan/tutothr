@@ -1,7 +1,7 @@
 package tutothr.auth;
 
 
-public class RegisterUserForm {
+public class RegisterUserDTO {
 	private static final long serialVersionUID = 1L;
 	private String username;
 	private String password;

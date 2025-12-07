@@ -15,9 +15,9 @@ INSERT INTO user (username, password, email, active) values ('leonard', '{bcrypt
 INSERT INTO user (username, password, email, active) values ('markus', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'marcus@email', 1);
 
 
-INSERT INTO role (description) VALUES ('ADMIN');
-INSERT INTO role (description) VALUES ('STUDENT');
-INSERT INTO role (description) VALUES ('TUTOR');
+INSERT INTO role (description, type) VALUES ('ADMIN', 'ADMIN');
+INSERT INTO role (description, type) VALUES ('STUDENT', 'STUDENT');
+INSERT INTO role (description, type) VALUES ('TUTOR', 'TUTOR');
 
 -- INSERT INTO authority (description) VALUES ( 'CREATE_STUDENT');
 -- INSERT INTO authority (description) VALUES ( 'LIST_STUDENT');
@@ -27,6 +27,8 @@ INSERT INTO role (description) VALUES ('TUTOR');
 INSERT INTO userrole(iduser, idrole) VALUES (1,1);
 INSERT INTO userrole(iduser, idrole) VALUES (2,1);
 INSERT INTO userrole(iduser, idrole) VALUES (3,1);
+INSERT INTO userrole(iduser, idrole) VALUES (3,2);
+
 -- Student is Student
 INSERT INTO userrole(iduser, idrole) VALUES (4,2);
 -- Tutor is Tutor
