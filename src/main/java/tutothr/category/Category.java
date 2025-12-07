@@ -1,4 +1,4 @@
-package tutothr.categories;
+package tutothr.category;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

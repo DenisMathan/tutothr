@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+
+<head>
+    <title>All Users</title>
+</head>
+
+<section layout:fragment="mybody">
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>Kurse</h1>
+            <a th:href="@{/courses/new}" class="btn btn-primary">Neuer Kurs</a>
+        </div>
+
+        <!-- Falls keine Kategorien vorhanden sind -->
+        <div th:if="${#lists.isEmpty(courses)}" class="alert alert-info">
+            Es sind keine Kategorien vorhanden.
+        </div>
+
+        <!-- Liste der Kategorien -->
+        <table th:if="${!#lists.isEmpty(courses)}" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Beschreibung</th>
+                    <th>Kategorien</th>
+                    <th class="text-end">Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="course : ${courses}">
+                    <td th:text="${course.id}">1</td>
+                    <td th:text="${course.title}">Beispiel</td>
+                    <td th:text="${course.description}">Beschreibung</td>
+                    <!-- <td th:text="${#lists.join(course.categories, ', ')}"></td> -->
+
+                    <td>
+                        <span th:each="category, iter : ${course.categories}" th:text="${category.title} + (${iter.last} ? '' : ', ')">
+                        </span>
+                    </td>
+                    <td class="text-end">
+                        <a th:href="@{/courses/{id}(id=${course.id})}"
+                            class="btn btn-sm btn-outline-secondary me-1">Ansehen</a>
+                        <a th:href="@{/courses/{id}/edit(id=${course.id})}"
+                            class="btn btn-sm btn-outline-primary me-1">Bearbeiten</a>
+                        <form th:action="@{/courses/{id}(id=${course.id})}" method="post" th:object="${course}"
+                            style="display:inline;">
+                            <input type="hidden" name="_method" value="delete" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('Kategorie löschen?');">Löschen</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+</html>

@@ -40,3 +40,20 @@ INSERT INTO category (title, description) VALUES ('Math', 'Mathematics related t
 INSERT INTO category (title, description) VALUES ('Science', 'Science related tutorials');
 INSERT INTO category (title, description) VALUES ('Programming', 'Programming related tutorials');
 INSERT INTO category (title, description) VALUES ('Languages', 'Language learning tutorials');
+
+INSERT INTO course (title, description, price, rating) VALUES ('Algebra Basics', 'Learn the fundamentals of algebra.', 49.99, 4.5);
+INSERT INTO course (title, description, price, rating) VALUES ('Introduction to Physics', 'Explore the basic concepts of physics.', 59.99, 4.7);
+INSERT INTO course (title, description, price, rating) VALUES ('Java Programming', 'Start your journey into Java programming.', 69.99, 4.8);
+INSERT INTO course (title, description, price, rating) VALUES ('Spanish for Beginners', 'Learn basic Spanish phrases and grammar.', 39.99, 4.6);
+INSERT INTO course (title, description, price, rating) VALUES ('Calculus I', 'An introduction to differential and integral calculus.', 79.99, 4.4);
+INSERT INTO course (title, description, price, rating) VALUES ('Chemistry Fundamentals', 'Understand the building blocks of matter.', 54.99, 4.5);
+INSERT INTO course (title, description, price, rating) VALUES ('Music Theory 101', 'Learn the basics of music theory and notation.', 44.99, 4.3);
+
+
+INSERT INTO course_categories (id_course, id_category) VALUES (1, 1);
+INSERT INTO course_categories (id_course, id_category) VALUES (1, 2);
+INSERT INTO course_categories (id_course, id_category) VALUES (2, 2);
+INSERT INTO course_categories (id_course, id_category) VALUES (3, 3);
+INSERT INTO course_categories (id_course, id_category) VALUES (4, 4);
+INSERT INTO course_categories (id_course, id_category) VALUES (5, 1);
+INSERT INTO course_categories (id_course, id_category) VALUES (6, 2);

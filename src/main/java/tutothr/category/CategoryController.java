@@ -1,4 +1,4 @@
-package tutothr.categories;
+package tutothr.category;
 
 import java.util.List;
 

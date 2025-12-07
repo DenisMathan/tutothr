@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>500 — Interner Serverfehler</title>
+    <style>
+        :root{
+            --bg:#0f1724;
+            --card:#0b1220;
+            --accent:#7c3aed;
+            --muted:#9aa4b2;
+            --glass: rgba(255,255,255,0.04);
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%}
+        body{
+            margin:0;
+            font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: radial-gradient(1200px 400px at 10% 10%, rgba(124,58,237,0.12), transparent),
+                                    linear-gradient(180deg,#071028 0%, var(--bg) 60%);
+            color:#e6eef8;
+            -webkit-font-smoothing:antialiased;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:32px;
+        }
+        .card{
+            width:100%;
+            max-width:980px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border:1px solid rgba(255,255,255,0.04);
+            padding:40px;
+            border-radius:12px;
+            display:grid;
+            grid-template-columns: 1fr 380px;
+            gap:32px;
+            align-items:center;
+            box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+        }
+        .left{
+            padding-right:8px;
+        }
+        .code{
+            font-weight:800;
+            font-size:96px;
+            line-height:1;
+            letter-spacing:-2px;
+            background: linear-gradient(90deg,var(--accent), #06b6d4);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            margin:0 0 8px 0;
+        }
+        h2{
+            margin:0 0 12px 0;
+            font-size:22px;
+            color:#f1f6fb;
+        }
+        p{
+            margin:0 0 18px 0;
+            color:var(--muted);
+            font-size:15px;
+        }
+        .actions{
+            display:flex;
+            gap:12px;
+            margin-top:6px;
+            flex-wrap:wrap;
+        }
+        .btn{
+            display:inline-flex;
+            align-items:center;
+            gap:10px;
+            padding:10px 16px;
+            border-radius:10px;
+            text-decoration:none;
+            font-weight:600;
+            cursor:pointer;
+            border:1px solid transparent;
+        }
+        .btn-primary{
+            background: linear-gradient(90deg,var(--accent), #06b6d4);
+            color:#051124;
+            box-shadow: 0 6px 20px rgba(124,58,237,0.18);
+        }
+        .btn-ghost{
+            background:var(--glass);
+            color:#dbeafe;
+            border:1px solid rgba(255,255,255,0.04);
+        }
+        form.search{
+            display:flex;
+            gap:8px;
+            margin-top:18px;
+            max-width:520px;
+        }
+        .search input{
+            flex:1;
+            padding:10px 12px;
+            border-radius:10px;
+            border:1px solid rgba(255,255,255,0.04);
+            background:transparent;
+            color: #eaf2ff;
+            outline:none;
+            font-size:14px;
+        }
+        .search button{
+            padding:10px 14px;
+            border-radius:10px;
+            border:1px solid rgba(255,255,255,0.04);
+            background:rgba(255,255,255,0.03);
+            color:#eaf2ff;
+            cursor:pointer;
+            font-weight:600;
+        }
+        .illustration{
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+            border-radius:10px;
+            padding:22px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        svg{max-width:100%; height:auto; display:block}
+        .small{
+            margin-top:14px;
+            color:var(--muted);
+            font-size:13px;
+        }
+
+        @media (max-width:880px){
+            .card{grid-template-columns:1fr; padding:28px}
+            .illustration{order:-1; margin-bottom:8px}
+            .code{font-size:72px}
+        }
+    </style>
+</head>
+<body>
+    <main class="card" role="main" aria-labelledby="title">
+        <section class="left" aria-labelledby="title">
+            <div class="code" aria-hidden="true">500</div>
+            <h2 id="title">Interner Serverfehler</h2>
+            <p>Es ist ein unerwarteter Fehler aufgetreten. Bitte versuche es später erneut oder kontaktiere den Support, wenn das Problem weiterhin besteht.</p>
+
+            <div class="actions" role="group" aria-label="Aktionen">
+                <a class="btn btn-primary" href="/" title="Zur Startseite">Zur Startseite</a>
+                <button class="btn btn-ghost" onclick="history.back()" title="Zurück">Zurück</button>
+            </div>
+            <div id="hint" class="small" aria-live="polite"></div>
+        </section>
+
+        <aside class="illustration" aria-hidden="true">
+            <!-- Simple friendly SVG illustration -->
+            <svg viewBox="0 0 420 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration: Lupe über Karte">
+                <defs>
+                    <linearGradient id="g1" x1="0" x2="1">
+                        <stop offset="0" stop-color="#7c3aed"/>
+                        <stop offset="1" stop-color="#06b6d4"/>
+                    </linearGradient>
+                </defs>
+                <rect x="12" y="28" width="396" height="244" rx="16" fill="#071033" opacity="0.85"/>
+                <g transform="translate(36,42)">
+                    <rect width="320" height="196" rx="12" fill="#0b1a2a"/>
+                    <circle cx="240" cy="56" r="40" fill="url(#g1)" opacity="0.12"/>
+                    <path d="M28 36c28-16 62-16 90 0s62 16 90 0v92c-28 16-62 16-90 0s-62-16-90 0V36z"
+                                fill="#0e2a3f" stroke="#123147" stroke-width="1"/>
+                    <g transform="translate(210,90)">
+                        <circle cx="24" cy="24" r="24" fill="transparent" stroke="url(#g1)" stroke-width="6" />
+                        <line x1="46" y1="46" x2="86" y2="86" stroke="#9fb8c9" stroke-width="6" stroke-linecap="round" />
+                    </g>
+                </g>
+            </svg>
+        </aside>
+    </main>
+</body>
+</html></g></form>
