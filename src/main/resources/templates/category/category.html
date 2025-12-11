@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+
+<head>
+    <title th:if="${category.id != null}">Update ${category.title}</title>
+    <title th:if="${category.id == null}">New Category</title>
+</head>
+
+<section layout:fragment="mybody">
+    <div class="container py-4">
+        <h2 th:if="${category.id != null}" th:text="${category.title}"></h2>
+        <h2 th:if="${category.id == null}">New Category</h2>
+        
+        <form th:action="@{/admin/categories/add/process}" th:object="${category}" method="post" class="mb-3"> 
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="mb-2">
+                <label for="title">Titel:</label>
+                <input type="text" id="title" th:field="*{title}" class="form-control" placeholder="Insert your Title here" required/>
+                <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+            </div>
+            <div class="mb-2">
+                <label for="description">Beschreibung:</label>
+                <textarea id="description" th:field="*{description}" class="form-control" rows="2" placeholder="Insert your description here!"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Speichern</button>
+        </form>
+    </div>
+</section>
+
+</html>

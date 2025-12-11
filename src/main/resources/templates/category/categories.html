@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" layout:decorate="~{layout}">
+
+<head>
+    <title>All Categories</title>
+    <script th:inline="javascript">
+        /* Console log to check if script is updated */
+        console.log('Categories script loaded v4');
+
+        function deleteCategory(id) {
+            // Holen des CSRF-Tokens und Header-Namens aus den Meta-Tags
+            // Wir holen sie hier drinnen, um sicherzustellen, dass das DOM geladen ist
+            const token = document.querySelector("meta[name='_csrf']").getAttribute("content");
+            const headerName = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+            
+            console.log('Deleting category with id: ' + id);
+            
+            // if (confirm('Kategorie löschen?')) {
+            if (true) {
+                fetch('/admin/categories/delete/' + id, {
+                    method: 'DELETE',
+                    headers: {
+                        [headerName]: token
+                    },
+                    credentials: 'include' // Sendet Cookies (JSESSIONID) mit, falls nötig
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            alert('Fehler beim Löschen!');
+                        }
+                    });
+            }
+        }
+    </script>
+</head>
+
+
+<section layout:fragment="mybody">
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>Kategories</h1>
+            <a th:href="@{/admin/categories/add}" class="btn btn-primary">Neue Kategorie</a>
+        </div>
+
+        <!-- Falls keine Kategorien vorhanden sind -->
+        <div th:if="${#lists.isEmpty(categories)}" class="alert alert-info">
+            Es sind keine Kategorien vorhanden.
+        </div>
+
+        <!-- Liste der Kategorien -->
+        <table th:if="${!#lists.isEmpty(categories)}" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Beschreibung</th>
+                    <th class="text-end">Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="category : ${categories}">
+                    <td th:text="${category.id}">1</td>
+                    <td th:text="${category.title}">Beispiel</td>
+                    <td th:text="${category.description}">Beschreibung</td>
+                    <td class="text-end">
+                        <a th:href="@{/admin/categories/add/{id}(id=${category.id})}"
+                            class="btn btn-sm btn-outline-primary me-1">Update</a>
+                        <button class="btn btn-sm btn-outline-danger deleteButton"
+                            th:onclick="|deleteCategory(${category.id})|">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+</html>
