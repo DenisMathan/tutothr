@@ -18,6 +18,7 @@
                 <th>Roles</th>
                 <th>Active</th>
                 <th>Actions</th>
+                <th>createdAt</th>
             </tr>
             </thead>
             <tbody>
@@ -34,6 +35,7 @@
                 <td>
                     <a th:href="@{'/user/' + ${user.id}}">Details</a>
                 </td>
+                <td th:text="${user.createdAt}"> 01.01.2005</td>
             </tr>
             </tbody>
         </table>

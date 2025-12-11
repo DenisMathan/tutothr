@@ -18,6 +18,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import tutothr.common.BaseEntity;
 import tutothr.role.Role;
 import jakarta.persistence.JoinColumn;
 
@@ -28,16 +29,16 @@ import jakarta.persistence.JoinColumn;
 
 @Entity
 @Table(name="user")
-public class User implements Serializable{
+public class User extends BaseEntity implements Serializable {
 	ArrayList<Long> myCourses;
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue (strategy = GenerationType.IDENTITY)
-	Long id;
+	// @Id
+	// @GeneratedValue (strategy = GenerationType.IDENTITY)
+	// Long id;
 	
 	@NotBlank(message = "username is mandatory")
 	private String username;
@@ -71,9 +72,9 @@ public class User implements Serializable{
 		this.roles = roles;
 	}
 
-	public Long getId() {
-		return id;
-	}
+	// public Long getId() {
+	// 	return id;
+	// }
 
 	public String getEmail() {
 		return email;
@@ -95,9 +96,9 @@ public class User implements Serializable{
 		return serialVersionUID;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+	// public void setId(Long id) {
+	// 	this.id = id;
+	// }
 
 	public String getUsername() {
 		return username;
