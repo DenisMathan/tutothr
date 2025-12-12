@@ -76,11 +76,11 @@ public class AuthenticationController {
             HttpServletResponse response) {
 
         if (bindingResult.hasErrors()) {
-            return "register";
+            return "/views/auth/register";
         }
 
         if(!authService.register(form)) {
-            return "redirect:/register?error";
+            return "redirect:/views/auth/register?error";
         }
 
         // Optional: Auto-Login
@@ -101,19 +101,19 @@ public class AuthenticationController {
     public String showRegister(Authentication authentication, Model model) {
         if (alreadyLoggedIn(authentication)) {
             // bereits angemeldet -> weiterleiten
-            return "redirect:/home";
+            return "redirect:/views/home";
         }
 
         model.addAttribute("registrationForm", new RegistrationForm());
         // nicht angemeldet -> Registrierungsseite zeigen
-        return "register";
+        return "/views/auth/register";
     }
 
     @GetMapping({ "/login" })
     public String showLogin(Authentication authentication) {
         if (alreadyLoggedIn(authentication)) {
             // bereits angemeldet -> weiterleiten
-            return "redirect:/home";
+            return "redirect:/views/home";
         }
         // nicht angemeldet -> Registrierungsseite zeigen
         return "/views/auth/login";
@@ -124,7 +124,7 @@ public class AuthenticationController {
     public String postMethodName(Authentication auth) {
         // TODO: process POST request
         if (!alreadyLoggedIn(auth))
-            return "redirect:/login";
+            return "redirect:/views/login";
 
         return "/views/auth/login";
     }
