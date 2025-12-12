@@ -19,7 +19,14 @@ public class CourseController {
     public String getMethodName(Model model) {
         List<Course> courses = courseService.getAllCourses();
         model.addAttribute("courses", courses);
-        return "courses";
+        return "/views/courses/courses";
+    }
+
+    @GetMapping("/courses/add")
+    public String addCourse(Model model ) {
+        Course course = new Course();
+        model.addAttribute("course", course);
+        return "/views/courses/course-add";
     }
     
     

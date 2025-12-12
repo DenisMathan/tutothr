@@ -116,7 +116,7 @@ public class AuthenticationController {
             return "redirect:/home";
         }
         // nicht angemeldet -> Registrierungsseite zeigen
-        return "login";
+        return "/views/auth/login";
     }
     
 
@@ -126,7 +126,7 @@ public class AuthenticationController {
         if (!alreadyLoggedIn(auth))
             return "redirect:/login";
 
-        return "login";
+        return "/views/auth/login";
     }
 
 }

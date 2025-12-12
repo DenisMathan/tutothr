@@ -1,0 +1,23 @@
+
+<!--
+  Erwartet:
+  - "fields": Liste von Field-Objekten (z.B. java.lang.reflect.Field oder eigene DTOs)
+  - "object": das zu bearbeitende Objekt
+  Beispiel Controller:
+  model.addAttribute("fields", Arrays.asList(MyClass.class.getDeclaredFields()));
+  model.addAttribute("object", myObject);
+-->
+
+<form th:action="@{${action}}" th:object="${object}" method="post">
+	<div th:each="field : ${fields}">
+		<div class="form-group">
+			<label th:for="${field.name}" th:text="${field.name}"></label>
+			<input class="form-control"
+				   th:id="${field.name}"
+				   th:name="${field.name}"
+				   th:type="${#strings.equalsIgnoreCase(field.type.simpleName, 'boolean') ? 'checkbox' : 'text'}"
+				   th:value="*{__${field.name}__}"/>
+		</div>
+	</div>
+	<button type="submit" class="btn btn-primary">Speichern</button>
+</form>

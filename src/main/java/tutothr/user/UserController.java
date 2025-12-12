@@ -37,6 +37,6 @@ public class UserController {
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());
         }
-        return "users/user-all";
+        return "/views/users/user-all";
     }
 }

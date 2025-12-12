@@ -30,7 +30,7 @@ public class CategoryController {
     public String getCategories(Model model) {
         List<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
-        return "/category/categories";
+        return "/views/category/categories";
     }
     @GetMapping({"/admin/categories/add", "/admin/categories/add/{id}"})
     public String getCreatePage(Model model, @PathVariable(required = false) Long id) {
@@ -41,7 +41,7 @@ public class CategoryController {
             category = new Category();
         }
         model.addAttribute("category", category);
-        return "/category/category";
+        return "/views/category/category";
     }
     
 
@@ -54,10 +54,10 @@ public class CategoryController {
         if (existingCategory.isPresent()) {
             // Category with the same title exists, handle the error
             result.rejectValue("title", "error.category", "A category with this title already exists.");
-            return "/category/category"; // Return to the form view with error message
+            return "/views/category/category"; // Return to the form view with error message
         }
         if (result.hasErrors()) {
-            return "/category/category"; // Return to the form view with validation errors
+            return "/views/category/category"; // Return to the form view with validation errors
         }
         categoryService.saveCategory(category);
         return "redirect:/admin/categories";
@@ -66,12 +66,12 @@ public class CategoryController {
     @PostMapping("/admin/categories/update/process")
     public String updateCategory(@ModelAttribute @Valid Category category, BindingResult result) {
         if (result.hasErrors()) {
-            return "/category/category";
+            return "/views/category/category";
         }
         Optional<Category> existingCategory = categoryService.getCategoryByTitle(category.getTitle());
         if (existingCategory.isPresent() && !existingCategory.get().getId().equals(category.getId())) {
             result.rejectValue("title", "error.category", "A category with this title already exists.");
-            return "/category/category";
+            return "/views/category/category";
         }
         categoryService.saveCategory(category);
         return "redirect:/admin/categories";
