@@ -34,17 +34,13 @@ public class CategoryController {
     }
     @GetMapping({"/admin/categories/add", "/admin/categories/add/{id}"})
     public String getCreatePage(Model model, @PathVariable(required = false) Long id) {
-        System.out.println("getCreatePage called with id=" + id);
         Category category;
         if (id != null) {
-            System.out.println("editing category id=" + id);
             category = categoryService.getCategoryById(id);
         } else {
-            System.out.println("creating new category");
             category = new Category();
         }
         model.addAttribute("category", category);
-        System.out.println(category.getId());
         return "/category/category";
     }
     
@@ -77,14 +73,12 @@ public class CategoryController {
             result.rejectValue("title", "error.category", "A category with this title already exists.");
             return "/category/category";
         }
-        System.out.println(category.getId());
         categoryService.saveCategory(category);
         return "redirect:/admin/categories";
     }
 
     @DeleteMapping("/admin/categories/delete/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable(required = true) Long id) {
-        System.out.println("Deleting category id=" + id);
         if(id == null) {
             return ResponseEntity.badRequest().build();
         }

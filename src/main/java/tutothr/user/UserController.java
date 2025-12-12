@@ -24,7 +24,6 @@ public class UserController {
                                 @RequestParam(required = false) String keyword, 
                                 @RequestParam(required = false, defaultValue = "1") int page, 
                                 @RequestParam(required = false, defaultValue = "5") int size) {
-        System.out.println("where is list?");
         try {
             
             // simple path: list all users instead of paginated students

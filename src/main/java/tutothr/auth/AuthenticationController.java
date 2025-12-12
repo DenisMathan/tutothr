@@ -88,7 +88,6 @@ public class AuthenticationController {
             UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(form.getEmail(),form.getPassword());
             Authentication auth = authenticationManager.authenticate(authReq);
             SecurityContextHolder.getContext().setAuthentication(auth);
-            System.out.println(auth.isAuthenticated());
             request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
             return "redirect:/home";
         } catch (Exception ex) {
@@ -100,7 +99,6 @@ public class AuthenticationController {
 
     @GetMapping({ "/register" })
     public String showRegister(Authentication authentication, Model model) {
-        System.out.println("here in register!");
         if (alreadyLoggedIn(authentication)) {
             // bereits angemeldet -> weiterleiten
             return "redirect:/home";
