@@ -1,0 +1,18 @@
+<div th:fragment="course-card (course)">
+    <a class="pointer text-decoration-none" th:href="@{/courses/{id}(id=${course.id})}">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title mb-2" th:text="${course.title}">Kursname</h3>
+                <p class="card-text" th:text="${course.description}">Kursbeschreibung</p>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <span class="fw-bold">Preis: <span
+                            th:text="${#numbers.formatDecimal(course.price, 1, 'COMMA', 2, 'POINT')}">49,99</span>
+                        €</span>
+                    <span class="badge bg-success">★ <span th:text="${course.rating}">4.5</span></span>
+                </div>
+                <button class="btn btn-primary mt-4 w-4"
+                    th:onclick="|assignCourse(event, ${course.id})|">Assign</button>
+            </div>
+        </div>
+    </a>
+</div>

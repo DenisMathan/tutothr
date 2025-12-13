@@ -6,12 +6,10 @@ import java.util.List;
 import jakarta.persistence.*;
 import tutothr.category.Category;
 import tutothr.rating.Rating;
+import tutothr.common.BaseEntity;
 
 @Entity
-public class Course {
-    @Id
-	@GeneratedValue (strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Course extends BaseEntity {
     String title;
     String description;
     float price;
@@ -28,9 +26,6 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rating> ratings = new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
     public String getTitle() {
         return title;
     }

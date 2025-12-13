@@ -49,18 +49,18 @@ INSERT INTO userrole(iduser, idrole) VALUES (5,3);
 
 
 
-INSERT INTO category (title, description) VALUES ('Math', 'Mathematics related tutorials');
-INSERT INTO category (title, description) VALUES ('Science', 'Science related tutorials');
-INSERT INTO category (title, description) VALUES ('Programming', 'Programming related tutorials');
-INSERT INTO category (title, description) VALUES ('Languages', 'Language learning tutorials');
+INSERT INTO category (title, description, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Math', 'Mathematics related tutorials', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO category (title, description, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Science', 'Science related tutorials', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO category (title, description, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Programming', 'Programming related tutorials', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO category (title, description, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Languages', 'Language learning tutorials', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 
-INSERT INTO course (title, description, price, rating) VALUES ('Algebra Basics', 'Learn the fundamentals of algebra.', 49.99, 4.5);
-INSERT INTO course (title, description, price, rating) VALUES ('Introduction to Physics', 'Explore the basic concepts of physics.', 59.99, 4.7);
-INSERT INTO course (title, description, price, rating) VALUES ('Java Programming', 'Start your journey into Java programming.', 69.99, 4.8);
-INSERT INTO course (title, description, price, rating) VALUES ('Spanish for Beginners', 'Learn basic Spanish phrases and grammar.', 39.99, 4.6);
-INSERT INTO course (title, description, price, rating) VALUES ('Calculus I', 'An introduction to differential and integral calculus.', 79.99, 4.4);
-INSERT INTO course (title, description, price, rating) VALUES ('Chemistry Fundamentals', 'Understand the building blocks of matter.', 54.99, 4.5);
-INSERT INTO course (title, description, price, rating) VALUES ('Music Theory 101', 'Learn the basics of music theory and notation.', 44.99, 4.3);
+INSERT INTO course (title, description, price, rating, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Algebra Basics', 'Learn the fundamentals of algebra.', 49.99, 4.5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO course (title, description, price, rating, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Introduction to Physics', 'Explore the basic concepts of physics.', 59.99, 4.7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO course (title, description, price, rating, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Java Programming', 'Start your journey into Java programming.', 69.99, 4.8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO course (title, description, price, rating, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Spanish for Beginners', 'Learn basic Spanish phrases and grammar.', 39.99, 4.6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO course (title, description, price, rating, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Calculus I', 'An introduction to differential and integral calculus.', 79.99, 4.4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO course (title, description, price, rating, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Chemistry Fundamentals', 'Understand the building blocks of matter.', 54.99, 4.5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO course (title, description, price, rating, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Music Theory 101', 'Learn the basics of music theory and notation.', 44.99, 4.3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 
 
 INSERT INTO course_categories (id_course, id_category) VALUES (1, 1);
