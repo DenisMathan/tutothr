@@ -2,27 +2,25 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 
 <head>
-    <title>All Courses</title>
+    <title>Edit Course</title>
 </head>
 
 
 <section layout:fragment="mybody">
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1>Kurse</h1>
-            <a th:href="@{/tutor/courses/add}" class="btn btn-primary">Neuer Kurs</a>
+            <h1 th:if="${course.id != null}" th:text="${course.title}">Neuer Kurs</h1>
+            <h1 th:if="${course.id == null}">Neuer Kurs</h1>
         </div>
-
-        <!-- Falls keine Kategorien vorhanden sind -->
-        <div th:if="${#lists.isEmpty(courses)}" class="alert alert-info">
-            Es sind keine Kategorien vorhanden.
+        <!-- <div th:replace="fragments/forms/form :: form(${course}, ${fields}, @{/tutor/courses/update})"></div> -->
+        <div th:if="${course.id == null}">
+            <div
+                th:replace="fragments/forms/form :: form(object=${course}, fields=${fields}, action=@{/tutor/courses/save})">
+            </div>
         </div>
-
-        <!-- Kurskarten-Ansicht -->
-        <div class="row" th:if="${!#lists.isEmpty(courses)}">
-            <div class="mb-4" th:each="course : ${courses}">
-                <!-- <div th:replace="~{views/courses/course-card :: course-card (~{::course=${course}})}"></div> -->
-                <div th:replace="views/courses/course-card :: course-card(${course})"></div>
+        <div th:if="${course.id != null}">
+            <div
+                th:replace="fragments/forms/form :: form(object=${course}, fields=${fields}, action=@{/tutor/courses/save/{id}(id=${course.id})})">
             </div>
         </div>
     </div>
@@ -35,4 +33,5 @@
         }
     </script>
 </section>
+
 </html>

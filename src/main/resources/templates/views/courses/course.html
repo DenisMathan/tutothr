@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" layout:decorate="~{layout}">
+
+<section layout:fragment="mybody">
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="card-body">
+                <h3 class="card-title mb-2" th:text="${course.title}">Kursname</h3>
+                <p class="card-text" th:text="${course.description}">Kursbeschreibung</p>
+                <div th:replace="views/courses/content/content :: content(${course.content})"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</html>

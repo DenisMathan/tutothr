@@ -11,12 +11,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import tutothr.category.Category;
+import tutothr.common.BaseEntity;
 
 @Entity
-public class Course {
-    @Id
-	@GeneratedValue (strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Course extends BaseEntity {
     String title;
     String description;
     float price;
@@ -30,9 +28,8 @@ public class Course {
 			)
     private List<Category> categories;
 
-    public Long getId() {
-        return id;
-    }
+
+    // private List<Object> chapters;
     public String getTitle() {
         return title;
     }

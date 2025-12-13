@@ -1,1 +1,4 @@
 # tutothr
+
+## Paths:
+- /courses/new
