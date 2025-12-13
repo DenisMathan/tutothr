@@ -5,42 +5,81 @@
 </head>
 
 <section layout:fragment="mybody">
-    <div class="container mt-4">
-        <h2>Benutzerliste</h2>
-        <p th:text="'Gefundene Benutzer: ' + ${totalItems}"></p>
+    <div class="users-container">
+        <div class="users-header">
+            <div>
+                <h1 class="users-title">Benutzerliste</h1>
+                <p class="users-count" th:text="'Gefundene Benutzer: ' + ${totalItems}"></p>
+            </div>
+            <a th:href="@{/}" class="btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Zurück
+            </a>
+        </div>
 
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Login</th>
-                <th>Email</th>
-                <th>Roles</th>
-                <th>Active</th>
-                <th>Actions</th>
-                <th>createdAt</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="user : ${users}">
-                <td th:text="${user.id}">1</td>
-                <td th:text="${user.username}">login</td>
-                <td th:text="${user.email}">email</td>
-                <td>
-                    <span th:each="role, iter : ${user.roles}" 
-                          th:text="${role.type} + (${iter.last} ? '' : ', ')">
-                    </span>
-                </td>
-                <td th:text="${user.active}">true</td>
-                <td>
-                    <a th:href="@{'/user/' + ${user.id}}">Details</a>
-                </td>
-                <td th:text="${user.createdAt}"> 01.01.2005</td>
-            </tr>
-            </tbody>
-        </table>
-
-        <a th:href="@{/}" class="btn btn-secondary">Zurück</a>
+        <!-- Liste der Benutzer -->
+        <div class="users-table-wrapper">
+            <table class="users-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Login</th>
+                    <th>Email</th>
+                    <th>Rollen</th>
+                    <th>Aktiv</th>
+                    <th>Erstellt am</th>
+                    <th class="text-end">Aktionen</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}">1</td>
+                    <td>
+                        <div class="user-info">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="user-icon">
+                                <path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4 0-7 2-7 4v2h14v-2c0-2-3-4-7-4z"/>
+                            </svg>
+                            <span th:text="${user.username}">login</span>
+                        </div>
+                    </td>
+                    <td th:text="${user.email}">email@example.com</td>
+                    <td>
+                            <span class="role-tags">
+                                <span th:each="role, iter : ${user.roles}"
+                                      class="role-tag"
+                                      th:text="${role.type}">
+                                </span>
+                            </span>
+                    </td>
+                    <td>
+                            <span th:if="${user.active}" class="status-badge status-active">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                    <circle cx="12" cy="12" r="10"/>
+                                </svg>
+                                Aktiv
+                            </span>
+                        <span th:unless="${user.active}" class="status-badge status-inactive">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                    <circle cx="12" cy="12" r="10"/>
+                                </svg>
+                                Inaktiv
+                            </span>
+                    </td>
+                    <td th:text="${#temporals.format(user.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2005</td>
+                    <td class="text-end">
+                        <a th:href="@{'/user/' + ${user.id}}" class="btn-action btn-view" title="Details anzeigen">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </section>
 
