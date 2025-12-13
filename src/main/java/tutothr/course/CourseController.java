@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -27,6 +28,18 @@ public class CourseController {
         Course course = new Course();
         model.addAttribute("course", course);
         return "/views/courses/course-add";
+    }
+
+    @GetMapping("/courses/{id}")
+    public String viewCourse(Model model, @PathVariable(required = false) Long id) {
+        Course course;
+        if (id != null) {
+            course = courseService.getCourseById(id);
+        } else {
+            course = new Course();
+        }
+        model.addAttribute("course", course);
+        return "/views/courses/course";
     }
     
     
