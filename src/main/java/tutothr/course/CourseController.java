@@ -1,7 +1,6 @@
 package tutothr.course;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,16 +8,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import tutothr.common.models.Field;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 @Controller
-public class CourseController {
+public class CourseController{
     private CourseService courseService;
 
     public CourseController(CourseService courseService) {
@@ -42,12 +39,7 @@ public class CourseController {
             model.addAttribute("errorMessage", "Course not found");
             return "/error/404"; // Assuming you have an error view
         }
-        model.addAttribute("fields", List.of(
-                new Field("title", "Titel", "text"),
-                new Field("description", "Beschreibung", "textarea"),
-                new Field("price", "Preis", "number")
-        // usw.
-        ));
+        model.addAttribute("fields", courseService.getFields());
         return "/views/courses/course-edit";
     }
 
@@ -55,11 +47,7 @@ public class CourseController {
     public String getCreatePage(Model model, @PathVariable(required = false) Long id) {
         Course course = new Course();
         model.addAttribute("course", course);
-        model.addAttribute("fields", List.of(
-                new Field("title", "Titel", "text"),
-                new Field("description", "Beschreibung", "textarea"),
-                new Field("price", "Preis", "number")
-        ));
+        model.addAttribute("fields", courseService.getFields());
         return "/views/courses/course-edit";
     }
 

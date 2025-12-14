@@ -1,17 +1,29 @@
 package tutothr.course;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import tutothr.common.BaseService;
+import tutothr.common.models.Field;
+
 @Service
-public class CourseService {
+public class CourseService extends BaseService {
 
     private CourseRepositoryI courseRepository;
     
     public CourseService (CourseRepositoryI courseRepository) {
+        super();
         this.courseRepository = courseRepository;
+    }
+    @Override
+    public void init() {
+        // TODO Auto-generated method stub
+        fields = List.of(
+            new Field("title", "Titel", "text"),
+            new Field("description", "Beschreibung", "textarea"),
+            new Field("price", "Preis", "number")
+        );
     }
 
     public List<Course> getAllCourses() {

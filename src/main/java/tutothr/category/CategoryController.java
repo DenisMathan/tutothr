@@ -41,11 +41,7 @@ public class CategoryController {
             category = new Category();
         }
         model.addAttribute("category", category);
-        model.addAttribute("fields", List.of(
-                new Field("title", "Titel", "text"),
-                new Field("description", "Beschreibung", "textarea")
-        // usw.
-        ));
+        model.addAttribute("fields", categoryService.getFields());
         return "/views/category/category";
     }
 

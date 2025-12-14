@@ -5,18 +5,31 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import tutothr.common.BaseService;
+import tutothr.common.models.Field;
 import tutothr.course.Course;
 import tutothr.course.CourseRepositoryI;
 
 @Service
-public class CategoryService {
+public class CategoryService extends BaseService {
 
     private CategoryRepositoryI categoryRepository;
     private CourseRepositoryI courseRepository;
     
     public CategoryService (CategoryRepositoryI categoryRepository, CourseRepositoryI courseRepository) {
+        super();
         this.categoryRepository = categoryRepository;
         this.courseRepository = courseRepository;
+
+    }
+
+    @Override
+    public void init() {
+        fields = List.of(
+            new Field("title", "Titel", "text"),
+            new Field("description", "Beschreibung", "textarea")
+        );
+        
     }
 
     public List<Category> getAllCategories() {
