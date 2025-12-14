@@ -122,7 +122,6 @@ public class AuthenticationController {
 
     @GetMapping("/logout")
     public String postMethodName(Authentication auth) {
-        // TODO: process POST request
         if (!alreadyLoggedIn(auth))
             return "redirect:/views/login";
 

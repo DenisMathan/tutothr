@@ -5,12 +5,16 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.web.bind.annotation.PutMapping;
 
 @Controller
@@ -90,6 +94,13 @@ public class CourseController {
             result.rejectValue("id", "error.course", "Course not found.");
             return "/views/courses/course-edit"; // Return to the form view with error message
         }
+        return "redirect:/courses";
+    }
+
+    @DeleteMapping("/tutor/courses/delete/{id}")
+    public String deleteCourse(@PathVariable(required = true) Long id) {
+        courseService.deleteCourseById(id);
+        System.out.println("Deleting course with id: " + id);
         return "redirect:/courses";
     }
 }

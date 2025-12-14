@@ -40,7 +40,7 @@ INSERT INTO role (description, type) VALUES ('TUTOR', 'TUTOR');
 INSERT INTO userrole(iduser, idrole) VALUES (1,1);
 INSERT INTO userrole(iduser, idrole) VALUES (2,1);
 INSERT INTO userrole(iduser, idrole) VALUES (3,1);
-INSERT INTO userrole(iduser, idrole) VALUES (3,2);
+INSERT INTO userrole(iduser, idrole) VALUES (3,3);
 
 -- Student is Student
 INSERT INTO userrole(iduser, idrole) VALUES (4,2);
