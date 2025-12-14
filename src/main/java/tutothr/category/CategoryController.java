@@ -16,7 +16,6 @@ import tutothr.common.models.Field;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.http.ResponseEntity;
 
 @Controller
 public class CategoryController {
@@ -68,7 +67,7 @@ public class CategoryController {
         return "redirect:/admin/categories";
     }
 
-    @PostMapping("/admin/categories/save/{id}")
+    @PutMapping("/admin/categories/save/{id}")
     public String updateCategory(@ModelAttribute @Valid Category category, BindingResult result) {
         System.out.println("Updating category: " + category.getId());
         if (result.hasErrors()) {

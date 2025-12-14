@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import tutothr.common.models.Field;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class CourseController {
@@ -57,11 +59,9 @@ public class CourseController {
                 new Field("title", "Titel", "text"),
                 new Field("description", "Beschreibung", "textarea"),
                 new Field("price", "Preis", "number")
-        // usw.
         ));
         return "/views/courses/course-edit";
     }
-
 
     @GetMapping({ "/tutor/courses/update/{id}" })
     public String getUpdatePage(Model model, @PathVariable(required = true) Long id) {
@@ -76,18 +76,22 @@ public class CourseController {
 
         return "/views/courses/course-edit";
     }
-    @PostMapping({ "/tutor/courses/save/{id}", "/tutor/courses/save"})
-    public String processCourseForm(@ModelAttribute Course course, @RequestParam List<String> fields, BindingResult result, @PathVariable(required = false) Long id) {
+
+    @PostMapping({ "/tutor/courses/save" })
+    public String processCourseForm(@ModelAttribute Course course, BindingResult result) {
         if (result.hasErrors()) {
             return "/views/courses/course-edit";
         }
-        if(id == null) {
-            // Creating a new course
-            courseService.saveCourse(course);
-            return "redirect:/courses";
-        }
+        // Creating a new course
+        courseService.saveCourse(course);
+        // courseService.saveCourse(course);
+        return "redirect:/courses";
+    }
+
+    @PutMapping("/tutor/courses/save/{id}")
+    public String putMethodName(@ModelAttribute Course course, BindingResult result, @RequestParam List<String> fields, @PathVariable(required = false) Long id) {
         Course existingCourse = courseService.getCourseById(id);
-        if(existingCourse != null) {
+        if (existingCourse != null) {
             for (String fieldName : fields) {
                 try {
                     java.lang.reflect.Field field = Course.class.getDeclaredField(fieldName);
@@ -105,7 +109,6 @@ public class CourseController {
             result.rejectValue("id", "error.course", "Course not found.");
             return "/views/courses/course-edit"; // Return to the form view with error message
         }
-        // courseService.saveCourse(course);
-       return "redirect:/courses"; 
+        return "redirect:/courses";
     }
 }

@@ -10,6 +10,7 @@
 <form th:fragment="form (object, fields, action)" th:action="@{${action}}" th:object="${object}" th:fields="fields" method="post">
 
     <!-- <input th:if="${object.id != null}" th:value="${object.id}"/>  -->
+     <input type="hidden" name="_method" th:if="${object.id != null}" value="put" />
     <input type="hidden" name="id" th:if="${object.id != null}" th:value="${object.id}" />
     <div th:each="field : ${fields}">
         <div class="form-group">
