@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import jakarta.validation.Valid;
+import tutothr.common.models.Field;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.http.ResponseEntity;
 
-
-
 @Controller
 public class CategoryController {
     private CategoryService categoryService;
+
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
@@ -32,7 +32,8 @@ public class CategoryController {
         model.addAttribute("categories", categories);
         return "/views/category/categories";
     }
-    @GetMapping({"/admin/categories/add", "/admin/categories/add/{id}"})
+
+    @GetMapping({ "/admin/categories/add", "/admin/categories/update/{id}" })
     public String getCreatePage(Model model, @PathVariable(required = false) Long id) {
         Category category;
         if (id != null) {
@@ -41,15 +42,19 @@ public class CategoryController {
             category = new Category();
         }
         model.addAttribute("category", category);
+        model.addAttribute("fields", List.of(
+                new Field("title", "Titel", "text"),
+                new Field("description", "Beschreibung", "textarea")
+        // usw.
+        ));
         return "/views/category/category";
     }
-    
 
-    @PostMapping({"/admin/categories/add/process"})
+    @PostMapping({ "/admin/categories/save" })
     public String createCategory(@ModelAttribute @Valid Category category, BindingResult result) {
-        //TODO: process POST request
+        // TODO: process POST request
         // categoryService
-        
+
         Optional<Category> existingCategory = categoryService.getCategoryByTitle(category.getTitle());
         if (existingCategory.isPresent()) {
             // Category with the same title exists, handle the error
@@ -63,8 +68,9 @@ public class CategoryController {
         return "redirect:/admin/categories";
     }
 
-    @PostMapping("/admin/categories/update/process")
+    @PostMapping("/admin/categories/save/{id}")
     public String updateCategory(@ModelAttribute @Valid Category category, BindingResult result) {
+        System.out.println("Updating category: " + category.getId());
         if (result.hasErrors()) {
             return "/views/category/category";
         }
@@ -78,15 +84,14 @@ public class CategoryController {
     }
 
     @DeleteMapping("/admin/categories/delete/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable(required = true) Long id) {
-        if(id == null) {
-            return ResponseEntity.badRequest().build();
+    public String deleteCategory(@PathVariable(required = true) Long id) {
+        System.out.println("Deleting category with id: " + id);
+        if (id == null) {
+            return "/views/category/category";
         }
         categoryService.deleteCategoryById(id);
-        return ResponseEntity.ok().build();
+        return "redirect:/admin/categories";
+        // return ResponseEntity.ok().build();
     }
-    
-    
-    
-    
+
 }

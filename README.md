@@ -2,20 +2,20 @@
 
 ## Paths:
 ### Category:
-- /admin/categories
-- /admin/categories/add
-- /admin/categories/add/{id}
-- /admin/categories/add/process
-- /admin/categories/update/process
-- /admin/categories/delete/{id}
+- (GET)     /admin/categories 
+- (GET)     /admin/categories/add 
+- (GET)     /admin/categories/update/{id}
+- (POST)    /admin/categories/save
+- (PUT)     /admin/categories/save/{id}
+- (DELETE)  /admin/categories/delete/{id}
 
 ### Courses
-- /courses
-- /courses/{id}
-- /tutor/courses/add
-- /tutor/courses/update/{id}
-- /tutor/courses/save
-- /tutor/courses/save/{id}
+- (GET)     /courses
+- (GET)     /courses/{id}
+- (GET)     /tutor/courses/add
+- (GET)     /tutor/courses/update/{id}
+- (POST)    /tutor/courses/save
+- (PUT)     /tutor/courses/save/{id}
 
 ### User
-- /views/users/user-all
+- (GET)     /views/users/user-all

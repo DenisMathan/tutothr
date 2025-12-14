@@ -3,36 +3,6 @@
 
 <head>
     <title>All Categories</title>
-    <script th:inline="javascript">
-        /* Console log to check if script is updated */
-        console.log('Categories script loaded v4');
-
-        function deleteCategory(id) {
-            // Holen des CSRF-Tokens und Header-Namens aus den Meta-Tags
-            // Wir holen sie hier drinnen, um sicherzustellen, dass das DOM geladen ist
-            const token = document.querySelector("meta[name='_csrf']").getAttribute("content");
-            const headerName = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
-
-            console.log('Deleting category with id: ' + id);
-
-            if (confirm('Kategorie wirklich löschen?')) {
-                fetch('/admin/categories/delete/' + id, {
-                    method: 'DELETE',
-                    headers: {
-                        [headerName]: token
-                    },
-                    credentials: 'include' // Sendet Cookies (JSESSIONID) mit, falls nötig
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            window.location.reload();
-                        } else {
-                            alert('Fehler beim Löschen!');
-                        }
-                    });
-            }
-        }
-    </script>
 </head>
 
 <section layout:fragment="mybody">
@@ -64,7 +34,7 @@
                     <td th:text="${category.description}">Beschreibung</td>
                     <td class="text-end">
                         <div class="action-buttons">
-                            <a th:href="@{/admin/categories/add/{id}(id=${category.id})}"
+                            <a th:href="@{/admin/categories/update/{id}(id=${category.id})}"
                                class="btn-action btn-edit"
                                title="Bearbeiten">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -72,13 +42,15 @@
                                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                                 </svg>
                             </a>
-                            <button class="btn-action btn-delete"
-                                    th:onclick="|deleteCategory(${category.id})|"
-                                    title="Löschen">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                                </svg>
-                            </button>
+                            <form th:action="@{/admin/categories/delete/{id}(id=${category.id})}" method="post" th:object="${category}" style="display:inline;">
+                                <input type="hidden" name="_method" value="delete" />
+                                <button class="btn-action btn-delete"
+                                        title="Löschen">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                    </svg>
+                                </button>
+                            </form>
                         </div>
                     </td>
                 </tr>
