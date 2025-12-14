@@ -39,8 +39,8 @@ public class CategoryService extends BaseService {
     public Category getCategoryById(Long id) {
         return categoryRepository.findById(id).orElse(null);
     }
-    public Optional<Category> getCategoryByTitle(String title) {
-        return categoryRepository.findByTitle(title);
+    public Category getCategoryByTitle(String title) {
+        return categoryRepository.findByTitle(title).orElse(null);
     }
     public void saveCategory(Category category) {
         categoryRepository.save(category);

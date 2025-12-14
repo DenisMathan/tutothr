@@ -11,6 +11,20 @@ public abstract class BaseService implements ServiceI {
         init();
     }
 
+    public Object update(Object obj, Object existingObj) {
+        for (Field field : fields) {
+            try {
+                java.lang.reflect.Field _field = obj.getClass().getDeclaredField(field.getName());
+                _field.setAccessible(true);
+                Object newValue = _field.get(obj);
+                _field.set(existingObj, newValue);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return existingObj;
+    }
+
     @Override
     public List<Field> getFields() {
         return fields;

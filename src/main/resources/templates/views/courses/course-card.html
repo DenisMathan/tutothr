@@ -1,6 +1,5 @@
 <div th:fragment="course-card (course)">
-    <a class="pointer text-decoration-none" th:href="@{/courses/{id}(id=${course.id})}">
-        <div class="card shadow-sm">
+        <div style="cursor: pointer;" class="card shadow-sm" th:onclick="|window.location.href='/courses/${course.id}'|">
             <div class="card-body">
                 <h3 class="card-title mb-2" th:text="${course.title}">Kursname</h3>
                 <p class="card-text" th:text="${course.description}">Kursbeschreibung</p>
@@ -11,8 +10,9 @@
                     <span class="badge bg-success">★ <span th:text="${course.rating}">4.5</span></span>
                 </div>
                 <button class="btn btn-primary mt-4 w-4"
-                    th:onclick="|assignCourse(event, ${course.id})|">Assign</button>
+                th:onclick="|assignCourse(event, ${course.id})|">Assign</button>
+                <button class="btn btn-primary mt-4 w-4"
+                th:onclick="|event.stopPropagation(); window.location.href='/tutor/courses/update/${course.id}'|">Edit</button>
             </div>
         </div>
-    </a>
 </div>

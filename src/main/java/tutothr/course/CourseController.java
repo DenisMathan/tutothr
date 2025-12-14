@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
 @Controller
-public class CourseController{
+public class CourseController {
     private CourseService courseService;
 
     public CourseController(CourseService courseService) {
@@ -40,7 +39,7 @@ public class CourseController{
             return "/error/404"; // Assuming you have an error view
         }
         model.addAttribute("fields", courseService.getFields());
-        return "/views/courses/course-edit";
+        return "/views/courses/course";
     }
 
     @GetMapping({ "/tutor/courses/add" })
@@ -56,6 +55,7 @@ public class CourseController{
         Course course = courseService.getCourseById(id);
         if (course != null) {
             model.addAttribute("course", course);
+            model.addAttribute("fields", courseService.getFields());
         } else {
             // Handle the case where the course is not found
             model.addAttribute("errorMessage", "Course not found");
@@ -72,26 +72,19 @@ public class CourseController{
         }
         // Creating a new course
         courseService.saveCourse(course);
-        // courseService.saveCourse(course);
         return "redirect:/courses";
     }
 
     @PutMapping("/tutor/courses/save/{id}")
-    public String putMethodName(@ModelAttribute Course course, BindingResult result, @RequestParam List<String> fields, @PathVariable(required = false) Long id) {
-        Course existingCourse = courseService.getCourseById(id);
+    public String putMethodName(@ModelAttribute Course course, BindingResult result, @RequestParam List<String> fields,
+            @PathVariable(required = false) Long id) {
+        if (result.hasErrors()) {
+            return "/views/courses/course-edit";
+        }
+        Course existingCourse = courseService.getCourseById(course.getId());
         if (existingCourse != null) {
-            for (String fieldName : fields) {
-                try {
-                    java.lang.reflect.Field field = Course.class.getDeclaredField(fieldName);
-                    field.setAccessible(true);
-                    Object newValue = field.get(course);
-                    field.set(existingCourse, newValue);
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    // Optional: Logging oder Fehlerbehandlung
-                    e.printStackTrace();
-                }
-            }
-            courseService.saveCourse(existingCourse);
+            Course updatedCourse = (Course) courseService.update(course, existingCourse);
+            courseService.saveCourse(updatedCourse);
         } else {
             // Handle the case where the course is not found
             result.rejectValue("id", "error.course", "Course not found.");

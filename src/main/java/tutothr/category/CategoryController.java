@@ -50,8 +50,8 @@ public class CategoryController {
         // TODO: process POST request
         // categoryService
 
-        Optional<Category> existingCategory = categoryService.getCategoryByTitle(category.getTitle());
-        if (existingCategory.isPresent()) {
+        Category existingCategory = categoryService.getCategoryByTitle(category.getTitle());
+        if (existingCategory != null) {
             // Category with the same title exists, handle the error
             result.rejectValue("title", "error.category", "A category with this title already exists.");
             return "/views/category/category"; // Return to the form view with error message
@@ -64,17 +64,19 @@ public class CategoryController {
     }
 
     @PutMapping("/admin/categories/save/{id}")
-    public String updateCategory(@ModelAttribute @Valid Category category, BindingResult result) {
-        System.out.println("Updating category: " + category.getId());
+    public String updateCategory(Model model, @ModelAttribute @Valid Category category, BindingResult result) {
         if (result.hasErrors()) {
             return "/views/category/category";
         }
-        Optional<Category> existingCategory = categoryService.getCategoryByTitle(category.getTitle());
-        if (existingCategory.isPresent() && !existingCategory.get().getId().equals(category.getId())) {
+        Category existingCategory = categoryService.getCategoryById(category.getId());
+        Category duplicateTitle = categoryService.getCategoryByTitle(category.getTitle());
+        if (duplicateTitle != null && !duplicateTitle.getId().equals(category.getId())) {
             result.rejectValue("title", "error.category", "A category with this title already exists.");
+            model.addAttribute("fields", categoryService.getFields());
             return "/views/category/category";
         }
-        categoryService.saveCategory(category);
+        Category updatedCategory = (Category) categoryService.update(category, existingCategory);
+        categoryService.saveCategory(updatedCategory);
         return "redirect:/admin/categories";
     }
 
@@ -86,7 +88,6 @@ public class CategoryController {
         }
         categoryService.deleteCategoryById(id);
         return "redirect:/admin/categories";
-        // return ResponseEntity.ok().build();
     }
 
 }
