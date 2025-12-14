@@ -2,6 +2,7 @@ package tutothr.course;
 
 import java.util.List;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,15 +14,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.springframework.web.bind.annotation.PutMapping;
 
 @Controller
 public class CourseController {
     private CourseService courseService;
 
-    public CourseController(CourseService courseService) {
+    public CourseController(CourseService courseService, CoursePermissionService coursePermissionService) {
         this.courseService = courseService;
     }
 
@@ -57,7 +56,13 @@ public class CourseController {
     @GetMapping({ "/tutor/courses/update/{id}" })
     public String getUpdatePage(Model model, @PathVariable(required = true) Long id) {
         Course course = courseService.getCourseById(id);
+
         if (course != null) {
+            if (!course.getIsOwner()) {
+                // Handle unauthorized access
+                model.addAttribute("errorMessage", "You are not authorized to edit this course.");
+                return "/error/403"; // Assuming you have a 403 error view
+            }
             model.addAttribute("course", course);
             model.addAttribute("fields", courseService.getFields());
         } else {
@@ -74,6 +79,7 @@ public class CourseController {
         if (result.hasErrors()) {
             return "/views/courses/course-edit";
         }
+        course.setOwnerId(((tutothr.common.config.MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
         // Creating a new course
         courseService.saveCourse(course);
         return "redirect:/courses";
@@ -100,7 +106,6 @@ public class CourseController {
     @DeleteMapping("/tutor/courses/delete/{id}")
     public String deleteCourse(@PathVariable(required = true) Long id) {
         courseService.deleteCourseById(id);
-        System.out.println("Deleting course with id: " + id);
         return "redirect:/courses";
     }
 }

@@ -38,6 +38,7 @@ public class SecurityConfig {
             .requestMatchers(PUBLIC_ENDPOINTS).permitAll() //"/resources/**", "/api/**", "/api/workshops/**","/webjars/**", "/h2-console/**", "/login", "/register", "/logout", "/404", "/all").permitAll()
             .requestMatchers("/home", "/student").authenticated()
             .requestMatchers("/admin/**").hasRole("ADMIN")
+            .requestMatchers("/tutor/**").hasRole("TUTOR")
             .requestMatchers("/registration/**").hasAuthority("REGISTRATION")
             .anyRequest().authenticated()
         );
@@ -49,6 +50,7 @@ public class SecurityConfig {
                 .defaultSuccessUrl("/home", true) // nach Login: SavedRequest oder /home
                 .failureUrl("/login?error") // bei Fehler
                 .permitAll());
+
         http.logout(logout -> logout
                 .logoutUrl("/logout") // default
                 .logoutSuccessUrl("/login?logout") // Ziel nach Logout

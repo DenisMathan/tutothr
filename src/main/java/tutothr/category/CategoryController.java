@@ -82,7 +82,6 @@ public class CategoryController {
 
     @DeleteMapping("/admin/categories/delete/{id}")
     public String deleteCategory(@PathVariable(required = true) Long id) {
-        System.out.println("Deleting category with id: " + id);
         if (id == null) {
             return "/views/category/category";
         }

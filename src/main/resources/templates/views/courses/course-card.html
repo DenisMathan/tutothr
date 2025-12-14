@@ -11,9 +11,9 @@
                 </div>
                 <button class="btn btn-primary mt-4 w-4"
                 th:onclick="|assignCourse(event, ${course.id})|">Assign</button>
-                <button class="btn btn-primary mt-4 w-4"
+                <button th:if="${course.isOwner}" class="btn btn-primary mt-4 w-4"
                 th:onclick="|event.stopPropagation(); window.location.href='/tutor/courses/update/${course.id}'|">Edit</button>
-                <form style="display: inline;" class="inline" th:action="@{/tutor/courses/delete/{id}(id=${course.id})}" method="post">
+                <form th:if="${course.isOwner}" style="display: inline;" class="inline" th:action="@{/tutor/courses/delete/{id}(id=${course.id})}" method="post">
                     <input type="hidden" name="_method" value="delete" />
                     <button onclick="event.stopPropagation(); if(!confirm('Are you sure you want to delete this course?')){event.preventDefault();}" class="btn btn-primary mt-4 w-4" type="submit">Delete</button>
                 </form>

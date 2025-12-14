@@ -11,10 +11,12 @@ import tutothr.common.models.Field;
 public class CourseService extends BaseService {
 
     private CourseRepositoryI courseRepository;
+    private CoursePermissionService coursePermissionService;
 
-    public CourseService(CourseRepositoryI courseRepository) {
+    public CourseService(CourseRepositoryI courseRepository, CoursePermissionService coursePermissionService) {
         super();
         this.courseRepository = courseRepository;
+        this.coursePermissionService = coursePermissionService;
     }
 
     @Override
@@ -26,10 +28,16 @@ public class CourseService extends BaseService {
     }
 
     public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+        List<Course> courses = courseRepository.findAll();
+        courses = coursePermissionService.setOwner(courses);
+        return courses;
     }
 
     public Course getCourseById(Long id) {
+        Course course = courseRepository.findById(id).orElse(null);
+        if (course != null) {
+            course.setIsOwner(coursePermissionService.isCurrentUserOwner(course.getOwnerId()));
+        }
         return courseRepository.findById(id).orElse(null);
     }
 

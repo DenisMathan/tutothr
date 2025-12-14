@@ -18,6 +18,7 @@ public class MyUserDetails implements UserDetails {
 	private String userName;
 	private String password;
 	private String email;
+	private Long id;
 	private boolean active;
 	private List<GrantedAuthority> authorities;
 	private Collection<Role> roles;
@@ -28,6 +29,7 @@ public class MyUserDetails implements UserDetails {
 		this.password= user.getPassword();
 		this.active = user.isActive();
 		this.email = user.getEmail();
+		this.id = user.getId();
 		
 		this.roles = user.getRoles();
 		this.authorities = new ArrayList<>();
@@ -43,6 +45,13 @@ public class MyUserDetails implements UserDetails {
 				this.authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getType().name()));
 			}
 		}
+	}
+	public String getEmail() {
+		return email;
+	}
+	
+	public Long getId() {
+		return id;
 	}
 
 	@Override
