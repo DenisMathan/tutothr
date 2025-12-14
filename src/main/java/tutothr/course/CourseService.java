@@ -1,6 +1,7 @@
 package tutothr.course;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -20,4 +21,12 @@ public class CourseService {
     public Course getCourseById(Long id) {
         return courseRepository.findById(id).orElse(null);
     }
-}
+    public void saveCourse(Course course) {
+        courseRepository.save(course);
+    }
+    public void deleteCourseById(Long id) {
+        courseRepository.findById(id).ifPresent(course -> {
+            courseRepository.delete(course);
+        });
+    }
+}  

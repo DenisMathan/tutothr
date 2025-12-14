@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+
+<head>
+    <title>Edit Course</title>
+</head>
+
+
+<section layout:fragment="mybody">
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 th:if="${course.id != null}" th:text="${course.title}">Neuer Kurs</h1>
+            <h1 th:if="${course.id == null}">Neuer Kurs</h1>
+        </div>
+        <!-- <div th:replace="fragments/forms/form :: form(${course}, ${fields}, @{/tutor/courses/update})"></div> -->
+        <div th:if="${course.id == null}">
+            <div
+                th:replace="fragments/forms/form :: form(object=${course}, fields=${fields}, action=@{/tutor/courses/save})">
+            </div>
+        </div>
+        <div th:if="${course.id != null}">
+            <div
+                th:replace="fragments/forms/form :: form(object=${course}, fields=${fields}, action=@{/tutor/courses/save/{id}(id=${course.id})})">
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function assignCourse(event, courseId) {
+            event.stopPropagation();
+            event.preventDefault();
+            console.log("Assigning course with ID:", courseId);
+            // Hier können Sie AJAX-Aufrufe oder andere Logik hinzufügen, um den Kurs zuzuweisen
+        }
+    </script>
+</section>
+
+</html>
