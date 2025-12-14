@@ -31,7 +31,7 @@
         <div class="row" th:if="${!#lists.isEmpty(courses)}">
             <div class="mb-4" th:each="course : ${courses}">
                 <!-- <div th:replace="~{views/courses/course-card :: course-card (~{::course=${course}})}"></div> -->
-                <div th:replace="views/courses/course-card :: course-card(${course})"></div>
+                <div th:replace="fragments/courses/course-card :: course-card(${course})"></div>
             </div>
         </div>
     </div>

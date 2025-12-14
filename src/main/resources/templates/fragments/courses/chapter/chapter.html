@@ -1,0 +1,14 @@
+<section th:fragment="chapter (chapter)">
+    <div class="accordion">
+        <input type="checkbox" th:id="'chapter-' + ${chapter.id}">
+        <label class="accordion-label" th:for="'chapter-' + ${chapter.id}">
+            <span th:text="${chapter.title}">Chapter</span>
+            <span class="accordion-arrow">&#9654;</span>
+        </label>
+        <div class="accordion-content">
+            <div th:text="${chapter.content}">this is some Content</div>
+        </div>
+    </div>
+</section>
+
+</html>

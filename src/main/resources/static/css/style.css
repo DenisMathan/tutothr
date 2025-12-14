@@ -6,13 +6,14 @@
     --card: #0b1220;
     --accent: #7c3aed;
     --muted: #9aa4b2;
-    --glass: rgba(255,255,255,0.04);
+    --glass: rgba(255, 255, 255, 0.04);
 }
 
 /* ========================================
    GLOBAL STYLES
    ======================================== */
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -42,11 +43,11 @@ body {
    NAVBAR STYLES
    ======================================== */
 .navbar404 {
-    background: linear-gradient(180deg, rgba(124,58,237,0.12), transparent),
-    linear-gradient(180deg,#071028 0%, var(--bg) 60%);
+    background: linear-gradient(180deg, rgba(124, 58, 237, 0.12), transparent),
+        linear-gradient(180deg, #071028 0%, var(--bg) 60%);
     color: #e6eef8;
-    box-shadow: 0 8px 30px rgba(2,6,23,0.6);
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .navbar404-container {
@@ -225,10 +226,10 @@ body {
    FOOTER STYLES
    ======================================== */
 .footer {
-    background: linear-gradient(180deg, rgba(124,58,237,0.12), transparent),
-    linear-gradient(180deg,#071028 0%, var(--bg) 60%);
+    background: linear-gradient(180deg, rgba(124, 58, 237, 0.12), transparent),
+        linear-gradient(180deg, #071028 0%, var(--bg) 60%);
     color: #e6eef8;
-    box-shadow: 0 -8px 30px rgba(2,6,23,0.6);
+    box-shadow: 0 -8px 30px rgba(2, 6, 23, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -336,9 +337,15 @@ body {
 }
 
 .course-section {
+    padding-bottom: 1.5rem;
     margin-bottom: 1.5rem;
+    border-bottom: 1px #18202d solid;
 }
-
+.course-section.is-last  {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
 .section-title {
     display: flex;
     align-items: center;
@@ -1078,4 +1085,64 @@ body {
         width: 100%;
         justify-content: center;
     }
+}
+
+
+
+
+.accordion {
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 8px rgba(2, 6, 23, 0.12);
+    background-color: #221a4a;
+}
+
+.accordion input[type="checkbox"] {
+    display: none;
+}
+
+.accordion-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--accent);
+    color: #fff;
+    padding: 16px 22px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 10px 10px 10px 10px;
+    transition: background 0.2s;
+    letter-spacing: 0.5px;
+}
+
+.accordion-label:hover {
+    background: #a78bfa;
+}
+
+.accordion-arrow {
+    transition: transform 0.3s;
+    font-size: 1.2em;
+}
+
+.accordion input[type="checkbox"]:checked~.accordion-label .accordion-arrow {
+    transform: rotate(90deg);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    background: var(--card);
+    transition: max-height 0.3s ease, padding 0.3s;
+    padding: 0 22px;
+    border-radius: 0 0 10px 10px;
+    color: var(--muted);
+    background-color: #221a4a;
+}
+
+.accordion input[type="checkbox"]:checked~.accordion-content {
+    max-height: 500px;
+    padding: 16px 22px;
+    color: #e6eef8;
 }

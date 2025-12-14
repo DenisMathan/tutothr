@@ -11,7 +11,7 @@
         <div class="course-detail-header">
             <a th:href="@{/courses}" class="btn-secondary">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
                 </svg>
                 Zurück zur Übersicht
             </a>
@@ -25,13 +25,14 @@
                     <h1 class="course-title" th:text="${course.title}">Kurs Titel</h1>
                     <div class="course-rating">
                         <div class="stars">
-                            <svg th:each="i : ${#numbers.sequence(1, 5)}"
-                                 width="20" height="20" viewBox="0 0 24 24"
-                                 th:classappend="${i <= course.avgRating()} ? 'star-filled' : 'star-empty'">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            <svg th:each="i : ${#numbers.sequence(1, 5)}" width="20" height="20" viewBox="0 0 24 24"
+                                th:classappend="${i <= course.avgRating()} ? 'star-filled' : 'star-empty'">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                             </svg>
                         </div>
-                        <span class="rating-value" th:text="${#numbers.formatDecimal(course.avgRating(), 1, 1)}">4.5</span>
+                        <span class="rating-value"
+                            th:text="${#numbers.formatDecimal(course.avgRating(), 1, 1)}">4.5</span>
                         <span class="rating-count" th:text="'(' + ${#lists.size(course.ratings)} + ' Bewertungen)'">
                             (12 Bewertungen)
                         </span>
@@ -49,7 +50,7 @@
             <div class="course-section">
                 <h2 class="section-title">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 6h16M4 12h16M4 18h16"/>
+                        <path d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                     Beschreibung
                 </h2>
@@ -62,17 +63,29 @@
             <div class="course-section" th:if="${!#lists.isEmpty(course.categories)}">
                 <h2 class="section-title">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                        <polyline points="22 4 12 14.01 9 11.01"/>
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
                     </svg>
                     Kategorien
                 </h2>
                 <div class="category-tags">
-                    <span th:each="category : ${course.categories}"
-                          class="category-tag"
-                          th:text="${category.title}">
+                    <span th:each="category : ${course.categories}" class="category-tag" th:text="${category.title}">
                         Kategorie
                     </span>
+                </div>
+            </div>
+
+            <div class="course-section is-last">
+                <h2 class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    Kursinhalte
+                </h2>
+                <div class="chapter-list">
+                    <div th:each="chapter : ${course.chapters}" class="chapter-item">
+                        <div th:replace="fragments/courses/chapter/chapter :: chapter(${chapter})"></div>
+                    </div>
                 </div>
             </div>
 
@@ -80,17 +93,18 @@
             <div class="course-actions" th:if="${course.isOwner}">
                 <a th:href="@{/courses/{id}/edit(id=${course.id})}" class="btn-primary">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                     </svg>
                     Kurs bearbeiten
                 </a>
                 <form th:action="@{/courses/{id}(id=${course.id})}" method="post" style="display:inline;">
                     <input type="hidden" name="_method" value="delete" />
-                    <button type="submit" class="btn-danger"
-                            onclick="return confirm('Kurs wirklich löschen?');">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    <button type="submit" class="btn-danger" onclick="return confirm('Kurs wirklich löschen?');">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                         </svg>
                         Kurs löschen
                     </button>
@@ -98,11 +112,14 @@
             </div>
         </div>
 
+
+
         <!-- Bewertungen -->
         <div class="ratings-section" th:if="${!#lists.isEmpty(course.ratings)}">
             <h2 class="ratings-title">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    <path
+                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                 </svg>
                 Bewertungen
             </h2>
@@ -111,15 +128,15 @@
                     <div class="rating-header">
                         <div class="rating-user">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4 0-7 2-7 4v2h14v-2c0-2-3-4-7-4z"/>
+                                <path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4 0-7 2-7 4v2h14v-2c0-2-3-4-7-4z" />
                             </svg>
                             <span th:text="${rating.user.username}">Username</span>
                         </div>
                         <div class="rating-stars-small">
-                            <svg th:each="i : ${#numbers.sequence(1, 5)}"
-                                 width="14" height="14" viewBox="0 0 24 24"
-                                 th:classappend="${i <= rating.stars} ? 'star-filled' : 'star-empty'">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            <svg th:each="i : ${#numbers.sequence(1, 5)}" width="14" height="14" viewBox="0 0 24 24"
+                                th:classappend="${i <= rating.stars} ? 'star-filled' : 'star-empty'">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                             </svg>
                         </div>
                     </div>
@@ -127,7 +144,7 @@
                         Toller Kurs! Sehr empfehlenswert.
                     </p>
                     <span class="rating-date" th:if="${rating.createdAt}"
-                          th:text="${#temporals.format(rating.createdAt, 'dd.MM.yyyy')}">
+                        th:text="${#temporals.format(rating.createdAt, 'dd.MM.yyyy')}">
                         01.01.2025
                     </span>
                 </div>
@@ -137,10 +154,11 @@
         <!-- Keine Bewertungen -->
         <div class="no-ratings" th:if="${#lists.isEmpty(course.ratings)}">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
             <p>Noch keine Bewertungen vorhanden</p>
-<!-- <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+            <!-- <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" layout:decorate="~{layout}">
 
 <section layout:fragment="mybody">

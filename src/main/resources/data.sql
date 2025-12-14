@@ -1,4 +1,3 @@
-
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by)
 VALUES ('Lilly', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'lilly@email', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by)
@@ -70,3 +69,10 @@ INSERT INTO course_categories (id_course, id_category) VALUES (3, 3);
 INSERT INTO course_categories (id_course, id_category) VALUES (4, 4);
 INSERT INTO course_categories (id_course, id_category) VALUES (5, 1);
 INSERT INTO course_categories (id_course, id_category) VALUES (6, 2);
+
+-- Chapters for 'Introduction to Physics' (course_id = 2)
+INSERT INTO chapter (title, content, position, course_id, paywalled, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Einführung in die Physik', 'Was ist Physik? Überblick über die wichtigsten Themen und Methoden.', 1, 2, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO chapter (title, content, position, course_id, paywalled, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Kräfte und Bewegung', 'Grundlagen der Mechanik: Kräfte, Masse, Beschleunigung, Newtonsche Gesetze.', 2, 2, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO chapter (title, content, position, course_id, paywalled, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Energie und Arbeit', 'Energieformen, Energieerhaltung, Arbeit und Leistung in physikalischen Systemen.', 3, 2, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO chapter (title, content, position, course_id, paywalled, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Wellen und Schwingungen', 'Eigenschaften von Wellen, Schwingungen, Schall und Licht.', 4, 2, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO chapter (title, content, position, course_id, paywalled, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Elektrizität und Magnetismus', 'Grundlagen der Elektrizitätslehre und des Magnetismus.', 5, 2, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);

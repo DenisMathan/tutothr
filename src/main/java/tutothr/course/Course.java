@@ -6,6 +6,7 @@ import java.util.List;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import tutothr.category.Category;
+import tutothr.chapter.Chapter;
 import tutothr.rating.Rating;
 import tutothr.common.BaseEntity;
 
@@ -27,11 +28,23 @@ public class Course extends BaseEntity {
     private List<Rating> ratings = new ArrayList<>();
 
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Chapter> chapters = new ArrayList<>();
+
     @Transient
     private boolean isOwner = false;
+
+
+    public List<Chapter> getChapters() {
+        return chapters;
+    }
+    public void setChapters(List<Chapter> chapters) {
+        this.chapters = chapters;
+    }
     public void setIsOwner(boolean isOwner) {
         this.isOwner = isOwner;
     }
+
     public boolean getIsOwner() {
         return isOwner;
     }
@@ -39,6 +52,7 @@ public class Course extends BaseEntity {
     public Long getOwnerId() {
         return ownerId;
     }
+
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
