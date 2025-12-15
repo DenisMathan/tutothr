@@ -7,6 +7,10 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import tutothr.common.models.Field;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
@@ -36,6 +40,36 @@ public abstract class BaseEntity {
 	@Column(name = "deleted_by")
 	private String deletedBy;
 
+	@Transient
+	protected List<Field> formFields;
+
+	@Transient
+	protected Map<String, String> validationErrors = new HashMap<>();
+
+	public void addValidationError(String field, String message) {
+		validationErrors.put(field, message);
+	}
+
+	public String getValidationError(String field) {
+		return validationErrors.get(field);
+	}
+
+	public Map<String, String> getValidationErrors() {
+		return validationErrors;
+	}
+
+	public boolean hasValidationError(String field) {
+		return validationErrors.containsKey(field);
+	}
+
+	public List<Field> getFormFields() {
+		return formFields;
+	}
+
+	public void setFormFields(List<Field> formFields) {
+		this.formFields = formFields;
+	}
+
 	// Getter und Setter
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
@@ -52,6 +86,7 @@ public abstract class BaseEntity {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
 	public Long getId() {
 		return id;
 	}

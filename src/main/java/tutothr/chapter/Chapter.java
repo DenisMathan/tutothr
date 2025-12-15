@@ -1,9 +1,12 @@
 package tutothr.chapter;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import tutothr.common.BaseEntity;
 import tutothr.course.Course;
+import tutothr.common.models.Field;
 
 @Entity
 public class Chapter extends BaseEntity {
@@ -12,6 +15,18 @@ public class Chapter extends BaseEntity {
     private String description;
     private int position;
     private boolean paywalled;
+
+    public Chapter() {
+       super();
+       init();
+    }
+
+    public void init() {
+       formFields = List.of(
+            new Field("title", "Titel", "text"),
+            new Field("description", "Beschreibung", "textarea")
+        ); 
+    }
 
 
     @ManyToOne

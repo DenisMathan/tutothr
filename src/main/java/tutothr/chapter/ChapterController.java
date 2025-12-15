@@ -1,7 +1,9 @@
 package tutothr.chapter;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,12 +32,18 @@ public class ChapterController {
     }
 
     @PutMapping("tutor/chapters/save/{id}")
-    public String putChapter(@ModelAttribute Chapter chapter, BindingResult result, @PathVariable Long id, HttpServletRequest request) {
-        String referer = request.getHeader("Referer");
+    public String putChapter(@ModelAttribute Chapter chapter, BindingResult result, @PathVariable Long id, HttpServletRequest request, Model model) {
+        // String referer = request.getHeader("Referer");
+        Chapter _chapter =  chapterService.findById(id);
         if (result.hasErrors()) {
-            return "redirect:/tutor/courses";
+            for (FieldError error : result.getFieldErrors()) {
+                _chapter.addValidationError(error.getField(), error.getDefaultMessage());
+            }
+            _chapter.getCourse().setIsOwner(true);
+            model.addAttribute("course", _chapter.getCourse());
+            return "/views/courses/course";
         }
         chapterService.update(chapter);
-        return "redirect:" + referer;
+        return "redirect:/courses/" + _chapter.getCourse().getId();
     }
 }

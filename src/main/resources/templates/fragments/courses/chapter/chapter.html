@@ -27,21 +27,8 @@
             <div th:text="${chapter.description}">this is some Content</div>
         </div>
     </div>
-    <div th:if="${isOwner}" class="chapter-edit-form hidden mb-2" th:id="'edit-chapter-' + ${chapter.id}">
-        <form th:action="@{/tutor/chapters/save/{id}(id=${chapter.id})}" method="post">
-                <input type="hidden" name="_method" value="put"/>
-                <input type="hidden" name="id" th:value="${chapter.id}"/>
-                <div class="mb-3">
-                    <label for="title" class="form-label">Kapitel Titel</label>
-                    <input type="text" class="form-control" id="title" name="title" th:value="${chapter.title}" required/>
-                </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Kapitel Beschreibung</label>
-                    <textarea class="form-control" id="description" name="description" rows="3" required
-                        th:text="${chapter.description}"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Speichern</button>
-            </form>
+    <div th:if="${isOwner}" class="chapter-edit-form mb-2" th:classappend="${#maps.isEmpty(chapter.validationErrors)} ? 'hidden' : 'scrollError'" th:id="'edit-chapter-' + ${chapter.id}">
+        <div th:replace="fragments/forms/form :: form(object=${chapter}, action=@{/tutor/chapters/save/{id}(id=${chapter.id})})"></div>
     </div>
     <script th:inline="javascript" type="text/javascript">
         function toggleEdit(chapterId) {

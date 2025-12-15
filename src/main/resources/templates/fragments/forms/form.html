@@ -7,20 +7,18 @@
   model.addAttribute("object", myObject);
 -->
 
-<form th:fragment="form (object, fields, action)" th:action="@{${action}}" th:object="${object}" th:fields="fields" method="post">
+<form th:fragment="form(object,action)" th:action="@{${action}}" th:object="${object}" method="post">
 
-    <!-- <input th:if="${object.id != null}" th:value="${object.id}"/>  -->
-     <input type="hidden" name="_method" th:if="${object.id != null}" value="put" />
-    <input type="hidden" name="id" th:if="${object.id != null}" th:value="${object.id}" />
-    <div th:each="field : ${fields}">
+    <!-- <input th:if="*{id != null}" th:value="*{id}"/>  -->
+     <input type="hidden" name="_method" th:if="*{id != null}" value="put" />
+    <input type="hidden" name="id" th:if="*{id != null}" th:value="*{id}" />
+    <div th:each="field : *{formFields}">
         <div class="form-group">
             <input type="hidden" name="fields" th:value="${field.name}" />
             <label th:for="${field.name}" th:text="${field.label}"></label>
-            <input th:if="${field.type == 'text' or field.type == 'number'}" step="any" class="form-control"
-                th:type="${field.type}" th:id="${field.name}" th:name="${field.name}" th:value="*{__${field.name}__}" />
-            <textarea th:if="${field.type == 'textarea'}" class="form-control" th:id="${field.name}"
-                th:name="${field.name}" th:text="*{__${field.name}__}">
-            </textarea>
+            <input th:if="${field.type == 'text' or field.type == 'number'}" step="any" class="form-control" th:type="${field.type}" th:id="${field.name}" th:name="${field.name}" th:value="*{__${field.name}__}" />
+            <textarea th:if="${field.type == 'textarea'}" class="form-control" th:id="${field.name}" th:name="${field.name}" th:text="*{__${field.name}__}"></textarea>
+            <span th:if="${object.hasValidationError(field.name)}" th:text="${object.getValidationError(field.name)}" class="form-error"></span>
         </div>
     </div>
     <button type="submit" class="btn btn-primary">Speichern</button>

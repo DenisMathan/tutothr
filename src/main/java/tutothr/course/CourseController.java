@@ -41,7 +41,6 @@ public class CourseController {
             model.addAttribute("errorMessage", "Course not found");
             return "/error/404"; // Assuming you have an error view
         }
-        model.addAttribute("fields", courseService.getFields());
         return "/views/courses/course";
     }
 

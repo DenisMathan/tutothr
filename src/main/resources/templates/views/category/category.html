@@ -15,12 +15,12 @@
 
         <div th:if="${category.id == null}">
             <div
-                th:replace="fragments/forms/form :: form(object=${category}, fields=${fields}, action=@{/admin/categories/save})">
+                th:replace="fragments/forms/form :: form(object=${category}, action=@{/admin/categories/save})">
             </div>
         </div>
         <div th:if="${category.id != null}">
             <div
-                th:replace="fragments/forms/form :: form(object=${category}, fields=${fields}, action=@{/admin/categories/save/{id}(id=${category.id})})">
+                th:replace="fragments/forms/form :: form(object=${category}, action=@{/admin/categories/save/{id}(id=${category.id})})">
             </div>
         </div>
 

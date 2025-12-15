@@ -15,12 +15,12 @@
         <!-- <div th:replace="fragments/forms/form :: form(${course}, ${fields}, @{/tutor/courses/update})"></div> -->
         <div th:if="${course.id == null}">
             <div
-                th:replace="fragments/forms/form :: form(object=${course}, fields=${fields}, action=@{/tutor/courses/save})">
+                th:replace="fragments/forms/form :: form(object=${course}, action=@{/tutor/courses/save})">
             </div>
         </div>
         <div th:if="${course.id != null}">
             <div
-                th:replace="fragments/forms/form :: form(object=${course}, fields=${fields}, action=@{/tutor/courses/save/{id}(id=${course.id})})">
+                th:replace="fragments/forms/form :: form(object=${course}, action=@{/tutor/courses/save/{id}(id=${course.id})})">
             </div>
         </div>
     </div>

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import org.springframework.validation.FieldError;
+
 import jakarta.validation.Valid;
 import tutothr.common.models.Field;
 
@@ -41,7 +43,6 @@ public class CategoryController {
             category = new Category();
         }
         model.addAttribute("category", category);
-        model.addAttribute("fields", categoryService.getFields());
         return "/views/category/category";
     }
 
@@ -54,9 +55,11 @@ public class CategoryController {
         if (existingCategory != null) {
             // Category with the same title exists, handle the error
             result.rejectValue("title", "error.category", "A category with this title already exists.");
-            return "/views/category/category"; // Return to the form view with error message
         }
         if (result.hasErrors()) {
+            for (FieldError error : result.getFieldErrors()) {
+                category.addValidationError(error.getField(), error.getDefaultMessage());
+            }
             return "/views/category/category"; // Return to the form view with validation errors
         }
         categoryService.save(category);
@@ -65,13 +68,16 @@ public class CategoryController {
 
     @PutMapping("/admin/categories/save/{id}")
     public String updateCategory(Model model, @ModelAttribute @Valid Category category, BindingResult result) {
-        if (result.hasErrors()) {
-            return "/views/category/category";
-        }
         Category duplicateTitle = categoryService.getCategoryByTitle(category.getTitle());
         if (duplicateTitle != null && !duplicateTitle.getId().equals(category.getId())) {
             result.rejectValue("title", "error.category", "A category with this title already exists.");
-            model.addAttribute("fields", categoryService.getFields());
+        }
+        if (result.hasErrors()) { 
+            for (FieldError error : result.getFieldErrors()) {
+                category.addValidationError(error.getField(), error.getDefaultMessage());
+            }
+            // result.rejectValue("title", "error.category", "A category with this title already exists.");
+            // model.addAttribute("fields", categoryService.getFields());
             return "/views/category/category";
         }
         Category updatedCategory = (Category) categoryService.update(category);
