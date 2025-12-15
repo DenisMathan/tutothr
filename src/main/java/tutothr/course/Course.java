@@ -17,6 +17,19 @@ public class Course extends BaseEntity {
     float price;
     float rating;
 
+    public Course() {
+        super();
+        init();
+    }
+
+    public void init() {
+        formFields = List.of(
+            new tutothr.common.models.Field("title", "Titel", "text"),
+            new tutothr.common.models.Field("description", "Beschreibung", "textarea"),
+            new tutothr.common.models.Field("price", "Preis", "number")
+        );
+    }
+
     @Column(nullable = false)
     Long ownerId;
 
