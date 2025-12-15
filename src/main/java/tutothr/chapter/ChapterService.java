@@ -11,10 +11,12 @@ import tutothr.common.models.Field;
 public class ChapterService extends BaseService {
 
     private ChapterRepositoryI chapterRepository;
+    private ChapterPermissionService chapterPermissionService;
 
-    public ChapterService(ChapterRepositoryI chapterRepository) {
+    public ChapterService(ChapterRepositoryI chapterRepository, ChapterPermissionService chapterPermissionService) {
         super();
         this.chapterRepository = chapterRepository;
+        this.chapterPermissionService = chapterPermissionService;
     }
 
     @Override
@@ -23,7 +25,28 @@ public class ChapterService extends BaseService {
             new Field("title", "Titel", "text"),
             new Field("description", "Beschreibung", "textarea")
         );
-        
     }
+
+    public void deleteChapterById(Long id) {
+        chapterRepository.findById(id).ifPresent(chapter -> {
+            if (this.chapterPermissionService.isCurrentUserOwner(chapter.getOwnerId())) {
+                chapterRepository.delete(chapter);
+            }
+        });
+    }
+    public Chapter findById(Long id) {
+        return chapterRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        chapterRepository.deleteById(id);
+    }
+
+    @Override
+    public void save(Object chapter) {
+        chapterRepository.save((Chapter) chapter);
+    }
+    
     
 }

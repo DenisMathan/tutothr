@@ -9,9 +9,10 @@ import tutothr.course.Course;
 public class Chapter extends BaseEntity {
 
     private String title;
-    private String content;
+    private String description;
     private int position;
     private boolean paywalled;
+
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
@@ -24,11 +25,11 @@ public class Chapter extends BaseEntity {
     public void setTitle(String title) {
         this.title = title;
     }
-    public String getContent() {
-        return content;
+    public String getDescription() {
+        return description;
     }
-    public void setContent(String content) {
-        this.content = content;
+    public void setDescription(String description) {
+        this.description = description;
     }
     public int getPosition() {
         return position;
@@ -47,5 +48,8 @@ public class Chapter extends BaseEntity {
     }
     public void setPaywalled(boolean paywalled) {
         this.paywalled = paywalled;
+    }
+    public Long getOwnerId() {
+        return this.course.getOwnerId();
     }
 }

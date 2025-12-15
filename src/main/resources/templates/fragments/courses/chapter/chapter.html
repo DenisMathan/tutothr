@@ -1,14 +1,58 @@
-<section th:fragment="chapter (chapter)">
-    <div class="accordion">
+<section th:fragment="chapter (chapter, isOwner)">
+
+    <div class="accordion" th:classappend="${chapter.paywalled} ? ' paywalled' : ''">
         <input type="checkbox" th:id="'chapter-' + ${chapter.id}">
         <label class="accordion-label" th:for="'chapter-' + ${chapter.id}">
-            <span th:text="${chapter.title}">Chapter</span>
-            <span class="accordion-arrow">&#9654;</span>
+            <div style="display: grid; grid-template-columns: 6fr 4fr; width:100%">
+                <div>
+                    <span th:text="${chapter.title}">Chapter</span>
+                </div>
+                <div style="text-align: right; display:flex; justify-content: end; gap: 0.5rem; align-items: center;">
+                    <button class="btn" th:onclick="|toggleEdit(${chapter.id})|" th:if="${isOwner}">
+                        <!-- <span th:if="${isOwner}" class="paywall-badge">edit</span> -->
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                    </button>
+                    <div th:replace="fragments/buttons/deleteButton :: deleteButton(@{/tutor/chapters/delete/{id}(id=${chapter.id})})" th:if="${isOwner}"></div>
+                    <span class="accordion-arrow">&#9654;</span>
+                </div>
+
+            </div>
+
         </label>
-        <div class="accordion-content">
-            <div th:text="${chapter.content}">this is some Content</div>
+        <div th:if="${isOwner}" class="accordion-content">
+            <div th:text="${chapter.description}">this is some Content</div>
         </div>
     </div>
+    <div th:if="${isOwner}" class="chapter-edit-form hidden mb-2" th:id="'edit-chapter-' + ${chapter.id}">
+        <form th:action="@{/tutor/chapters/save/{id}(id=${chapter.id})}" method="post">
+                <input type="hidden" name="_method" value="put"/>
+                <input type="hidden" name="id" th:value="${chapter.id}"/>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Kapitel Titel</label>
+                    <input type="text" class="form-control" id="title" name="title" th:value="${chapter.title}" required/>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Kapitel Beschreibung</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" required
+                        th:text="${chapter.description}"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Speichern</button>
+            </form>
+    </div>
+    <script th:inline="javascript" type="text/javascript">
+        function toggleEdit(chapterId) {
+            const chapter = document.getElementById('edit-chapter-' + chapterId);
+            // Hier können Sie die Logik zum Bearbeiten des Kapitels implementieren
+            console.log("Editing chapter with ID:", chapterId);
+            if (chapter.classList.contains('hidden')){
+                chapter.classList.remove('hidden');
+            } else {
+                chapter.classList.add('hidden');
+            }
+        }
+    </script>
 </section>
-
-</html>

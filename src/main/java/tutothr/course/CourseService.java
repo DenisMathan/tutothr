@@ -33,7 +33,7 @@ public class CourseService extends BaseService {
         return courses;
     }
 
-    public Course getCourseById(Long id) {
+    public Course findById(Long id) {
         Course course = courseRepository.findById(id).orElse(null);
         if (course != null) {
             course.setIsOwner(coursePermissionService.isCurrentUserOwner(course.getOwnerId()));
@@ -41,13 +41,16 @@ public class CourseService extends BaseService {
         return courseRepository.findById(id).orElse(null);
     }
 
-    public void saveCourse(Course course) {
-        courseRepository.save(course);
+    @Override
+    public void save(Object course) {
+        courseRepository.save((Course) course);
     }
 
-    public void deleteCourseById(Long id) {
+    public void deleteById(Long id) {
         courseRepository.findById(id).ifPresent(course -> {
             courseRepository.delete(course);
         });
     }
+
+
 }

@@ -75,7 +75,7 @@ class CategoryControllerTest {
     void getCreatePage_withId_shouldLoadCategory() throws Exception {
         Category c = new Category();
         c.setTitle("Math");
-        given(categoryService.getCategoryById(1L)).willReturn(c);
+        given(categoryService.findById(1L)).willReturn(c);
 
         mockMvc.perform(get("/admin/categories/add/1"))
             .andExpect(status().isOk())
@@ -102,7 +102,7 @@ class CategoryControllerTest {
     @DisplayName("Should create category when valid and unique, then redirect to list")
     void createCategory_validUnique_shouldSaveAndRedirect() throws Exception {
         given(categoryService.getCategoryByTitle(eq("Physics"))).willReturn(Optional.empty());
-        doNothing().when(categoryService).saveCategory(any(Category.class));
+        doNothing().when(categoryService).save(any(Category.class));
 
         mockMvc.perform(put("/admin/categories/add/process")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -111,7 +111,7 @@ class CategoryControllerTest {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/admin/categories"));
 
-        verify(categoryService).saveCategory(any(Category.class));
+        verify(categoryService).save(any(Category.class));
     }
 
     @Test
@@ -144,17 +144,17 @@ class CategoryControllerTest {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/admin/categories"));
 
-        verify(categoryService).saveCategory(any(Category.class));
+        verify(categoryService).save(any(Category.class));
     }
 
     @Test
     @DisplayName("Should delete category by id and return 200")
     void deleteCategory_shouldReturnOk() throws Exception {
-        doNothing().when(categoryService).deleteCategoryById(1L);
+        doNothing().when(categoryService).deleteById(1L);
 
         mockMvc.perform(delete("/admin/categories/delete/1"))
             .andExpect(status().isOk());
 
-        verify(categoryService).deleteCategoryById(1L);
+        verify(categoryService).deleteById(1L);
     }
 }

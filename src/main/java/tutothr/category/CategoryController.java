@@ -36,7 +36,7 @@ public class CategoryController {
     public String getCreatePage(Model model, @PathVariable(required = false) Long id) {
         Category category;
         if (id != null) {
-            category = categoryService.getCategoryById(id);
+            category = categoryService.findById(id);
         } else {
             category = new Category();
         }
@@ -59,7 +59,7 @@ public class CategoryController {
         if (result.hasErrors()) {
             return "/views/category/category"; // Return to the form view with validation errors
         }
-        categoryService.saveCategory(category);
+        categoryService.save(category);
         return "redirect:/admin/categories";
     }
 
@@ -68,15 +68,14 @@ public class CategoryController {
         if (result.hasErrors()) {
             return "/views/category/category";
         }
-        Category existingCategory = categoryService.getCategoryById(category.getId());
         Category duplicateTitle = categoryService.getCategoryByTitle(category.getTitle());
         if (duplicateTitle != null && !duplicateTitle.getId().equals(category.getId())) {
             result.rejectValue("title", "error.category", "A category with this title already exists.");
             model.addAttribute("fields", categoryService.getFields());
             return "/views/category/category";
         }
-        Category updatedCategory = (Category) categoryService.update(category, existingCategory);
-        categoryService.saveCategory(updatedCategory);
+        Category updatedCategory = (Category) categoryService.update(category);
+        categoryService.save(updatedCategory);
         return "redirect:/admin/categories";
     }
 
@@ -85,7 +84,7 @@ public class CategoryController {
         if (id == null) {
             return "/views/category/category";
         }
-        categoryService.deleteCategoryById(id);
+        categoryService.deleteById(id);
         return "redirect:/admin/categories";
     }
 

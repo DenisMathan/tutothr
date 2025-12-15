@@ -17,5 +17,8 @@
 - (POST)    /tutor/courses/save
 - (PUT)     /tutor/courses/save/{id}
 
+### Chapter
+- DELETE    /tutor/chapters/delete/{id}
+
 ### User
 - (GET)     /views/users/user-all

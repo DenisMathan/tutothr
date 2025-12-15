@@ -36,16 +36,18 @@ public class CategoryService extends BaseService {
         return categoryRepository.findAll();
     }
 
-    public Category getCategoryById(Long id) {
+    public Category findById(Long id) {
         return categoryRepository.findById(id).orElse(null);
     }
     public Category getCategoryByTitle(String title) {
         return categoryRepository.findByTitle(title).orElse(null);
     }
-    public void saveCategory(Category category) {
-        categoryRepository.save(category);
+
+    @Override
+    public void save(Object category) {
+        categoryRepository.save((Category)category);
     }
-    public void deleteCategoryById(Long id) {
+    public void deleteById(Long id) {
         categoryRepository.findById(id).ifPresent(category -> {
             // Remove category from all courses that reference it
             List<Course> courses = category.getCourses();

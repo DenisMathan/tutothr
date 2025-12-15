@@ -11,7 +11,8 @@ public abstract class BaseService implements ServiceI {
         init();
     }
 
-    public Object update(Object obj, Object existingObj) {
+    public Object update(Object obj) {
+        Object existingObj = findById((Long) ((BaseEntity) obj).getId());
         for (Field field : fields) {
             try {
                 java.lang.reflect.Field _field = obj.getClass().getDeclaredField(field.getName());
@@ -22,6 +23,7 @@ public abstract class BaseService implements ServiceI {
                 e.printStackTrace();
             }
         }
+        save(existingObj);
         return existingObj;
     }
 

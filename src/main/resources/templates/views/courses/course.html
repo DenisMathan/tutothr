@@ -84,7 +84,7 @@
                 </h2>
                 <div class="chapter-list">
                     <div th:each="chapter : ${course.chapters}" class="chapter-item">
-                        <div th:replace="fragments/courses/chapter/chapter :: chapter(${chapter})"></div>
+                        <button th:replace="fragments/courses/chapter/chapter :: chapter(${chapter}, ${course.isOwner})"></button>
                     </div>
                 </div>
             </div>

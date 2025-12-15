@@ -33,7 +33,7 @@ public class CourseController {
 
     @GetMapping("/courses/{id}")
     public String addCourse(Model model, @PathVariable(required = true) Long id) {
-        Course course = courseService.getCourseById(id);
+        Course course = courseService.findById(id);
         if (course != null) {
             model.addAttribute("course", course);
         } else {
@@ -55,7 +55,7 @@ public class CourseController {
 
     @GetMapping({ "/tutor/courses/update/{id}" })
     public String getUpdatePage(Model model, @PathVariable(required = true) Long id) {
-        Course course = courseService.getCourseById(id);
+        Course course = courseService.findById(id);
 
         if (course != null) {
             if (!course.getIsOwner()) {
@@ -81,31 +81,22 @@ public class CourseController {
         }
         course.setOwnerId(((tutothr.common.config.MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
         // Creating a new course
-        courseService.saveCourse(course);
+        courseService.save(course);
         return "redirect:/courses";
     }
 
     @PutMapping("/tutor/courses/save/{id}")
-    public String putMethodName(@ModelAttribute Course course, BindingResult result, @RequestParam List<String> fields,
-            @PathVariable(required = false) Long id) {
+    public String putMethodName(@ModelAttribute Course course, BindingResult result, @RequestParam List<String> fields, @PathVariable(required = true) Long id) {
         if (result.hasErrors()) {
             return "/views/courses/course-edit";
         }
-        Course existingCourse = courseService.getCourseById(course.getId());
-        if (existingCourse != null) {
-            Course updatedCourse = (Course) courseService.update(course, existingCourse);
-            courseService.saveCourse(updatedCourse);
-        } else {
-            // Handle the case where the course is not found
-            result.rejectValue("id", "error.course", "Course not found.");
-            return "/views/courses/course-edit"; // Return to the form view with error message
-        }
+        courseService.update(course);
         return "redirect:/courses";
     }
 
     @DeleteMapping("/tutor/courses/delete/{id}")
     public String deleteCourse(@PathVariable(required = true) Long id) {
-        courseService.deleteCourseById(id);
+        courseService.deleteById(id);
         return "redirect:/courses";
     }
 }
