@@ -1,0 +1,23 @@
+<!--
+  Erwartet:
+  - "fields": Liste von Field-Objekten (z.B. java.lang.reflect.Field oder eigene DTOs)
+  - "object": das zu bearbeitende Objekt
+  Beispiel Controller:
+  model.addAttribute("fields", Arrays.asList(MyClass.class.getDeclaredFields()));
+  model.addAttribute("object", myObject);
+-->
+
+<form th:fragment="form(object,action,fields)" th:action="@{${action}}" th:object="${object}" method="post">
+    <input type="hidden" name="_method" th:if="*{id != null}" value="put" />
+    <input type="hidden" name="id" th:if="*{id != null}" th:value="*{id}" />
+    <div th:each="field : ${fields}">
+        <div class="form-group">
+            <label th:for="${field.name}" th:text="${field.name}"></label>
+            <input th:if="${field.type == null or field.type == 'text' or field.type == 'java.lang.String'}" class="form-control" th:type="text" th:id="${field.name}" th:name="${field.name}" th:value="*{__${field.name}__}" />
+            <input th:if="${field.type == 'number' or field.type == 'int' or field.type == 'java.lang.Integer' or field.type == 'double' or field.type == 'java.lang.Double'}" class="form-control" th:type="number" th:id="${field.name}" th:name="${field.name}" th:value="*{__${field.name}__}" step="any" />
+            <textarea th:if="${field.type == 'textarea'}" class="form-control" th:id="${field.name}" th:name="${field.name}" th:text="*{__${field.name}__}"></textarea>
+            <span th:if="${object.hasValidationError != null and object.hasValidationError(field.name)}" th:text="${object.getValidationError(field.name)}" class="form-error"></span>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Speichern</button>
+</form>

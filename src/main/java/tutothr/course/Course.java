@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import tutothr.category.Category;
 import tutothr.chapter.Chapter;
 import tutothr.rating.Rating;
