@@ -36,15 +36,12 @@ public class CourseController {
     @GetMapping("/courses/{id}")
     public String addCourse(Model model, @PathVariable(required = true) Long id) {
         Course course = courseService.findById(id);
-        if (course != null) {
-            model.addAttribute("course", courseService.mapToDTO(course));
-            // model.addAttribute("errorMessage", "Course not found");
-            // return "/error/404"; // Assuming you have an error view
-        } else {
-            // Handle the case where the course is not found
+        if (course == null) {
             model.addAttribute("errorMessage", "Course not found");
-            return "/error/404"; // Assuming you have an error view
+            return "/error/404"; 
         }
+        CourseDTO courseDTO = courseService.mapToDTO(course);
+        model.addAttribute("course", courseDTO);
         return "/views/courses/course";
     }
 
