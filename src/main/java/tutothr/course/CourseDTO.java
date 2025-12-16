@@ -1,11 +1,14 @@
 package tutothr.course;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import tutothr.category.CategoryDTO;
+import tutothr.chapter.ChapterDTO;
 import tutothr.common.BaseDTO;
+import tutothr.rating.Rating;
 
 public class CourseDTO extends BaseDTO {
     @NotBlank(message = "Title cannot be empty.")
@@ -14,10 +17,16 @@ public class CourseDTO extends BaseDTO {
     String description;
 
     float price;
-    float rating;
     private List<CategoryDTO> categories;
+    
+    private List<ChapterDTO> chapters;
 
     private boolean isOwner = false;
+
+
+    float rating;
+    private double avgRating;
+    private List<Rating> ratings = new ArrayList<>();
 
     @Override
     public void initFields() {
@@ -59,6 +68,19 @@ public class CourseDTO extends BaseDTO {
     public void setRating(float rating) {
         this.rating = rating;
     }
+    public double getAvgRating() {
+        return avgRating;
+    }
+    public void setAvgRating(double avgRating) {
+        this.avgRating = avgRating;
+    }
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
 
     public List<CategoryDTO> getCategories() {
         return categories;
@@ -70,6 +92,13 @@ public class CourseDTO extends BaseDTO {
 
     public boolean getIsOwner() {
         return isOwner;
+    }
+
+    public List<ChapterDTO> getChapters() {
+        return chapters;
+    }
+    public void setChapters(List<ChapterDTO> chapters) {
+        this.chapters = chapters;
     }
 
     public void setIsOwner(boolean isOwner) {
