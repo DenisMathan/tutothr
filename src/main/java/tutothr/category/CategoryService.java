@@ -1,54 +1,39 @@
 package tutothr.category;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import tutothr.category.interfaces.CategoryMapperI;
+import tutothr.category.interfaces.CategoryRepositoryI;
 import tutothr.common.BaseService;
-import tutothr.common.models.Field;
 import tutothr.course.Course;
 import tutothr.course.CourseRepositoryI;
 
 @Service
-public class CategoryService extends BaseService {
+public class CategoryService extends BaseService<CategoryDTO, Category> {
 
-    private CategoryRepositoryI categoryRepository;
     private CourseRepositoryI courseRepository;
-    
-    public CategoryService (CategoryRepositoryI categoryRepository, CourseRepositoryI courseRepository) {
-        super();
-        this.categoryRepository = categoryRepository;
+    protected CategoryMapperI mapper;
+
+    public CategoryService(CategoryRepositoryI categoryRepository, CourseRepositoryI courseRepository, CategoryMapperI mapper) {
+        super(categoryRepository);
         this.courseRepository = courseRepository;
-
+        this.mapper = mapper;
     }
 
-    @Override
-    public void init() {
-        fields = List.of(
-            new Field("title", "Titel", "text"),
-            new Field("description", "Beschreibung", "textarea")
-        );
-        
-    }
-
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
-    }
-
-    public Category findById(Long id) {
-        return categoryRepository.findById(id).orElse(null);
-    }
     public Category getCategoryByTitle(String title) {
-        return categoryRepository.findByTitle(title).orElse(null);
+        return ((CategoryRepositoryI) repository).findByTitle(title).orElse(null);
+    }
+
+    public void saveDTO(CategoryDTO categoryDTO) {
+        Category category = mapper.toEntity(categoryDTO);
+        repository.save(category);
     }
 
     @Override
-    public void save(Object category) {
-        categoryRepository.save((Category)category);
-    }
     public void deleteById(Long id) {
-        categoryRepository.findById(id).ifPresent(category -> {
+        repository.findById(id).ifPresent(category -> {
             // Remove category from all courses that reference it
             List<Course> courses = category.getCourses();
             if (courses != null) {
@@ -58,7 +43,21 @@ public class CategoryService extends BaseService {
                 }
             }
             // Now delete the category
-            categoryRepository.delete(category);
+            repository.delete(category);
         });
+    }
+
+    @Override
+    public CategoryDTO mapToDTO(Category entity) {
+        return mapper.toDTO(entity);
+    }
+
+    @Override
+    public Category mapToEntity(CategoryDTO dto) {
+        return mapper.toEntity(dto);
+    }
+
+    public Category findByTitle(String title) {
+        return ((CategoryRepositoryI) repository).findByTitle(title).orElse(null);
     }
 }

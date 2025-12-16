@@ -1,14 +1,20 @@
 package tutothr.common.interfaces;
-import tutothr.common.models.Field;
+import tutothr.common.BaseDTO;
+import tutothr.common.BaseEntity;
 
 import java.util.List;
 
-public interface ServiceI {
-    void init();
-    List<Field> getFields();
-    
-    Object findById(Long id);
+import org.springframework.validation.FieldError;
+
+public interface ServiceI<DTO extends BaseDTO, Entity extends BaseEntity> {
+    Entity findById(Long id);
     void deleteById(Long id);
-    Object update(Object obj);
-    void save(Object obj);
+    DTO update(DTO obj);
+    void save(Entity obj);
+    DTO findDTOById(Long id);
+    List<DTO> getAllDTOs();
+    DTO mapToDTO(Entity entity);
+    Entity mapToEntity(DTO dto);
+    Entity findByTitle(String title);
+    DTO handleValidationErrors(DTO dto, List<FieldError> fieldErrors);
 }

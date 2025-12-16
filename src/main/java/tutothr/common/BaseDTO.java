@@ -1,0 +1,37 @@
+package tutothr.common;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import tutothr.common.models.Field;
+
+public class BaseDTO {
+    private Long id;
+    private Map<String, String> validationErrors = new HashMap<>();
+    protected List<Field> formFields;
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Map<String, String> getValidationErrors() { return validationErrors; }
+    public void setValidationErrors(Map<String, String> validationErrors) { this.validationErrors = validationErrors; }
+
+    public void addValidationError(String field, String message) {
+        validationErrors.put(field, message);
+    }
+    public String getValidationError(String field) {
+        return validationErrors.get(field);
+    }
+    public boolean hasValidationError(String field) {
+        return validationErrors.containsKey(field);
+    }
+
+	public List<Field> getFormFields() {
+		return formFields;
+	}
+
+	public void setFormFields(List<Field> formFields) {
+		this.formFields = formFields;
+	}
+}

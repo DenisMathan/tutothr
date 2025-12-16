@@ -15,5 +15,7 @@ public interface MyBaseRepository <T, ID extends Serializable> {
 	List<T> findAll();
 	   
 	void delete(T entity);
+
+	void deleteById(ID id);
 	
 }

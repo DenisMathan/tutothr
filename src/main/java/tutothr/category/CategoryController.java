@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.validation.FieldError;
 
 import jakarta.validation.Valid;
+import tutothr.common.interfaces.MapperI;
 import tutothr.common.models.Field;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,65 +24,57 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class CategoryController {
     private CategoryService categoryService;
 
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(CategoryService categoryService, MapperI mapper) {
         this.categoryService = categoryService;
     }
 
     @GetMapping("/admin/categories")
     public String getCategories(Model model) {
-        List<Category> categories = categoryService.getAllCategories();
+        List<CategoryDTO> categories = categoryService.getAllDTOs();
         model.addAttribute("categories", categories);
         return "/views/category/categories";
     }
 
     @GetMapping({ "/admin/categories/add", "/admin/categories/update/{id}" })
     public String getCreatePage(Model model, @PathVariable(required = false) Long id) {
-        Category category;
+        CategoryDTO category;
         if (id != null) {
-            category = categoryService.findById(id);
+            category = categoryService.findDTOById(id);
         } else {
-            category = new Category();
+            category = new CategoryDTO();
         }
         model.addAttribute("category", category);
         return "/views/category/category";
     }
 
     @PostMapping({ "/admin/categories/save" })
-    public String createCategory(@ModelAttribute @Valid Category category, BindingResult result) {
-        // TODO: process POST request
-        // categoryService
-
-        Category existingCategory = categoryService.getCategoryByTitle(category.getTitle());
-        if (existingCategory != null) {
-            // Category with the same title exists, handle the error
+    public String createCategory(Model model, @ModelAttribute @Valid CategoryDTO category, BindingResult result) {
+        Category duplicateTitle = categoryService.findByTitle(category.getTitle());
+        if (duplicateTitle != null) {
             result.rejectValue("title", "error.category", "A category with this title already exists.");
         }
         if (result.hasErrors()) {
-            for (FieldError error : result.getFieldErrors()) {
-                category.addValidationError(error.getField(), error.getDefaultMessage());
-            }
+            category = categoryService.handleValidationErrors(category, result.getFieldErrors());
+            model.addAttribute("category", category);
             return "/views/category/category"; // Return to the form view with validation errors
         }
-        categoryService.save(category);
+        categoryService.save(categoryService.mapToEntity(category));
         return "redirect:/admin/categories";
     }
 
     @PutMapping("/admin/categories/save/{id}")
-    public String updateCategory(Model model, @ModelAttribute @Valid Category category, BindingResult result) {
-        Category duplicateTitle = categoryService.getCategoryByTitle(category.getTitle());
+    public String updateCategory(Model model, @ModelAttribute @Valid CategoryDTO category, BindingResult result) {
+        Category duplicateTitle = categoryService.findByTitle(category.getTitle());
         if (duplicateTitle != null && !duplicateTitle.getId().equals(category.getId())) {
             result.rejectValue("title", "error.category", "A category with this title already exists.");
+            category = categoryService.findDTOById(category.getId());
         }
-        if (result.hasErrors()) { 
-            for (FieldError error : result.getFieldErrors()) {
-                category.addValidationError(error.getField(), error.getDefaultMessage());
-            }
-            // result.rejectValue("title", "error.category", "A category with this title already exists.");
-            // model.addAttribute("fields", categoryService.getFields());
+        if (result.hasErrors()) {
+            category = categoryService.handleValidationErrors(category, result.getFieldErrors());
+            model.addAttribute("category", category);
             return "/views/category/category";
         }
-        Category updatedCategory = (Category) categoryService.update(category);
-        categoryService.save(updatedCategory);
+        categoryService.update(category);
         return "redirect:/admin/categories";
     }
 
