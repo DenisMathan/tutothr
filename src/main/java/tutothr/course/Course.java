@@ -16,19 +16,6 @@ public class Course extends BaseEntity {
     float price;
     float rating;
 
-    public Course() {
-        super();
-        init();
-    }
-
-    public void init() {
-        formFields = List.of(
-            new tutothr.common.models.Field("title", "Titel", "text"),
-            new tutothr.common.models.Field("description", "Beschreibung", "textarea"),
-            new tutothr.common.models.Field("price", "Preis", "number")
-        );
-    }
-
     @Column(nullable = false)
     Long ownerId;
 
@@ -43,22 +30,11 @@ public class Course extends BaseEntity {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Chapter> chapters = new ArrayList<>();
 
-    @Transient
-    private boolean isOwner = false;
-
-
     public List<Chapter> getChapters() {
         return chapters;
     }
     public void setChapters(List<Chapter> chapters) {
         this.chapters = chapters;
-    }
-    public void setIsOwner(boolean isOwner) {
-        this.isOwner = isOwner;
-    }
-
-    public boolean getIsOwner() {
-        return isOwner;
     }
 
     public Long getOwnerId() {

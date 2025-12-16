@@ -13,12 +13,12 @@ public class CoursePermissionService {
         Long userId = userDetails.getId();
         return userId.equals(courseOwnerId);
     }
-    public List<Course> setOwner(List<Course> items) {
-        MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long userId = userDetails.getId();
-        for (Course course : items) {
-            course.setIsOwner(userId.equals(course.getOwnerId()));
-        }
-        return items;
-    }
+    // public List<Course> setOwner(List<Course> items) {
+    //     MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    //     Long userId = userDetails.getId();
+    //     for (Course course : items) {
+    //         course.setIsOwner(userId.equals(course.getOwnerId()));
+    //     }
+    //     return items;
+    // }
 }

@@ -8,7 +8,7 @@ import tutothr.category.interfaces.CategoryMapperI;
 import tutothr.category.interfaces.CategoryRepositoryI;
 import tutothr.common.BaseService;
 import tutothr.course.Course;
-import tutothr.course.CourseRepositoryI;
+import tutothr.course.interfaces.CourseRepositoryI;
 
 @Service
 public class CategoryService extends BaseService<CategoryDTO, Category> {
@@ -20,15 +20,6 @@ public class CategoryService extends BaseService<CategoryDTO, Category> {
         super(categoryRepository);
         this.courseRepository = courseRepository;
         this.mapper = mapper;
-    }
-
-    public Category getCategoryByTitle(String title) {
-        return ((CategoryRepositoryI) repository).findByTitle(title).orElse(null);
-    }
-
-    public void saveDTO(CategoryDTO categoryDTO) {
-        Category category = mapper.toEntity(categoryDTO);
-        repository.save(category);
     }
 
     @Override

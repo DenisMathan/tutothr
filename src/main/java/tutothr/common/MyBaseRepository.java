@@ -1,21 +1,22 @@
 package tutothr.common;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.NoRepositoryBean;
 
 
-
-public interface MyBaseRepository <T, ID extends Serializable> {
+@NoRepositoryBean
+public interface MyBaseRepository <T, ID extends Serializable> extends JpaRepository<T, ID> {
 	
-	<S extends T> S save(S entity);
+	// <S extends T> S save(S entity);
     
-	Optional<T> findById(ID id);
+	// Optional<T> findById(ID id);
 
-	List<T> findAll();
+	// List<T> findAll();
 	   
-	void delete(T entity);
+	// void delete(T entity);
 
-	void deleteById(ID id);
+	// void deleteById(ID id);
 	
 }

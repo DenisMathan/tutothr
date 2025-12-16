@@ -15,6 +15,5 @@ public interface ServiceI<DTO extends BaseDTO, Entity extends BaseEntity> {
     List<DTO> getAllDTOs();
     DTO mapToDTO(Entity entity);
     Entity mapToEntity(DTO dto);
-    Entity findByTitle(String title);
     DTO handleValidationErrors(DTO dto, List<FieldError> fieldErrors);
 }

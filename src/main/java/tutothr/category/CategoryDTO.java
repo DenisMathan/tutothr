@@ -11,12 +11,9 @@ public class CategoryDTO extends BaseDTO {
     @Size(min = 3, max = 20, message = "Title must be between 3 and 20 characters.")
     String title;
     String description;
-    public CategoryDTO() {
-        super();
-        init();
-    }
 
-    private void init() {
+    @Override
+    public void initFields() {
         // Initialize any Category-specific fields or validation here
         formFields = List.of(
                 new tutothr.common.models.Field("title", "Titel", "text"),
@@ -34,5 +31,4 @@ public class CategoryDTO extends BaseDTO {
     public void setDescription(String description) {
         this.description = description;
     }
-    
 }
