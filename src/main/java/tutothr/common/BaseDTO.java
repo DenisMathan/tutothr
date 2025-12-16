@@ -4,12 +4,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import tutothr.common.interfaces.DTOI;
 import tutothr.common.models.Field;
 
-public class BaseDTO {
+public class BaseDTO implements DTOI {
     private Long id;
     private Map<String, String> validationErrors = new HashMap<>();
     protected List<Field> formFields;
+    public BaseDTO() {
+        initFields();
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -34,4 +38,9 @@ public class BaseDTO {
 	public void setFormFields(List<Field> formFields) {
 		this.formFields = formFields;
 	}
+    public void initFields() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'init'");
+    }
+
 }

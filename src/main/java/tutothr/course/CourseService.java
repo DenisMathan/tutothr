@@ -4,60 +4,55 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import tutothr.category.CategoryDTO;
+import tutothr.category.interfaces.CategoryRepositoryI;
 import tutothr.common.BaseService;
 import tutothr.common.models.Field;
+import tutothr.course.interfaces.CourseMapperI;
+import tutothr.course.interfaces.CourseRepositoryI;
 
-// @Service
-// public class CourseService extends BaseService<BaseDTO, Course> {
+@Service
+public class CourseService extends BaseService<CourseDTO, Course> {
 
-//     private CoursePermissionService coursePermissionService;
+    private CoursePermissionService coursePermissionService;
+    private CourseMapperI mapper;
 
-//     public CourseService(CourseRepositoryI courseRepository, CoursePermissionService coursePermissionService) {
-//         super(courseRepository);
-//         this.coursePermissionService = coursePermissionService;
-//     }
+    public CourseService(CourseRepositoryI courseRepository, CoursePermissionService coursePermissionService, CourseMapperI mapper) {
+        super(courseRepository);
+        this.coursePermissionService = coursePermissionService;
+        this.mapper = mapper;
+    }
 
-//     @Override
-//     public void init() {
-//         fields = List.of(
-//                 new Field("title", "Titel", "text"),
-//                 new Field("description", "Beschreibung", "textarea"),
-//                 new Field("price", "Preis", "number"));
-//     }
+    // public List<Course> getAllCourses() {
+    //     List<Course> courses = repository.findAll();
+    //     courses = coursePermissionService.setOwner(courses);
+    //     return courses;
+    // }
 
-//     public List<Course> getAllCourses() {
-//         List<Course> courses = repository.findAll();
-//         courses = coursePermissionService.setOwner(courses);
-//         return courses;
-//     }
+    // @Override
+    // public Course findById(Long id) {
+    //     Course course = repository.findById(id).orElse(null);
+    //     // if (course != null) {
+    //     //     course.setIsOwner(coursePermissionService.isCurrentUserOwner(course.getOwnerId()));
+    //     // }
+    //     return repository.findById(id).orElse(null);
+    // }
 
-//     @Override
-//     public Course findById(Long id) {
-//         Course course = repository.findById(id).orElse(null);
-//         if (course != null) {
-//             course.setIsOwner(coursePermissionService.isCurrentUserOwner(course.getOwnerId()));
-//         }
-//         return repository.findById(id).orElse(null);
-//     }
+    // public void deleteById(Long id) {
+    //     repository.findById(id).ifPresent(course -> {
+    //         repository.delete(course);
+    //     });
+    // }
 
-//     public void deleteById(Long id) {
-//         repository.findById(id).ifPresent(course -> {
-//             repository.delete(course);
-//         });
-//     }
+    @Override
+    public CourseDTO mapToDTO(Course entity) {
+        CourseDTO result = mapper.toDTO(entity);
+        result.setIsOwner(coursePermissionService.isCurrentUserOwner(entity.getOwnerId()));
+        return result;
+    }
 
-//     @Override
-//     public List<BaseDTO> getAllDTOs() {
-//         throw new UnsupportedOperationException("Not implemented yet");
-//     }
-
-//     @Override
-//     public BaseDTO mapToDTO(Course entity) {
-//         throw new UnsupportedOperationException("Not implemented yet");
-//     }
-
-//     @Override
-//     public Course mapToEntity(BaseDTO dto) {
-//         throw new UnsupportedOperationException("Not implemented yet");
-//     }
-// }
+    @Override
+    public Course mapToEntity(CourseDTO dto) {
+        return mapper.toEntity(dto);
+    }
+}
