@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import tutothr.category.CategoryDTO;
 import tutothr.category.interfaces.CategoryRepositoryI;
+import tutothr.chapter.ChapterDTO;
 import tutothr.common.BaseService;
 import tutothr.common.models.Field;
 import tutothr.course.interfaces.CourseMapperI;
@@ -48,6 +49,11 @@ public class CourseService extends BaseService<CourseDTO, Course> {
     public CourseDTO mapToDTO(Course entity) {
         CourseDTO result = mapper.toDTO(entity);
         result.setIsOwner(coursePermissionService.isCurrentUserOwner(entity.getOwnerId()));
+        if (result.getIsOwner()) {
+            result.setAddChapter(new ChapterDTO());
+            result.getAddChapter().setCourseId(entity.getId());
+            System.out.println("Set courseId in addChapter to " + entity.getId());
+        }
         return result;
     }
 

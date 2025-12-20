@@ -21,6 +21,7 @@ public class ChapterDTO extends BaseDTO {
     @Override
     public void initFields() {
        formFields = List.of(
+            new Field("courseId", "Kurs ID", "hidden"),
             new Field("title", "Titel", "text"),
             new Field("description", "Beschreibung", "textarea")
         ); 

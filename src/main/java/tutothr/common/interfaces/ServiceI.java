@@ -11,6 +11,7 @@ public interface ServiceI<DTO extends BaseDTO, Entity extends BaseEntity> {
     void deleteById(Long id);
     DTO update(DTO obj);
     void save(Entity obj);
+    void saveDTO(DTO obj);
     DTO findDTOById(Long id);
     List<DTO> getAllDTOs();
     DTO mapToDTO(Entity entity);

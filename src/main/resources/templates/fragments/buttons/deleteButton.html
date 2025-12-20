@@ -1,4 +1,3 @@
-
 <form th:fragment="deleteButton (action)" th:if="${isOwner}" th:action="${action}" method="post">
     <input type="hidden" name="_method" value="delete"/>
     <button class="btn-danger " type="submit"> 

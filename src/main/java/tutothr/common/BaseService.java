@@ -56,6 +56,11 @@ public abstract class BaseService<DTO extends BaseDTO, Entity extends BaseEntity
     public void save(Entity obj) {
         repository.save(obj);
     }
+   
+    @Override
+    public void saveDTO(DTO obj) {
+        repository.save(mapToEntity(obj));
+    }
 
     @Override
     public List<DTO> getAllDTOs() {
