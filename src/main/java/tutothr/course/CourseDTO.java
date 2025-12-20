@@ -23,6 +23,7 @@ public class CourseDTO extends BaseDTO {
 
     private boolean isOwner = false;
 
+    private ChapterDTO addChapter;
 
     float rating;
     private double avgRating;
@@ -105,5 +106,10 @@ public class CourseDTO extends BaseDTO {
         this.isOwner = isOwner;
     }
 
-
+    public ChapterDTO getAddChapter() {
+        return addChapter;
+    }
+    public void setAddChapter(ChapterDTO addChapter) {
+        this.addChapter = addChapter;
+    }
 }

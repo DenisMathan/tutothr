@@ -84,8 +84,28 @@
                 </h2>
                 <div class="chapter-list">
                     <div th:each="chapter : ${course.chapters}" class="chapter-item">
-                        <button th:replace="fragments/courses/chapter/chapter :: chapter(${chapter}, ${course.isOwner})"></button>
+                        <button
+                            th:replace="fragments/courses/chapter/chapter :: chapter(${chapter}, ${course.isOwner})"></button>
                     </div>
+                    <div th:if="${course.isOwner}">
+                        <script>
+                            function toggleAdd() {
+                                const addChapter = document.getElementById('add-chapter');
+                                console.log('test')
+                                if (addChapter.classList.contains('hidden')) {
+                                    addChapter.classList.remove('hidden');
+                                } else {
+                                    addChapter.classList.add('hidden');
+                                }
+                            }
+                        </script>
+                        <div th:replace="fragments/buttons/roundButton :: roundButton('https://img.icons8.com/?size=100&id=1501&format=png&color=7c3aed', 'toggleAdd()')"
+                            onclick="console.log('test')"></div>
+                        <div id="add-chapter" class="hidden">
+                            <div th:replace="fragments/forms/form :: form(object=${course.addChapter}, action=@{/tutor/chapters/save})"></div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
