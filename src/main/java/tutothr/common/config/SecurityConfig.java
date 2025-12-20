@@ -1,5 +1,6 @@
 package tutothr.common.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,17 +13,24 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-
+import tutothr.auth.CustomOAuth2SuccessHandler;
+import tutothr.auth.CustomOidcUserService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     public static final String[] PUBLIC_ENDPOINTS = {
-        "/resources/**", "/api/**", "/api/workshops/**","/webjars/**", "/h2-console/**", "/login", "/register", "/logout", "/404"
+            "/tutor/all", "/resources/**", "/api/**", "/api/workshops/**", "/webjars/**", "/h2-console/**", "/login",
+            "/register", "/logout", "/404"
     };
+    @Autowired
+    private CustomOidcUserService customOidcUserService;
+    @Autowired
+    private CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
 
-    public SecurityConfig() {}
+    SecurityConfig(CustomOAuth2SuccessHandler customOAuth2SuccessHandler) {
+        this.customOAuth2SuccessHandler = customOAuth2SuccessHandler;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -35,21 +43,33 @@ public class SecurityConfig {
 
         http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
         http.authorizeHttpRequests(auth -> auth
-            .requestMatchers(PUBLIC_ENDPOINTS).permitAll() //"/resources/**", "/api/**", "/api/workshops/**","/webjars/**", "/h2-console/**", "/login", "/register", "/logout", "/404", "/all").permitAll()
-            .requestMatchers("/home", "/student").authenticated()
-            .requestMatchers("/admin/**").hasRole("ADMIN")
-            .requestMatchers("/tutor/**").hasRole("TUTOR")
-            .requestMatchers("/registration/**").hasAuthority("REGISTRATION")
-            .anyRequest().authenticated()
-        );
+                .requestMatchers(PUBLIC_ENDPOINTS).permitAll() // "/resources/**", "/api/**",
+                                                               // "/api/workshops/**","/webjars/**", "/h2-console/**",
+                                                               // "/login", "/register", "/logout", "/404",
+                                                               // "/all").permitAll()
+                .requestMatchers("/home", "/student").authenticated()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/tutor/**").hasRole("TUTOR")
+                .requestMatchers("/registration/**").hasAuthority("REGISTRATION")
+                .anyRequest().authenticated());
 
         http.formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login") // POST /login wird verarbeitet
-                .usernameParameter("email") //klingt dumm ist aber spring
+                .usernameParameter("email") // klingt dumm ist aber spring
                 .defaultSuccessUrl("/home", true) // nach Login: SavedRequest oder /home
                 .failureUrl("/login?error") // bei Fehler
                 .permitAll());
+
+        http.oauth2Login(oauth2 -> oauth2
+                .loginPage("/login")
+                .userInfoEndpoint(userInfo -> userInfo
+                    .oidcUserService(customOidcUserService)
+                )
+                .successHandler(customOAuth2SuccessHandler)
+                .failureHandler((request, response, exception) -> {
+                    response.sendRedirect("/login?error");
+                }));
 
         http.logout(logout -> logout
                 .logoutUrl("/logout") // default

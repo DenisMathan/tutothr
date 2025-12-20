@@ -43,7 +43,7 @@ public class ChapterController {
             model.addAttribute("course", course);
             return "/views/courses/course";
         }
-        // System.out.println("Saving chapter for course ID: " + chapterDTO.getCourseId());
+
         chapterService.saveDTO(chapterDTO);
         return "redirect:/courses/" + chapterDTO.getCourseId();
     }

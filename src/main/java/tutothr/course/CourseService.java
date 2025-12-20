@@ -32,7 +32,6 @@ public class CourseService extends BaseService<CourseDTO, Course> {
         if (result.getIsOwner()) {
             result.setAddChapter(new ChapterDTO());
             result.getAddChapter().setCourseId(entity.getId());
-            System.out.println("Set courseId in addChapter to " + entity.getId());
         }
         return result;
     }

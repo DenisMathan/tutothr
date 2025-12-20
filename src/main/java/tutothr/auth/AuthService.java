@@ -33,7 +33,6 @@ public class AuthService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		Optional<User> oUser= userRepository.findByEmailIgnoreCase(email);
 		oUser.orElseThrow(()-> new UsernameNotFoundException("Not found "+email));
-		System.out.println("User found at the UserDetailsService="+ oUser.get().getEmail());
 		return new MyUserDetails(oUser.get());
 	}
 

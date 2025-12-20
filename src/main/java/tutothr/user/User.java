@@ -40,10 +40,10 @@ public class User extends BaseEntity implements Serializable {
 	// @GeneratedValue (strategy = GenerationType.IDENTITY)
 	// Long id;
 	
-	@NotBlank(message = "username is mandatory")
+
 	private String username;
 	
-	@NotBlank(message = "password is mandatory")
+
 	private String password;
 		
 	@NotBlank(message = "Email is mandatory")
