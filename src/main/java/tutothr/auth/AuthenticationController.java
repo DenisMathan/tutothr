@@ -74,6 +74,7 @@ public class AuthenticationController {
             BindingResult bindingResult,
             HttpServletRequest request,
             HttpServletResponse response) {
+        System.out.println("Registering user: " + form.getEmail());
 
         if (bindingResult.hasErrors()) {
             return "/views/auth/register";
@@ -103,8 +104,9 @@ public class AuthenticationController {
             // bereits angemeldet -> weiterleiten
             return "redirect:/views/home";
         }
+        RegistrationForm form = new RegistrationForm();
 
-        model.addAttribute("registrationForm", new RegistrationForm());
+        model.addAttribute("registrationForm", form);
         // nicht angemeldet -> Registrierungsseite zeigen
         return "/views/auth/register";
     }

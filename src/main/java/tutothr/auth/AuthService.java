@@ -2,18 +2,14 @@ package tutothr.auth;
 
 import java.util.Optional;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
-
 import tutothr.common.config.MyUserDetails;
+import tutothr.common.services.MailService;
 import tutothr.role.RoleRepositoryI;
 import tutothr.user.User;
 import tutothr.user.interfaces.UserRepositoryI;
@@ -24,11 +20,13 @@ public class AuthService implements UserDetailsService {
     private final UserRepositoryI userRepository;
     private final RoleRepositoryI roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MailService mailService;
 
-    public AuthService(UserRepositoryI userRepository, RoleRepositoryI roleRepository, PasswordEncoder passwordEncoder){
+    public AuthService(UserRepositoryI userRepository, RoleRepositoryI roleRepository, PasswordEncoder passwordEncoder, MailService mailService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.mailService = mailService;
     }
 
 	@Override
@@ -40,7 +38,6 @@ public class AuthService implements UserDetailsService {
 	}
 
     public boolean register(RegisterUserDTO form){
-
         if (form.getUsername() == null || form.getUsername().isBlank()) {
             return false;
         }
@@ -61,13 +58,20 @@ public class AuthService implements UserDetailsService {
         u.setPassword(passwordEncoder.encode(form.getPassword()));
         u.setActive(true);
 
+
         // Rolle holen und zuweisen (z.B. STUDENT)
         roleRepository.findByDescriptionIgnoreCase("STUDENT").ifPresent(r -> {
             u.getRoles().add(r);
         });
         userRepository.save(u);
+        try {
+            mailService.sendRegistrationMail(form.getEmail(), "Welcome to Tutothr", u.getUsername());
+        } catch (Exception e) {
+            System.err.println("Failed to send registration email: " + e.getMessage());
+        }
         return true;
     }
+
     public void login(){}
     
 }

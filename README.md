@@ -1,5 +1,11 @@
 # tutothr
 
+## Start Project
+- cp .env.dummy .env
+- refill variables
+- export $(grep -v '^#' .env | xargs)
+- click play in your IDE
+
 ## Paths:
 
 ### Category:
