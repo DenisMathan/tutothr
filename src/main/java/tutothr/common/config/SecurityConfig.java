@@ -13,14 +13,16 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import tutothr.auth.CustomOAuth2SuccessHandler;
 import tutothr.auth.CustomOidcUserService;
+
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     public static final String[] PUBLIC_ENDPOINTS = {
-            "/tutor/all", "/resources/**", "/api/**", "/api/workshops/**", "/webjars/**", "/h2-console/**", "/login",
+            "/admin/all", "/resources/**", "/css/**", "/api/**", "/api/workshops/**", "/webjars/**", "/h2-console/**", "/login",
             "/register", "/logout", "/404"
     };
     @Autowired
@@ -40,19 +42,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/h2-console/**"));
-
         http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers(PUBLIC_ENDPOINTS).permitAll() // "/resources/**", "/api/**",
-                                                               // "/api/workshops/**","/webjars/**", "/h2-console/**",
-                                                               // "/login", "/register", "/logout", "/404",
-                                                               // "/all").permitAll()
+                .requestMatchers(PUBLIC_ENDPOINTS).permitAll() 
                 .requestMatchers("/home", "/student").authenticated()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/tutor/**").hasRole("TUTOR")
                 .requestMatchers("/registration/**").hasAuthority("REGISTRATION")
                 .anyRequest().authenticated());
 
+        //regular Login form
         http.formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login") // POST /login wird verarbeitet
@@ -61,6 +60,7 @@ public class SecurityConfig {
                 .failureUrl("/login?error") // bei Fehler
                 .permitAll());
 
+        // OAuth2 Login (Google)
         http.oauth2Login(oauth2 -> oauth2
                 .loginPage("/login")
                 .userInfoEndpoint(userInfo -> userInfo
@@ -70,7 +70,7 @@ public class SecurityConfig {
                 .failureHandler((request, response, exception) -> {
                     response.sendRedirect("/login?error");
                 }));
-
+        // Logout Konfiguration
         http.logout(logout -> logout
                 .logoutUrl("/logout") // default
                 .logoutSuccessUrl("/login?logout") // Ziel nach Logout
@@ -78,7 +78,8 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIONID")
                 .permitAll());
 
-        // http.exceptionHandling(ex -> ex.accessDeniedPage("/403"));
+        // to Check if User needs to be redirected somehow
+        http.addFilterAfter(new RedirectCheckFilter(), AnonymousAuthenticationFilter.class);
 
         return http.build();
     }
