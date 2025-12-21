@@ -15,45 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-class RegistrationForm {
-    private String username;
-    private String email;
-    private String password;
-    private String confirmPassword;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
-}
+import jakarta.validation.Valid;
+import tutothr.auth.dtos.RegisterUserDTO;
 
 @Controller
 public class AuthenticationController {
@@ -70,21 +33,23 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public String registerNewUser(@ModelAttribute("registrationForm") RegisterUserDTO form,
-            BindingResult bindingResult,
-            HttpServletRequest request,
-            HttpServletResponse response) {
-        System.out.println("Registering user: " + form.getEmail());
+    public String registerNewUser(@ModelAttribute("registrationForm") @Valid RegisterUserDTO form, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
+
+        if (!authService.confirmPasswords(form)) {
+            bindingResult.rejectValue("confirmPassword", "error.confirmPassword", "Die Passwörter stimmen nicht überein.");
+        }
 
         if (bindingResult.hasErrors()) {
+            // Transfer errors to DTO so form.html can display them
+            bindingResult.getFieldErrors().forEach(error -> 
+                form.addValidationError(error.getField(), error.getDefaultMessage())
+            );
+            return "/views/auth/register";
+        }
+        if(!authService.register(form)) {
             return "/views/auth/register";
         }
 
-        if(!authService.register(form)) {
-            return "redirect:/views/auth/register?error";
-        }
-
-        // Optional: Auto-Login
         try {
             UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(form.getEmail(),form.getPassword());
             Authentication auth = authenticationManager.authenticate(authReq);
@@ -95,7 +60,6 @@ public class AuthenticationController {
             System.out.println(ex);
             return "redirect:/login?registered";
         }
-
     }
 
     @GetMapping({ "/register" })
@@ -104,7 +68,11 @@ public class AuthenticationController {
             // bereits angemeldet -> weiterleiten
             return "redirect:/views/home";
         }
-        RegistrationForm form = new RegistrationForm();
+        RegisterUserDTO form = new RegisterUserDTO();
+        form.setEmail("thomi@web.de");
+        form.setUsername("Thomi");
+        form.setPassword("Password123");
+        form.setConfirmPassword("Password123");
 
         model.addAttribute("registrationForm", form);
         // nicht angemeldet -> Registrierungsseite zeigen
@@ -121,7 +89,6 @@ public class AuthenticationController {
         return "/views/auth/login";
     }
     
-
     @GetMapping("/logout")
     public String postMethodName(Authentication auth) {
         if (!alreadyLoggedIn(auth))
@@ -129,5 +96,4 @@ public class AuthenticationController {
 
         return "/views/auth/login";
     }
-
 }

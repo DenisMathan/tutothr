@@ -12,15 +12,15 @@
     <!-- <input th:if="*{id != null}" th:value="*{id}"/>  -->
     <input type="hidden" name="_method" th:if="*{id != null}" value="put" />
     <input type="hidden" name="id" th:if="*{id != null}" th:value="*{id}" />
-    <div th:each="field : *{formFields}">
+    <div th:each="field : *{formFields}" style="margin-bottom: 1rem;">
         <input th:if="${field.type == 'hidden'}" type="hidden" th:id="${field.name}" th:name="${field.name}" th:value="*{__${field.name}__}"/>
         <div class="form-group">
             <input type="hidden" name="fields" th:value="${field.name}" />
             <label th:if="${field.type != 'hidden'}" th:for="${field.name}" th:text="${field.label}"></label>
-            <input th:if="${field.type == 'text' or field.type == 'number'}" step="any" class="form-control" th:type="${field.type}" th:id="${field.name}" th:name="${field.name}" th:value="*{__${field.name}__}" />
+            <input th:if="${field.type == 'text' or field.type == 'number' or field.type == 'password'}" step="any" class="form-control" th:type="${field.type}" th:id="${field.name}" th:name="${field.name}" th:value="*{__${field.name}__}" />
             <textarea th:if="${field.type == 'textarea'}" class="form-control" th:id="${field.name}" th:name="${field.name}" th:text="*{__${field.name}__}"></textarea>
             <span th:if="${object.hasValidationError(field.name)}" th:text="${object.getValidationError(field.name)}" class="form-error"></span>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary">Speichern</button>
+    <button type="submit" class="btn btn-primary w-100" th:text="${object.submitLabel}">Speichern</button>
 </form>

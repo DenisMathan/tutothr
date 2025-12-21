@@ -14,7 +14,8 @@
 </head>
 <body>
 <div class="container d-flex justify-content-center">
-    <div class="card card-register shadow-sm">
+    <div class="card card-register shadow-sm bg-body rounded" style="width: 100%; padding: 2rem;">
+
         <div class="card-body p-4">
             <h3 class="card-title mb-3 text-center">Neues Konto erstellen</h3>
             <div th:if="${param.success}" class="alert alert-success" role="alert">
@@ -24,7 +25,9 @@
                 Registrierung fehlgeschlagen. Prüfe die Eingaben.
             </div>
 
-            <form th:action="@{/register}" th:object="${registrationForm}" method="post" id="registerForm" novalidate>
+            <!-- <div th:replace="fragments/forms/form :: form(object=${registrationForm}, action=@{/register})"></div> -->
+            <div th:replace="~{fragments/forms/form :: form(object=${registrationForm}, action=@{/register})}"></div>
+            <!-- <form th:action="@{/register}" th:object="${registrationForm}" method="post" id="registerForm" novalidate>
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
                 <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger" role="alert">
@@ -67,9 +70,7 @@
                 <div class="d-grid gap-2">
                     <button id="submitBtn" type="submit" class="btn btn-primary">Registrieren</button>
                 </div>
-            </form>
-
-            <hr/>
+            </form> -->
             <p class="small text-center mb-0">
                 Schon ein Konto? <a th:href="@{/login}">Anmelden</a>
             </p>

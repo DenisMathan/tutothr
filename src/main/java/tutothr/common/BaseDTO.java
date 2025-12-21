@@ -11,8 +11,16 @@ public class BaseDTO implements DTOI {
     private Long id;
     private Map<String, String> validationErrors = new HashMap<>();
     protected List<Field> formFields;
+    private String submitLabel = "Speichern";
     public BaseDTO() {
         initFields();
+    }
+
+    public String getSubmitLabel() {
+        return submitLabel;
+    }
+    public void setSubmitLabel(String submitLabel) {
+        this.submitLabel = submitLabel;
     }
 
     public Long getId() { return id; }
@@ -39,7 +47,6 @@ public class BaseDTO implements DTOI {
 		this.formFields = formFields;
 	}
     public void initFields() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'init'");
     }
 
