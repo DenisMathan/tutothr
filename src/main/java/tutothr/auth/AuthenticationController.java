@@ -79,6 +79,7 @@ public class AuthenticationController {
         }
         LoginUserDTO form = new LoginUserDTO();
         //TODO remove test data
+        // form.setEmail("denis.mathan@gmail.com");
         form.setEmail("denis@email.com");
         form.setPassword("Password123");
         model.addAttribute("loginForm", form);

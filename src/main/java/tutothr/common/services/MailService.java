@@ -51,4 +51,20 @@ public class MailService {
 
         mailSender.send(message);
     }
+
+        public void sendTwoFactorCode(tutothr.user.User user, String code) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("Dein Login-Code für TutOTHr");
+        message.setText("Hallo " + user.getUsername() + ",\n\n" +
+                "dein Bestätigungscode für den Login lautet:\n\n" +
+                code + "\n\n" +
+                "Dieser Code ist für diesen Login-Vorgang gültig.\n" +
+                "Gib ihn bitte nicht weiter.\n\n" +
+                "Viele Grüße,\n" +
+                "Dein TutOTHr-Team");
+
+        mailSender.send(message);
+    }
+
 }

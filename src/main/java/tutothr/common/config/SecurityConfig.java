@@ -15,10 +15,13 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import tutothr.auth.CustomAuthenticationFailureHandler;
+import tutothr.auth.CustomAuthenticationSuccessHandler;
 import tutothr.auth.CustomOAuth2SuccessHandler;
 import tutothr.auth.CustomOidcUserService;
+import tutothr.auth.twoFactorVerification.TwoFactorVerificationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -34,6 +37,8 @@ public class SecurityConfig {
     private CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
     @Autowired
     private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    @Autowired
+    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     SecurityConfig(CustomOAuth2SuccessHandler customOAuth2SuccessHandler ) {
         this.customOAuth2SuccessHandler = customOAuth2SuccessHandler;
@@ -62,7 +67,8 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .loginProcessingUrl("/login") // POST /login wird verarbeitet
                 .usernameParameter("email") // klingt dumm ist aber spring
-                .defaultSuccessUrl("/home", true) // nach Login: SavedRequest oder /home
+                // .defaultSuccessUrl("/home", true) // nach Login: SavedRequest oder /home
+                .successHandler(customAuthenticationSuccessHandler) // bei Erfolg
                 .failureHandler(customAuthenticationFailureHandler) // bei Fehler
                 .permitAll());
 
@@ -82,6 +88,9 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll());
+        
+        // 2FA Filter
+        http.addFilterBefore(new TwoFactorVerificationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         // to Check if User needs to be redirected somehow
         http.addFilterAfter(new RedirectCheckFilter(PUBLIC_ENDPOINTS), AnonymousAuthenticationFilter.class);

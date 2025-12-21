@@ -46,6 +46,8 @@ public class User extends BaseEntity implements Serializable {
 
 	
 	private boolean active = true;
+
+	private boolean twoFactorEnabled = false;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -119,5 +121,12 @@ public class User extends BaseEntity implements Serializable {
 
 	public void setVerified(boolean verified) {
 		this.verified = verified;
+	}
+
+	public boolean isTwoFactorEnabled() {
+		return twoFactorEnabled;
+	}
+	public void setTwoFactorEnabled(boolean twoFactorEnabled) {
+		this.twoFactorEnabled = twoFactorEnabled;
 	}
 }
