@@ -2,12 +2,11 @@ package tutothr.common.utils;
 
 import org.springframework.security.core.Authentication;
 
-import tutothr.auth.CustomOidcUser;
+import tutothr.auth.config.CustomOidcUser;
 import tutothr.user.User;
 
 public class MyUtils {
-    private MyUtils() {
-    } // private constructor to prevent instantiation
+    private MyUtils() {} // private constructor to prevent instantiation
 
     public static boolean isNullOrEmpty(String str) {
         return str == null || str.trim().isEmpty();

@@ -1,7 +1,4 @@
 package tutothr.user;
-
-import java.net.Authenticator;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -9,7 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import tutothr.auth.CustomOidcUser;
+import tutothr.auth.config.CustomOidcUser;
 import tutothr.user.interfaces.UserRepositoryI;
 import tutothr.user.interfaces.UserServiceI;
 

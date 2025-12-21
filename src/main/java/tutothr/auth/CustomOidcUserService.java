@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
+import tutothr.auth.config.CustomOidcUser;
 import tutothr.role.RoleRepositoryI;
 import tutothr.user.User;
 import tutothr.user.interfaces.UserRepositoryI;
@@ -22,21 +23,15 @@ public class CustomOidcUserService extends OidcUserService {
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
-        // Delegiere an den Standard-OidcUserService, um den User zu laden
         OidcUser oidcUser = super.loadUser(userRequest);
-
         String email = oidcUser.getAttribute("email");
-
-        // Prüfen, ob User existiert, sonst anlegen
+        //get or create user
         User _user = userRepository.findByEmailIgnoreCase(email).orElseGet(() -> {
             User user = new User();
             user.setEmail(email);
             user.setActive(true);
-            // Username ist bei Google oft der Name, kann aber auch null sein
-            // if (oidcUser.getAttribute("name") != null) {
-            //     user.setUsername(oidcUser.getAttribute("name"));
-            // }
-            
+            user.setAuthProvider(AuthProvider.GOOGLE); 
+
             roleRepository.findByDescriptionIgnoreCase("STUDENT").ifPresent(role -> {
                 user.getRoles().add(role);
             });

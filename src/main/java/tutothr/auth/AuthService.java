@@ -8,7 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import tutothr.common.config.MyUserDetails;
+
+import tutothr.auth.config.MyUserDetails;
 import tutothr.common.services.MailService;
 import tutothr.role.RoleRepositoryI;
 import tutothr.user.User;
@@ -32,8 +33,13 @@ public class AuthService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		Optional<User> oUser= userRepository.findByEmailIgnoreCase(email);
-		oUser.orElseThrow(()-> new UsernameNotFoundException("Not found "+email));
-		return new MyUserDetails(oUser.get());
+		User user = oUser.orElseThrow(()-> new UsernameNotFoundException("Not found "+email));
+        
+        if (user.getAuthProvider() == AuthProvider.GOOGLE) {
+            throw new UsernameNotFoundException("Please use Google Login for this account.");
+        }
+
+		return new MyUserDetails(user);
 	}
 
     public boolean register(RegisterUserDTO form){
@@ -56,6 +62,7 @@ public class AuthService implements UserDetailsService {
         u.setEmail(form.getEmail());
         u.setPassword(passwordEncoder.encode(form.getPassword()));
         u.setActive(true);
+        u.setAuthProvider(AuthProvider.LOCAL);
 
 
         // Rolle holen und zuweisen (z.B. STUDENT)

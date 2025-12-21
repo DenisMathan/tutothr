@@ -80,7 +80,7 @@ public class CourseController {
             return "/views/courses/course-edit";
         }
         Course courseEntity = courseService.mapToEntity(course);
-        courseEntity.setOwnerId(((tutothr.common.config.MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+        courseEntity.setOwnerId(((tutothr.auth.config.MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
         // Creating a new course
         courseService.save(courseEntity);
         return "redirect:/courses";

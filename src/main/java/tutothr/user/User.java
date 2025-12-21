@@ -3,21 +3,15 @@ package tutothr.user;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import groovyjarjarantlr4.v4.parse.ANTLRParser.id_return;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import tutothr.auth.AuthProvider;
 import tutothr.common.BaseEntity;
 import tutothr.role.Role;
 import jakarta.persistence.JoinColumn;
@@ -26,6 +20,9 @@ import jakarta.persistence.JoinColumn;
 // class EnrolledCourses {
 // @Table(name="")
 // }
+
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 
 @Entity
 @Table(name="user")
@@ -40,6 +37,8 @@ public class User extends BaseEntity implements Serializable {
 	// @GeneratedValue (strategy = GenerationType.IDENTITY)
 	// Long id;
 	
+	@Enumerated(EnumType.STRING)
+	private AuthProvider authProvider;
 
 	private String username;
 	
@@ -72,10 +71,6 @@ public class User extends BaseEntity implements Serializable {
 		this.roles = roles;
 	}
 
-	// public Long getId() {
-	// 	return id;
-	// }
-
 	public String getEmail() {
 		return email;
 	}
@@ -96,10 +91,6 @@ public class User extends BaseEntity implements Serializable {
 		return serialVersionUID;
 	}
 
-	// public void setId(Long id) {
-	// 	this.id = id;
-	// }
-
 	public String getUsername() {
 		return username;
 	}
@@ -114,5 +105,13 @@ public class User extends BaseEntity implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public AuthProvider getAuthProvider() {
+		return authProvider;
+	}
+
+	public void setAuthProvider(AuthProvider authProvider) {
+		this.authProvider = authProvider;
 	}
 }

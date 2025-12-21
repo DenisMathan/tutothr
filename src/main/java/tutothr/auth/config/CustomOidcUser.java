@@ -1,4 +1,4 @@
-package tutothr.auth;
+package tutothr.auth.config;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
@@ -9,7 +9,7 @@ import tutothr.user.User;
 import java.util.Collection;
 import java.util.Map;
 
-public class CustomOidcUser implements OidcUser {
+public class CustomOidcUser implements OidcUser, AppPrincipal {
     private final OidcUser delegate;
     private final User dbUser;
 
@@ -18,6 +18,12 @@ public class CustomOidcUser implements OidcUser {
         this.dbUser = dbUser;
     }
 
+    @Override
+    public Long getId() {
+        return dbUser.getId();
+    }
+
+    @Override
     public User getDbUser() {
         return dbUser;
     }

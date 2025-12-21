@@ -25,6 +25,8 @@ INSERT INTO user (username, password, email, active, created_at, updated_at, cre
 VALUES ('leonard', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'leonard@email', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by)
 VALUES ('markus', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'markus@email', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, auth_provider)
+VALUES ('Denice', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'denis.mathan@googlemail.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, 'GOOGLE');
 
 
 INSERT INTO role (description, type) VALUES ('ADMIN', 'ADMIN');
@@ -40,6 +42,8 @@ INSERT INTO userrole(iduser, idrole) VALUES (1,1);
 INSERT INTO userrole(iduser, idrole) VALUES (2,1);
 INSERT INTO userrole(iduser, idrole) VALUES (3,1);
 INSERT INTO userrole(iduser, idrole) VALUES (3,3);
+INSERT INTO userrole(iduser, idrole) VALUES (14,1);
+INSERT INTO userrole(iduser, idrole) VALUES (14,3);
 
 -- Student is Student
 INSERT INTO userrole(iduser, idrole) VALUES (4,2);

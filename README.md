@@ -34,6 +34,81 @@
 
 - (GET) /views/users/user-all
 
+## Security Config
+
+Das Projekt nutzt **Spring Security 6** mit einer hybriden Authentifizierungsstrategie.
+
+### Features
+*   **Dual Authentication:**
+    *   **Form Login:** Klassisch via E-Mail & Passwort (DB-basiert).
+    *   **OAuth2 / OIDC:** Login via Google.
+*   **Unified Principal:** Egal ob Google oder Form-Login, im Code wird immer gegen das Interface `AppPrincipal` gearbeitet.
+*   **Role-Based Access Control (RBAC):**
+    *   `/admin/**` -> Nur für `ROLE_ADMIN`
+    *   `/tutor/**` -> Nur für `ROLE_TUTOR`
+    *   `/student` -> Authentifizierte User
+*   **Onboarding Flow:** OAuth-User ohne Benutzernamen werden durch einen `UsernameCheckFilter` abgefangen und gezwungen, einen Usernamen zu setzen.
+
+```mermaid
+flowchart TD
+    Start([User Request]) --> AuthCheck{Authenticated?}
+
+    %% Not Authenticated Flow
+    AuthCheck -->|No| LoginPage[Login Page]
+    LoginPage -->|Form Login| AuthService["AuthService<br/>(DB Check)"]
+    LoginPage -->|Google OAuth| OidcService["CustomOidcUserService<br/>(Google Check)"]
+
+    AuthService -->|Success| PrincipalA[MyUserDetails]
+    OidcService -->|Success| PrincipalB[CustomOidcUser]
+
+    %% Unified Flow
+    PrincipalA --> UnifiedPrincipal
+    PrincipalB --> UnifiedPrincipal
+    
+    subgraph SecurityContext
+        UnifiedPrincipal[AppPrincipal Interface]
+    end
+
+    UnifiedPrincipal --> UsernameFilter{Username set?}
+
+    %% Username Check Filter
+    UsernameFilter -->|No| SetUsername["Redirect: /set-username"]
+    SetUsername -->|Input| UpdateUser["Update DB & Context"]
+    UpdateUser --> UsernameFilter
+
+    %% Authorization
+    UsernameFilter -->|Yes| RoleCheck{Has Required Role?}
+    
+    RoleCheck -->|No| Forbidden[403 Forbidden]
+    RoleCheck -->|Yes| Access([Access Granted])
+
+    %% Styling
+    classDef decision fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
+    classDef process fill:#e3f2fd,stroke:#1565c0,stroke-width:2px;
+    classDef success fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    classDef error fill:#ffebee,stroke:#c62828,stroke-width:2px;
+
+    class AuthCheck,UsernameFilter,RoleCheck decision;
+    class LoginPage,AuthService,OidcService,PrincipalA,PrincipalB,UnifiedPrincipal,UpdateUser,SetUsername process;
+    class Access success;
+    class Forbidden error;
+```
+
+### Wichtige Komponenten
+| Klasse | Funktion |
+| :--- | :--- |
+| `SecurityConfig` | Zentrale Konfiguration der FilterChain, Public Endpoints und Login-Handler. |
+| `AppPrincipal` | Gemeinsames Interface für `MyUserDetails` (Form) und `CustomOidcUser` (Google). |
+| `CustomOidcUserService` | Lädt Google-User und erstellt/matcht sie mit der lokalen Datenbank. |
+| `UsernameCheckFilter` | Prüft nach dem Login, ob das Feld `username` gesetzt ist. |
+
+### Environment Variables
+Für OAuth2 müssen folgende Variablen in der `.env` gesetzt sein:
+```properties
+GOOGLE_CLIENT_ID=deine-client-id
+GOOGLE_CLIENT_SECRET=dein-client-secret
+
+
 ## Relations
 
 

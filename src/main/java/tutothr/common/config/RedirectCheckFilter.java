@@ -18,6 +18,7 @@ public class RedirectCheckFilter extends OncePerRequestFilter {
     // Diese Pfade sind immer erlaubt, auch ohne Username (damit CSS, JS und Logout
     // funktionieren)
     private static final List<String> ALLOWED_PATHS = Arrays.asList(
+            "/admin/all",
             "/set-username",
             "/logout",
             "/login",

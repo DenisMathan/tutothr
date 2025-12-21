@@ -1,4 +1,4 @@
-package tutothr.common.config;
+package tutothr.auth.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,10 +11,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import tutothr.role.Role;
 import tutothr.user.User;
 
-public class MyUserDetails implements UserDetails {
+public class MyUserDetails implements UserDetails, AppPrincipal {
 
 	private static final long serialVersionUID = 1L;
 
+	private User user;
 	private String userName;
 	private String password;
 	private String email;
@@ -25,6 +26,7 @@ public class MyUserDetails implements UserDetails {
 
 
 	public MyUserDetails(User user) {
+		this.user = user;
 		this.userName= user.getUsername();
 		this.password= user.getPassword();
 		this.active = user.isActive();
@@ -35,17 +37,17 @@ public class MyUserDetails implements UserDetails {
 		this.authorities = new ArrayList<>();
 
 		for (Role role : roles) {
-			// Nutze description oder type.name() für die Authority
-			String roleName = role.getDescription(); 
-			if (roleName != null && !roleName.isBlank()) {
-				this.authorities.add(new SimpleGrantedAuthority("ROLE_" + roleName.toUpperCase()));
-			}
-			// Falls du auch den Enum-Type nutzen willst:
 			if (role.getType() != null) {
 				this.authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getType().name()));
 			}
 		}
 	}
+
+	@Override
+	public User getDbUser() {
+		return this.user;
+	}
+
 	public String getEmail() {
 		return email;
 	}
