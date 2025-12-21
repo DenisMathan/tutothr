@@ -24,8 +24,8 @@
 <body>
     <div class="container d-flex justify-content-center">
         <div class="card card-register shadow-sm bg-body rounded" style="width: 100%; padding: 2rem;">
-            <div class="card-body p-4">
-                <h3 class="card-title mb-3 text-center">Neues Konto erstellen</h3>
+            <div class="card-body">
+                <h3 class="card-title mb-3">Neues Konto erstellen</h3>
                 <div th:replace="~{fragments/forms/form :: form(object=${registrationForm}, action=@{/register})}">
                 </div>
                 <hr />
