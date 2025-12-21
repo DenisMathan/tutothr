@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,15 +19,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import tutothr.auth.dtos.LoginUserDTO;
 import tutothr.auth.dtos.RegisterUserDTO;
+import tutothr.user.User;
 
 @Controller
 public class AuthenticationController {
     private final AuthService authService;
-    private final AuthenticationManager authenticationManager;
 
-    public AuthenticationController(AuthService authService, AuthenticationManager authenticationManager) {
+    public AuthenticationController(AuthService authService) {
         this.authService = authService;
-        this.authenticationManager = authenticationManager;
+
     }
 
     public boolean alreadyLoggedIn(Authentication auth) {
@@ -47,20 +48,9 @@ public class AuthenticationController {
             );
             return "/views/auth/register";
         }
-        if(!authService.register(form)) {
-            return "/views/auth/register";
-        }
 
-        try {
-            UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(form.getEmail(),form.getPassword());
-            Authentication auth = authenticationManager.authenticate(authReq);
-            SecurityContextHolder.getContext().setAuthentication(auth);
-            request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
-            return "redirect:/home";
-        } catch (Exception ex) {
-            System.out.println(ex);
-            return "redirect:/login?registered";
-        }
+        User user = authService.register(form);
+        return "redirect:/verify/" + user.getId();
     }
 
     @GetMapping({ "/register" })
@@ -75,8 +65,8 @@ public class AuthenticationController {
         form.setUsername("Thomi");
         form.setPassword("Password123");
         form.setConfirmPassword("Password123");
-
         model.addAttribute("registrationForm", form);
+        
         // nicht angemeldet -> Registrierungsseite zeigen
         return "/views/auth/register";
     }
@@ -89,10 +79,9 @@ public class AuthenticationController {
         }
         LoginUserDTO form = new LoginUserDTO();
         //TODO remove test data
-        form.setEmail("Denis@email");
-        form.setPassword("Password");
+        form.setEmail("denis@email.com");
+        form.setPassword("Password123");
         model.addAttribute("loginForm", form);
-        // nicht angemeldet -> Registrierungsseite zeigen
         return "/views/auth/login";
     }
     

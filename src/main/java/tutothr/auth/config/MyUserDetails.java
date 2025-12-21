@@ -88,7 +88,7 @@ public class MyUserDetails implements UserDetails, AppPrincipal {
 
 	@Override
 	public boolean isEnabled() {
-		return this.active;
+		return this.active && user.isVerified();
 	}
 
 }

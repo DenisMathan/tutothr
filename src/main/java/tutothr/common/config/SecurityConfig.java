@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,23 +15,27 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+
+import tutothr.auth.CustomAuthenticationFailureHandler;
 import tutothr.auth.CustomOAuth2SuccessHandler;
 import tutothr.auth.CustomOidcUserService;
-
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     public static final String[] PUBLIC_ENDPOINTS = {
-            "/admin/all", "/resources/**", "/css/**", "/api/**", "/api/workshops/**", "/webjars/**", "/h2-console/**", "/login",
+            "/verify/**", "/admin/all", "/resources/**", "/css/**", "/api/**", "/api/workshops/**", "/webjars/**", "/h2-console/**",
+            "/login",
             "/register", "/logout", "/404"
     };
     @Autowired
     private CustomOidcUserService customOidcUserService;
     @Autowired
     private CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
+    @Autowired
+    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
-    SecurityConfig(CustomOAuth2SuccessHandler customOAuth2SuccessHandler) {
+    SecurityConfig(CustomOAuth2SuccessHandler customOAuth2SuccessHandler ) {
         this.customOAuth2SuccessHandler = customOAuth2SuccessHandler;
     }
 
@@ -46,28 +50,27 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/h2-console/**"));
         http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers(PUBLIC_ENDPOINTS).permitAll() 
+                .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                 .requestMatchers("/home", "/student").authenticated()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/tutor/**").hasRole("TUTOR")
                 .requestMatchers("/registration/**").hasAuthority("REGISTRATION")
                 .anyRequest().authenticated());
 
-        //regular Login form
+        // regular Login form
         http.formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login") // POST /login wird verarbeitet
                 .usernameParameter("email") // klingt dumm ist aber spring
                 .defaultSuccessUrl("/home", true) // nach Login: SavedRequest oder /home
-                .failureUrl("/login?error") // bei Fehler
+                .failureHandler(customAuthenticationFailureHandler) // bei Fehler
                 .permitAll());
 
         // OAuth2 Login (Google)
         http.oauth2Login(oauth2 -> oauth2
                 .loginPage("/login")
                 .userInfoEndpoint(userInfo -> userInfo
-                    .oidcUserService(customOidcUserService)
-                )
+                        .oidcUserService(customOidcUserService))
                 .successHandler(customOAuth2SuccessHandler)
                 .failureHandler((request, response, exception) -> {
                     response.sendRedirect("/login?error");
@@ -81,7 +84,7 @@ public class SecurityConfig {
                 .permitAll());
 
         // to Check if User needs to be redirected somehow
-        http.addFilterAfter(new RedirectCheckFilter(), AnonymousAuthenticationFilter.class);
+        http.addFilterAfter(new RedirectCheckFilter(PUBLIC_ENDPOINTS), AnonymousAuthenticationFilter.class);
 
         return http.build();
     }

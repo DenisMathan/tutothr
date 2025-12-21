@@ -10,30 +10,21 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import tutothr.common.utils.MyUtils;
 
 public class RedirectCheckFilter extends OncePerRequestFilter {
+    private String[] PUBLIC_ENDPOINTS;
 
-    // Diese Pfade sind immer erlaubt, auch ohne Username (damit CSS, JS und Logout
-    // funktionieren)
-    private static final List<String> ALLOWED_PATHS = Arrays.asList(
-            "/admin/all",
-            "/set-username",
-            "/logout",
-            "/login",
-            "/error",
-            "/css/",
-            "/js/",
-            "/image/",
-            "/webjars/",
-            "/favicon.ico");
+    public RedirectCheckFilter(String[] allowedPaths) {
+        this.PUBLIC_ENDPOINTS = allowedPaths;
+
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
         String path = request.getRequestURI();
-        boolean isAllowed = ALLOWED_PATHS.stream().anyMatch(path::startsWith);
+        boolean isAllowed = Arrays.stream(PUBLIC_ENDPOINTS).anyMatch(path::startsWith);
         if (isAllowed) {
             filterChain.doFilter(request, response);
             return;

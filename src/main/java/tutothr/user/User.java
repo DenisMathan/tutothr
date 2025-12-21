@@ -2,8 +2,11 @@ package tutothr.user;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.springframework.security.core.GrantedAuthority;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,10 +19,6 @@ import tutothr.common.BaseEntity;
 import tutothr.role.Role;
 import jakarta.persistence.JoinColumn;
 
-// @Entity
-// class EnrolledCourses {
-// @Table(name="")
-// }
 
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
@@ -33,9 +32,6 @@ public class User extends BaseEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	// @Id
-	// @GeneratedValue (strategy = GenerationType.IDENTITY)
-	// Long id;
 	
 	@Enumerated(EnumType.STRING)
 	private AuthProvider authProvider;
@@ -62,6 +58,8 @@ public class User extends BaseEntity implements Serializable {
 	private String firstName;
 	private String lastName;
 	private String schedule;
+
+	private boolean verified;
 
 	public Set<Role> getRoles() {
 		return roles;
@@ -113,5 +111,13 @@ public class User extends BaseEntity implements Serializable {
 
 	public void setAuthProvider(AuthProvider authProvider) {
 		this.authProvider = authProvider;
+	}
+
+	public boolean isVerified() {
+		return verified;
+	}
+
+	public void setVerified(boolean verified) {
+		this.verified = verified;
 	}
 }

@@ -2,6 +2,7 @@ package tutothr.auth;
 
 import java.util.Optional;
 
+import org.springframework.boot.autoconfigure.security.saml2.Saml2RelyingPartyProperties.AssertingParty.Verification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import tutothr.auth.config.MyUserDetails;
 import tutothr.auth.dtos.RegisterUserDTO;
+import tutothr.auth.verifikation.VerificationService;
+import tutothr.auth.verifikation.VerificationToken;
 import tutothr.common.BaseService;
 import tutothr.common.services.MailService;
 import tutothr.role.RoleRepositoryI;
@@ -24,13 +27,15 @@ public class AuthService extends BaseService<RegisterUserDTO, User> implements U
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
     private final UserMapperI userMapper;
+    private final VerificationService verificationService;
 
-    public AuthService(UserRepositoryI userRepository, RoleRepositoryI roleRepository, PasswordEncoder passwordEncoder, MailService mailService, UserMapperI userMapper) {
+    public AuthService(UserRepositoryI userRepository, RoleRepositoryI roleRepository, PasswordEncoder passwordEncoder, MailService mailService, UserMapperI userMapper, VerificationService verificationService) {
         super(userRepository);
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailService = mailService;
         this.userMapper = userMapper;
+        this.verificationService = verificationService;
     }
 
     public boolean confirmPasswords(RegisterUserDTO form) {
@@ -48,33 +53,35 @@ public class AuthService extends BaseService<RegisterUserDTO, User> implements U
 		return new MyUserDetails(user);
 	}
 
-    public boolean register(RegisterUserDTO form){
+    public User register(RegisterUserDTO form){
 
         // username unique prüfen
         if (((UserRepositoryI) repository).findByEmailIgnoreCase(form.getEmail()).isPresent()) {
             form.addValidationError("email", "Eine Registrierung mit dieser E-Mail-Adresse ist bereits vorhanden.");
-            return false; // oder bessere Fehlermeldung
+            return null; // oder bessere Fehlermeldung
         }
 
         // Benutzer anlegen
 
-        User u = mapToEntity(form);
-        u.setActive(true);
-        u.setAuthProvider(AuthProvider.LOCAL);
-        u.setPassword(passwordEncoder.encode(form.getPassword()));
+        User user = mapToEntity(form);
+        user.setActive(true);
+        user.setAuthProvider(AuthProvider.LOCAL);
+        user.setPassword(passwordEncoder.encode(form.getPassword()));
 
 
         // Rolle holen und zuweisen (z.B. STUDENT)
         roleRepository.findByDescriptionIgnoreCase("STUDENT").ifPresent(r -> {
-            u.getRoles().add(r);
+            user.getRoles().add(r);
         });
-        repository.save(u);
+        User _user = repository.save(user);
         try {
-            mailService.sendRegistrationMail(form.getEmail(), "Welcome to Tutothr", u.getUsername());
+            VerificationToken veri = verificationService.createToken(user);
+            //TODO reactivat email
+            mailService.sendVerificationEmail(user, veri.getToken());
         } catch (Exception e) {
             System.err.println("Failed to send registration email: " + e.getMessage());
         }
-        return true;
+        return _user;
     }
 
     public void login(){}
@@ -87,6 +94,12 @@ public class AuthService extends BaseService<RegisterUserDTO, User> implements U
     @Override
     public User mapToEntity(RegisterUserDTO dto) {
         return userMapper.toEntity(dto);
+    }
+
+    public void checkVerificationStatus(User user) {
+        if (!user.isVerified()) {
+            // throw new IllegalStateException("User email is not verified.");
+        }
     }
     
 }

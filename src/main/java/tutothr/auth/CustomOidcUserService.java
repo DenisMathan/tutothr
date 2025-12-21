@@ -31,7 +31,7 @@ public class CustomOidcUserService extends OidcUserService {
             user.setEmail(email);
             user.setActive(true);
             user.setAuthProvider(AuthProvider.GOOGLE); 
-
+            user.setVerified(true);
             roleRepository.findByDescriptionIgnoreCase("STUDENT").ifPresent(role -> {
                 user.getRoles().add(role);
             });

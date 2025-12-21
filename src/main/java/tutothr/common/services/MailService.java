@@ -1,5 +1,6 @@
 package tutothr.common.services;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 public class MailService {
     @Autowired
     private JavaMailSender mailSender;
+    @Value("${base-url}")
+    private String baseUrl; 
 
   private static final String WELCOME_MESSAGE_TEMPLATE =
     "Herzlich willkommen bei TutOTHr, %s!\n\n" +
@@ -26,6 +29,26 @@ public class MailService {
         message.setTo(to);
         message.setSubject(subject);
         message.setText(String.format(WELCOME_MESSAGE_TEMPLATE, username));
+        mailSender.send(message);
+    }
+    public void sendVerificationEmail(tutothr.user.User user, String token) {
+        String verificationLink = baseUrl + "/verify/token/" + token;
+
+        String mail = System.getenv("MAIL");
+        String mailPw = System.getenv("MAILPW");
+        if(mail == null || mailPw == null) {
+            throw new IllegalStateException("Mail credentials are not set in environment variables.");
+        }
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("E-Mail Verifikation für TutOTHr");
+        message.setText("Hallo " + user.getUsername() + ",\n\n" +
+                "bitte klicke auf den folgenden Link, um deine E-Mail-Adresse zu verifizieren:\n" +
+                verificationLink + "\n\n" +
+                "Falls du dich nicht bei TutOTHr registriert hast, ignoriere diese E-Mail einfach.\n\n" +
+                "Viele Grüße,\n" +
+                "Dein TutOTHr-Team");
+
         mailSender.send(message);
     }
 }
