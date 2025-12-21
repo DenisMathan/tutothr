@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import tutothr.auth.dtos.LoginUserDTO;
 import tutothr.auth.dtos.RegisterUserDTO;
 
 @Controller
@@ -69,6 +70,7 @@ public class AuthenticationController {
             return "redirect:/views/home";
         }
         RegisterUserDTO form = new RegisterUserDTO();
+        //TODO remove test data
         form.setEmail("thomi@web.de");
         form.setUsername("Thomi");
         form.setPassword("Password123");
@@ -80,11 +82,16 @@ public class AuthenticationController {
     }
 
     @GetMapping({ "/login" })
-    public String showLogin(Authentication authentication) {
+    public String showLogin(Authentication authentication, Model model) {
         if (alreadyLoggedIn(authentication)) {
             // bereits angemeldet -> weiterleiten
             return "redirect:/views/home";
         }
+        LoginUserDTO form = new LoginUserDTO();
+        //TODO remove test data
+        form.setEmail("Denis@email");
+        form.setPassword("Password");
+        model.addAttribute("loginForm", form);
         // nicht angemeldet -> Registrierungsseite zeigen
         return "/views/auth/login";
     }

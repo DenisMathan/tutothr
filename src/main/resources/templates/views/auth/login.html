@@ -24,30 +24,7 @@
                 <div th:if="${param.logout}" class="alert alert-success" role="alert">
                     Du wurdest erfolgreich abgemeldet.
                 </div>
-
-                <!-- statische action + Thymeleaf-Fallback -->
-                <form th:action="@{/login}" method="post">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-
-                    <!-- <div class="mb-3">
-                        <label for="username" class="form-label">Benutzername</label>
-                        <input id="username" value="Denis" name="username" type="text" class="form-control" required autofocus />
-                    </div> -->
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input id="email" value="denis@email" name="email" type="text" class="form-control" required autofocus />
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Passwort</label>
-                        <input id="password" value="123456" name="password" type="password" class="form-control" required />
-                    </div>
-
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary">Anmelden</button>
-                    </div>
-                </form>
-
+                <div th:replace="~{fragments/forms/form :: form(object=${loginForm}, action=@{/login})}"></div>
                 <hr />
                 <div>
                     <a th:href="@{/oauth2/authorization/google}" style="height: 2rem; width: 2rem; border-radius: 100%;">
