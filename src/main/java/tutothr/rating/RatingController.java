@@ -1,0 +1,85 @@
+package tutothr.rating;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import tutothr.auth.config.MyUserDetails;
+import tutothr.course.Course;
+import tutothr.course.CourseService;
+import tutothr.user.User;
+
+import jakarta.validation.Valid;
+import tutothr.user.UserService;
+
+@Controller
+public class RatingController {
+
+    @Autowired
+    private CourseService courseService;
+
+    @Autowired
+    private RatingService ratingService;
+
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/courses/{id}/addRating")
+    public String showAddRatingForm(@PathVariable Long id, Model model) {
+        Course course = courseService.findById(id);
+
+        if (course == null) {
+            return "redirect:/courses";
+        }
+
+        model.addAttribute("course", course);
+        model.addAttribute("rating", new Rating());
+
+        return "views/courses/course-add-rating";
+    }
+
+    @PostMapping("/courses/{id}/addRating")
+    public String addRating(
+            @PathVariable Long id,
+            @Valid @ModelAttribute("rating") RatingDTO ratingDTO,
+            BindingResult result,
+            Model model) {
+
+        Course course = courseService.findById(id);
+
+        if (course == null) {
+            return "redirect:/courses";
+        }
+
+        model.addAttribute("course", course);
+
+        if (result.hasErrors()) {
+            return "views/courses/course-add-rating";
+        }
+
+        Long userId = ((MyUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal())
+                .getId();
+
+        User currentUser = userService.getUserById(userId);
+
+        Rating newRating = new Rating();
+        newRating.setStars(ratingDTO.getStars());
+        newRating.setComment(ratingDTO.getComment());
+        newRating.setCourse(course);
+        newRating.setAuthor(currentUser);
+
+        // Rating speichern
+        ratingService.save(newRating);
+
+        System.out.println("Rating saved with ID: " + newRating.getId());
+
+        // Zurück zur Kursseite
+        return "redirect:/courses/" + id;
+    }
+
+
+}

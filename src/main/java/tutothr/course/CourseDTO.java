@@ -61,7 +61,6 @@ public class CourseDTO extends BaseDTO {
     public void setPrice(float price) {
         this.price = price;
     }
-
     public float getRating() {
         return rating;
     }
