@@ -23,7 +23,7 @@ public class Course extends BaseEntity {
     @JoinTable(name = "course_categories", joinColumns = @JoinColumn(name = "id_course"), inverseJoinColumns = @JoinColumn(name = "id_category"))
     private List<Category> categories;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.PERSIST)
     private List<Rating> ratings = new ArrayList<>();
 
 

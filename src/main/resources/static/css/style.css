@@ -1150,3 +1150,164 @@ body {
 .hidden {
     display: none;
 }
+
+/* ========================================
+   FORM STYLES
+   ======================================== */
+.form-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.form-header {
+    margin-bottom: 2rem;
+}
+
+.form-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #e6eef8;
+    margin: 0 0 0.5rem 0;
+}
+
+.form-subtitle {
+    color: var(--muted);
+    font-size: 1.125rem;
+    margin: 0;
+}
+
+.dark-form {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-weight: 500;
+    color: #e6eef8;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.form-input,
+.form-textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #e6eef8;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+    color: var(--muted);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-error {
+    display: block;
+    color: #f87171;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--glass);
+    color: #e6eef8;
+    padding: 0.625rem 1.25rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Star Rating Input */
+.star-rating-input {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 1rem 0;
+}
+
+.star-rating-input input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.star-label {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.star-label svg {
+    fill: rgba(255, 255, 255, 0.1);
+    stroke: rgba(255, 255, 255, 0.2);
+    transition: all 0.2s;
+}
+
+/* Hover effect - highlight hovered star and all stars to the right */
+.star-label:hover svg,
+.star-label:hover ~ .star-label svg {
+    fill: #fbbf24;
+    stroke: #fbbf24;
+    transform: scale(1.1);
+}
+
+/* Selected state - show all stars up to selected */
+.star-rating-input input[type="radio"]:checked ~ .star-label svg {
+    fill: #fbbf24;
+    stroke: #fbbf24;
+}
+
+.rating-hint {
+    font-size: 0.875rem;
+    color: var(--muted);
+    margin: 0.5rem 0 0 0;
+    font-style: italic;
+}

@@ -2,23 +2,36 @@ package tutothr.rating;
 
 import jakarta.persistence.*;
 import tutothr.common.BaseEntity;
+import tutothr.common.models.Field;
 import tutothr.course.Course;
 import tutothr.user.User;
 
+import java.util.List;
+
 @Entity
-@Table(name="rating")
 public class Rating extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+
     private int stars;
     private String comment;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_user")
+    @ManyToOne
+    @JoinColumn(name = "id_user", nullable = false)
     private User author;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_course")
+    @ManyToOne
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
+
+    public Rating() {
+        super();
+        init();
+    }
+
+    public void init() {
+        formFields = List.of(
+                new Field("author", "Autor", "long"),
+                new Field("stars", "Sterne", "int"),
+                new Field("comment", "Kommentar", "textarea")
+        );
+    }
 
     public void update(int stars, String comment) {
         setStars(stars);
