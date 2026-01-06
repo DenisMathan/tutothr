@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}">
+
+  <head>
+    <title>Meine Verfügbarkeiten</title>
+  </head>
+
+  <body>
+    <div layout:fragment="mybody">
+      <h1>Meine Verfügbarkeiten</h1>
+  
+      <!-- Formular für neuen Timeslot -->
+      <div class="card mb-4">
+        <div class="card-header">Neue Verfügbarkeit anlegen</div>
+        <div class="card-body">
+          <form th:object="${newTimeslot}" th:action="@{/tutor/timeslots/create}" method="post">
+            <div class="row">
+              <div class="col-md-3">
+                <label>Datum</label> 
+                <input type="date" th:field="*{date}" class="form-control" required>
+              </div>
+              <div class="col-md-3">
+                <label>Von</label> 
+                <input type="time" th:field="*{startTime}" class="form-control" required>
+              </div>
+              <div class="col-md-3">
+                <label>Bis</label> 
+                <input type="time" th:field="*{endTime}" class="form-control" required>
+              </div>
+              <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary">Anlegen</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+  
+      <!-- Liste der bestehenden Timeslots -->
+      <div class="card">
+        <div class="card-header">Meine Verfügbarkeiten</div>
+        <div class="card-body">
+          <table class="table" th:if="${!timeslots.isEmpty()}">
+            <thead>
+              <tr>
+                <th>Datum</th>
+                <th>Von</th>
+                <th>Bis</th>
+                <th>Status</th>
+                <th>Aktionen</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="slot : ${timeslots}">
+                <td th:text="${slot.date}"></td>
+                <td th:text="${slot.startTime}"></td>
+                <td th:text="${slot.endTime}"></td>
+                <td>
+                  <span th:if="${slot.available}" class="badge bg-success">Verfügbar</span>
+                  <span th:unless="${slot.available}" class="badge bg-secondary">Gebucht</span>
+                </td>
+                <td>
+                  <form th:action="@{/tutor/timeslots/delete/{id}(id=${slot.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">Löschen</button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p th:if="${timeslots.isEmpty()}">Noch keine Verfügbarkeiten angelegt.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

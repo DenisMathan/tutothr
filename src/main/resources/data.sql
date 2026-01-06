@@ -30,7 +30,6 @@ VALUES ('markus', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgR
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, auth_provider, verified, two_factor_enabled)
 VALUES ('Denice', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'denis.mathan@googlemail.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, 'GOOGLE', true, false);
 
-
 INSERT INTO role (description, type) VALUES ('ADMIN', 'ADMIN');
 INSERT INTO role (description, type) VALUES ('STUDENT', 'STUDENT');
 INSERT INTO role (description, type) VALUES ('TUTOR', 'TUTOR');
@@ -68,6 +67,9 @@ INSERT INTO course (title, description, price, rating, owner_id, created_at, upd
 INSERT INTO course (title, description, price, rating, owner_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Calculus I', 'An introduction to differential and integral calculus.', 79.99, 4.4, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO course (title, description, price, rating, owner_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Chemistry Fundamentals', 'Understand the building blocks of matter.', 54.99, 4.5, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO course (title, description, price, rating, owner_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Music Theory 101', 'Learn the basics of music theory and notation.', 44.99, 4.3, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+-- Paul - Fuer Tests
+INSERT INTO course (title, description, price, rating, owner_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES ('Tutor-Testkurs', 'Ein Testkurs', 29.99, 4.0, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 
 
 INSERT INTO course_categories (id_course, id_category) VALUES (1, 1);

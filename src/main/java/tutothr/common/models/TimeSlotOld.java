@@ -13,7 +13,7 @@ import tutothr.common.utils.enums.StatusEnum;
 
 @Entity
 @Table(name="timeslot")
-public class TimeSlot {
+public class TimeSlotOld {
     @Id
 	@GeneratedValue (strategy = GenerationType.IDENTITY)
 	Long id;

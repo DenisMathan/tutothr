@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}">
+
+  <head>
+    <title>Termin buchen</title>
+  </head>
+
+  <body>
+    <div layout:fragment="mybody">
+      <h1 th:text="'Termin buchen: ' + ${course.title}"></h1>
+  
+      <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+  
+      <div th:if="${timeSlots.isEmpty()}" class="alert alert-warning">Aktuell sind keine Termine verfügbar.</div>
+  
+      <form th:if="${!timeSlots.isEmpty()}" th:action="@{/course/{id}/book(id=${course.id})}" method="post">
+        <div class="mb-3">
+          <label for="timeSlotId" class="form-label">Verfügbare Termine</label> 
+          <select name="timeSlotId" id="timeSlotId" class="form-select" required>
+            <option value="">Bitte wählen...</option>
+            <option th:each="slot : ${timeSlots}" 
+              th:value="${slot.id}"
+              th:text="${slot.date} + ', ' + ${slot.startTime} + ' - ' + ${slot.endTime}">
+            </option>
+          </select>
+        </div>
+  
+        <div class="mb-3">
+          <p>
+            <strong>Preis:</strong> 
+            <span th:text="${course.price} + ' €'"></span>
+          </p>
+        </div>
+  
+        <button type="submit" class="btn btn-primary">Jetzt buchen</button>
+        <a th:href="@{/courses}" class="btn btn-secondary">Abbrechen</a>
+      </form>
+    </div>
+  </body>
+</html>

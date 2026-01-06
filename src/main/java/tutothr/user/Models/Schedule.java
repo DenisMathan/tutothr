@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
-import tutothr.common.models.TimeSlot;
+import tutothr.common.models.TimeSlotOld;
 
 @Entity
 @Table(name="schedule")
@@ -21,7 +21,7 @@ public class Schedule {
 	Long id;
     
     //TODO repeating
-    private ArrayList<TimeSlot> vacations;
+    private ArrayList<TimeSlotOld> vacations;
 
     public Long getId() {
         return id;
@@ -29,10 +29,10 @@ public class Schedule {
     public void setId(Long id) {
         this.id = id;
     }
-    public ArrayList<TimeSlot> getVacations() {
+    public ArrayList<TimeSlotOld> getVacations() {
         return vacations;
     }
-    public void setVacations(ArrayList<TimeSlot> vacations) {
+    public void setVacations(ArrayList<TimeSlotOld> vacations) {
         this.vacations = vacations;
     }
 }

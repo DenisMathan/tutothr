@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}">
+
+  <head>
+    <title>Meine Buchungen</title>
+  </head>
+
+  <body>
+    <div layout:fragment="mybody">
+      <h1>Meine Buchungen</h1>
+      
+      <div th:if="${param.success}" class="alert alert-success">Zahlung erfolgreich!</div>
+      <div th:if="${param.error}" class="alert alert-danger">Zahlung fehlgeschlagen.</div>
+      <div th:if="${param.cancelled}" class="alert alert-warning">Zahlung abgebrochen.</div>
+  
+      <div th:if="${bookings.isEmpty()}" class="alert alert-info">Du hast noch keine Buchungen.</div>
+  
+      <table th:if="${!bookings.isEmpty()}" class="table table-striped">
+        <thead>
+          <tr>
+            <th>Kurs</th>
+            <th>Termin</th>
+            <th>Preis</th>
+            <th>Status</th>
+            <th>Aktion</th>
+            <th>Rechnung</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="booking : ${bookings}">
+            <td th:text="${booking.courseName}"></td>
+            <td th:text="${booking.timeSlotDisplay}"></td>
+            <td th:text="${booking.price} + ' €'"></td>
+            <td>
+              <span th:if="${booking.status.name() == 'PENDING'}" class="badge bg-warning">Ausstehend</span> 
+              <span th:if="${booking.status.name() == 'CONFIRMED'}" class="badge bg-success">Bestätigt</span> 
+              <span th:if="${booking.status.name() == 'COMPLETED'}" class="badge bg-info">Abgeschlossen</span> 
+              <span th:if="${booking.status.name() == 'CANCELLED'}" class="badge bg-secondary">Storniert</span>
+            </td>
+            <td>
+              <a th:if="${booking.status.name() == 'PENDING'}" 
+                th:href="@{/booking/{id}/pay(id=${booking.id})}" 
+                class="btn btn-sm btn-success">
+                  Jetzt bezahlen
+              </a>
+            </td>
+            <td>
+              <a th:if="${booking.invoiceId != null}" 
+                th:href="@{/invoice/{id}/download(id=${booking.invoiceId})}" 
+                class="btn btn-sm btn-info">
+                  Download
+              </a>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <script>
+    	setTimeout(function() {
+        	['successAlert', 'errorAlert', 'cancelledAlert'].forEach(function(id) {
+            	var alert = document.getElementById(id);
+            	if (alert) {
+                	alert.style.transition = 'opacity 1s';
+                	alert.style.opacity = '0';
+                	setTimeout(function() { alert.remove(); }, 1000);
+            	}
+        	});
+    	}, 3000);
+	</script>
+  
+  </body>
+</html>

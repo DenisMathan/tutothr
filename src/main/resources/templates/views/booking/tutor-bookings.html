@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}">
+
+  <head>
+    <title>Erhaltene Buchungen</title>
+  </head>
+
+  <body>
+    <div layout:fragment="mybody">
+      <h1>Erhaltene Buchungen</h1>
+  
+      <div th:if="${bookings.isEmpty()}" class="alert alert-info">Noch keine Buchungen erhalten.</div>
+  
+      <table th:if="${!bookings.isEmpty()}" class="table table-striped">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Kurs</th>
+            <th>Termin</th>
+            <th>Preis</th>
+            <th>Status</th>
+            <th>Beleg</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="booking : ${bookings}">
+            <td th:text="${booking.studentName}"></td>
+            <td th:text="${booking.courseName}"></td>
+            <td th:text="${booking.timeSlotDisplay}"></td>
+            <td th:text="${booking.price} + ' €'"></td>
+            <td>
+              <span th:if="${booking.status.name() == 'PENDING'}" class="badge bg-warning">Ausstehend</span> 
+              <span th:if="${booking.status.name() == 'CONFIRMED'}" class="badge bg-success">Bestätigt</span>
+              <span th:if="${booking.status.name() == 'COMPLETED'}" class="badge bg-info">Abgeschlossen</span>
+              <span th:if="${booking.status.name() == 'CANCELLED'}" class="badge bg-secondary">Storniert</span>
+            </td>
+            <td>
+              <a th:if="${booking.invoiceId != null}" 
+                 th:href="@{/tutor/invoice/{id}/download(id=${booking.invoiceId})}" 
+                 class="btn btn-sm btn-info">
+                  Download
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

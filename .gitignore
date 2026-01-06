@@ -38,3 +38,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### PayPal (Client-ID und Client-Secret in application-local.properties) ###
+application-local.properties
