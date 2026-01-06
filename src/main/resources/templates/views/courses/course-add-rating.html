@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+
+<head>
+    <title>Bewertung hinzufügen</title>
+</head>
+
+<section layout:fragment="mybody">
+    <div class="form-container">
+        <div class="form-header">
+            <h2 class="form-title">Bewertung hinzufügen</h2>
+            <p class="form-subtitle" th:if="${course}" th:text="'für: ' + ${course.title}">
+                für: Kurs Titel
+            </p>
+        </div>
+
+        <form th:action="@{/courses/{id}/addRating(id=${course.id})}"
+              th:object="${rating}"
+              method="post"
+              class="dark-form rating-form">
+
+            <!-- Sterne-Bewertung -->
+            <div class="form-group">
+                <label class="form-label">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    Bewertung
+                </label>
+                <div class="star-rating-input">
+                    <input type="radio" id="star5" th:field="*{stars}" value="5" required />
+                    <label for="star5" class="star-label" title="5 Sterne">
+                        <svg width="32" height="32" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </label>
+
+                    <input type="radio" id="star4" th:field="*{stars}" value="4" />
+                    <label for="star4" class="star-label" title="4 Sterne">
+                        <svg width="32" height="32" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </label>
+
+                    <input type="radio" id="star3" th:field="*{stars}" value="3" />
+                    <label for="star3" class="star-label" title="3 Sterne">
+                        <svg width="32" height="32" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </label>
+
+                    <input type="radio" id="star2" th:field="*{stars}" value="2" />
+                    <label for="star2" class="star-label" title="2 Sterne">
+                        <svg width="32" height="32" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </label>
+
+                    <input type="radio" id="star1" th:field="*{stars}" value="1" />
+                    <label for="star1" class="star-label" title="1 Stern">
+                        <svg width="32" height="32" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </label>
+                </div>
+                <p class="rating-hint">Klicke auf die Sterne, um deine Bewertung abzugeben</p>
+                <span th:if="${#fields.hasErrors('stars')}"
+                      th:errors="*{stars}"
+                      class="form-error"></span>
+            </div>
+
+            <!-- Kommentar -->
+            <div class="form-group">
+                <label for="comment" class="form-label">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    Kommentar
+                </label>
+                <textarea id="comment"
+                          th:field="*{comment}"
+                          class="form-textarea"
+                          rows="5"
+                          required
+                          placeholder="Teile deine Erfahrungen mit diesem Kurs..."></textarea>
+                <span th:if="${#fields.hasErrors('comment')}"
+                      th:errors="*{comment}"
+                      class="form-error"></span>
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-actions">
+                <a th:href="@{/courses/{id}(id=${course.id})}" class="btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    Abbrechen
+                </a>
+                <button type="submit" class="btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    Bewertung abgeben
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Interactive Star Rating
+        document.addEventListener('DOMContentLoaded', function() {
+            const starLabels = document.querySelectorAll('.star-label');
+            const starInputs = document.querySelectorAll('.star-rating-input input[type="radio"]');
+
+            // Function to update star display
+            function updateStars(rating) {
+                starLabels.forEach((label, index) => {
+                    const svg = label.querySelector('svg');
+                    // Stars are in reverse order (5,4,3,2,1)
+                    const starValue = 5 - index;
+
+                    if (starValue <= rating) {
+                        svg.style.fill = '#fbbf24';
+                        svg.style.stroke = '#fbbf24';
+                    } else {
+                        svg.style.fill = 'rgba(255, 255, 255, 0.1)';
+                        svg.style.stroke = 'rgba(255, 255, 255, 0.2)';
+                    }
+                });
+            }
+
+            // Click handler for stars
+            starLabels.forEach((label, index) => {
+                label.addEventListener('click', function() {
+                    const starValue = 5 - index; // Convert index to star value
+                    const input = document.getElementById('star' + starValue);
+                    if (input) {
+                        input.checked = true;
+                        updateStars(starValue);
+                    }
+                });
+            });
+
+            // Hover effect
+            starLabels.forEach((label, index) => {
+                label.addEventListener('mouseenter', function() {
+                    const starValue = 5 - index;
+                    updateStars(starValue);
+                });
+            });
+
+            // Mouse leave - restore to selected value
+            const starRatingContainer = document.querySelector('.star-rating-input');
+            starRatingContainer.addEventListener('mouseleave', function() {
+                const checkedInput = document.querySelector('.star-rating-input input[type="radio"]:checked');
+                if (checkedInput) {
+                    updateStars(parseInt(checkedInput.value));
+                } else {
+                    updateStars(0);
+                }
+            });
+
+            // Initialize on page load if a value is pre-selected
+            const checkedInput = document.querySelector('.star-rating-input input[type="radio"]:checked');
+            if (checkedInput) {
+                updateStars(parseInt(checkedInput.value));
+            }
+        });
+    </script>
+</section>
+
+</html>

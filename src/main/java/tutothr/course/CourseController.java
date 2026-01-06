@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PutMapping;
+import tutothr.rating.Rating;
+import tutothr.rating.RatingDTO;
 
 @Controller
 public class CourseController {
@@ -41,6 +43,11 @@ public class CourseController {
             return "/error/404"; 
         }
         CourseDTO courseDTO = courseService.mapToDTO(course);
+        double avgRating = course.getRatings().stream()
+                .mapToInt(Rating::getStars)
+                .average()
+                .orElse(0.0);
+        model.addAttribute("avgRating", avgRating);
         model.addAttribute("course", courseDTO);
         return "/views/courses/course";
     }
