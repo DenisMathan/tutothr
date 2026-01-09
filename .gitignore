@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 
 *.env
+.DS_Store
 
 ### VS-Code ###
 .qodo

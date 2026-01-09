@@ -10,18 +10,19 @@ public class MailService {
     @Autowired
     private JavaMailSender mailSender;
     @Value("${base-url}")
-    private String baseUrl; 
+    private String baseUrl;
+    @Value("${spring.mail.username}")
+    private String mail;
+    @Value("${spring.mail.password}")
+    private String mailPw;
 
-  private static final String WELCOME_MESSAGE_TEMPLATE =
-    "Herzlich willkommen bei TutOTHr, %s!\n\n" +
-    "Wir freuen uns sehr, dass du dich registriert hast und Teil unserer Lern-Community wirst.\n" +
-    "Bei Fragen oder Problemen stehen wir dir jederzeit gerne zur Verfügung.\n\n" +
-    "Viel Spaß und Erfolg beim Lernen!\n" +
-    "Dein TutOTHr-Team";
+    private static final String WELCOME_MESSAGE_TEMPLATE = "Herzlich willkommen bei TutOTHr, %s!\n\n" +
+            "Wir freuen uns sehr, dass du dich registriert hast und Teil unserer Lern-Community wirst.\n" +
+            "Bei Fragen oder Problemen stehen wir dir jederzeit gerne zur Verfügung.\n\n" +
+            "Viel Spaß und Erfolg beim Lernen!\n" +
+            "Dein TutOTHr-Team";
 
     public void sendRegistrationMail(String to, String subject, String username) {
-        String mail = System.getenv("MAIL");
-        String mailPw = System.getenv("MAILPW");
         if(mail == null || mailPw == null) {
             throw new IllegalStateException("Mail credentials are not set in environment variables.");
         }
@@ -34,8 +35,6 @@ public class MailService {
     public void sendVerificationEmail(tutothr.user.User user, String token) {
         String verificationLink = baseUrl + "/verify/token/" + token;
 
-        String mail = System.getenv("MAIL");
-        String mailPw = System.getenv("MAILPW");
         if(mail == null || mailPw == null) {
             throw new IllegalStateException("Mail credentials are not set in environment variables.");
         }
@@ -52,7 +51,7 @@ public class MailService {
         mailSender.send(message);
     }
 
-        public void sendTwoFactorCode(tutothr.user.User user, String code) {
+    public void sendTwoFactorCode(tutothr.user.User user, String code) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
         message.setSubject("Dein Login-Code für TutOTHr");
