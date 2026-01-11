@@ -21,6 +21,32 @@ public class RedirectCheckFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+
+        // 1. WebSocket-Verbindungen ignorieren
+        if (path.startsWith("/ws")) {
+            return true;
+        }
+
+        // 2. Statische Ressourcen ignorieren
+        if (path.startsWith("/css") ||
+                path.startsWith("/js") ||
+                path.startsWith("/images") ||
+                path.startsWith("/webjars") ||
+                path.startsWith("/favicon")) {
+            return true;
+        }
+
+        // 3. API-Endpunkte ignorieren
+        if (path.startsWith("/api")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
         String path = request.getRequestURI();

@@ -17,6 +17,7 @@ public class CourseDTO extends BaseDTO {
     String description;
 
     float price;
+    private Long ownerId;
     private List<CategoryDTO> categories;
     
     private List<ChapterDTO> chapters;
@@ -60,6 +61,12 @@ public class CourseDTO extends BaseDTO {
 
     public void setPrice(float price) {
         this.price = price;
+    }
+    public Long getOwnerId() {
+        return ownerId;
+    }
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
     public float getRating() {
         return rating;

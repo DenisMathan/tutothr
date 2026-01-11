@@ -11,23 +11,47 @@ import java.io.IOException;
 public class TwoFactorVerificationFilter extends OncePerRequestFilter {
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+
+        // WICHTIG: WebSocket-Endpoint (/ws) muss ignoriert werden!
+        // Sonst bricht der Handshake wegen Session-Checks oder Redirects ab.
+        if (path.startsWith("/ws")) {
+            return true;
+        }
+
+        // Auch statische Ressourcen explizit ignorieren (Performance)
+        if (path.startsWith("/css") ||
+                path.startsWith("/js") ||
+                path.startsWith("/webjars") ||
+                path.startsWith("/images")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Prüfen, ob in der Session das Flag gesetzt ist
-        Boolean is2faPending = (Boolean) request.getSession().getAttribute("2FA_PENDING");
-        String requestURI = request.getRequestURI();
+        // Kleine Verbesserung: getSession(false) verhindert, dass versehentlich
+        // eine neue Session erstellt wird, wenn noch keine existiert.
+        var session = request.getSession(false);
 
-        // Wenn 2FA aussteht...
-        if (is2faPending != null && is2faPending) {
-            // ...aber der User nicht gerade auf der 2FA-Seite ist oder statische Ressourcen lädt...
-            if (!requestURI.startsWith("/login/verify-2fa") && 
-                !requestURI.startsWith("/css") && 
-                !requestURI.startsWith("/webjars")) {
-                
-                // ...dann zwingen wir ihn zurück zur Eingabe!
-                response.sendRedirect("/login/verify-2fa");
-                return;
+        if (session != null) {
+            Boolean is2faPending = (Boolean) session.getAttribute("2FA_PENDING");
+            String requestURI = request.getRequestURI();
+
+            // Wenn 2FA aussteht...
+            if (Boolean.TRUE.equals(is2faPending)) {
+                // ...aber der User nicht gerade auf der 2FA-Seite ist...
+                if (!requestURI.startsWith("/login/verify-2fa")) {
+
+                    // ...dann zwingen wir ihn zurück zur Eingabe!
+                    response.sendRedirect("/login/verify-2fa");
+                    return;
+                }
             }
         }
 
