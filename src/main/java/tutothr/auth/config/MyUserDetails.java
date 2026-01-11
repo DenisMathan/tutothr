@@ -78,7 +78,7 @@ public class MyUserDetails implements UserDetails, AppPrincipal {
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return user.isAccountNonLocked();
 	}
 
 	@Override

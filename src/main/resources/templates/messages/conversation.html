@@ -64,8 +64,21 @@
                         <p style="color: #e6eef8; margin: 0 0 0.5rem 0; word-wrap: break-word;" th:text="${message.content}">
                             Nachrichtentext
                         </p>
-                        <div style="font-size: 0.75rem; color: #9aa4b2; text-align: right;" th:text="${#temporals.format(message.sentAt, 'HH:mm')}">
-                            12:00
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                            <button th:onclick="'reportMessageModal(' + ${message.id} + ')'"
+                                    type="button"
+                                    class="report-button"
+                                    style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.75rem; padding: 0; opacity: 0.6; display: flex; align-items: center; gap: 4px; transition: opacity 0.2s;"
+                                    title="Nachricht melden">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                                    <line x1="4" y1="22" x2="4" y2="15"></line>
+                                </svg>
+                                Melden
+                            </button>
+                            <div style="font-size: 0.75rem; color: #9aa4b2; text-align: right;" th:text="${#temporals.format(message.sentAt, 'HH:mm')}">
+                                12:00
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -118,6 +131,82 @@
 
     </div>
 
+    <!-- Report Modal -->
+    <div id="report-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center;">
+        <div style="background: linear-gradient(135deg, #0f1724 0%, #0b1220 100%); border: 1px solid rgba(124, 58, 237, 0.2); border-radius: 16px; max-width: 520px; width: 90%; padding: 0; box-shadow: 0 20px 60px rgba(0,0,0,0.6); animation: modalSlideIn 0.3s ease-out;">
+
+            <!-- Modal Header -->
+            <div style="padding: 2rem 2rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                    <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; padding: 0.75rem; display: flex; align-items: center; justify-content: center;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+                            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                            <line x1="4" y1="22" x2="4" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h3 style="margin: 0; color: #e6eef8; font-size: 1.5rem; font-weight: 700;">Nachricht melden</h3>
+                </div>
+                <p style="color: #9aa4b2; margin: 0; font-size: 0.9375rem;">
+                    Hilf uns, die Community sicher zu halten
+                </p>
+            </div>
+
+            <!-- Modal Body -->
+            <div style="padding: 2rem;">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="color: #e6eef8; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; display: block;">
+                        Was ist das Problem?
+                    </label>
+                    <select id="report-category" class="form-input" style="width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.1); color: #e6eef8; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9375rem;">
+                        <option value="" style="background: #0b1220;">Kategorie wählen...</option>
+                        <option value="Spam" style="background: #0b1220;">Spam</option>
+                        <option value="Beleidigung" style="background: #0b1220;">Beleidigung / Hassrede</option>
+                        <option value="Unangemessener Inhalt" style="background: #0b1220;">Unangemessener Inhalt</option>
+                        <option value="Betrug" style="background: #0b1220;">Betrug / Scam</option>
+                        <option value="Belästigung" style="background: #0b1220;">Belästigung</option>
+                        <option value="Sonstiges" style="background: #0b1220;">Sonstiges</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 0;">
+                    <label style="color: #e6eef8; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; display: block;">
+                        Zusätzliche Details <span style="color: #9aa4b2; font-weight: 400;">(optional)</span>
+                    </label>
+                    <textarea id="report-details"
+                              class="form-input"
+                              rows="4"
+                              placeholder="Beschreibe das Problem genauer, damit wir besser helfen können..."
+                              style="width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.1); color: #e6eef8; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9375rem; resize: vertical; min-height: 100px;"></textarea>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div style="padding: 1.5rem 2rem 2rem; border-top: 1px solid rgba(255,255,255,0.06); display: flex; gap: 1rem; justify-content: flex-end;">
+                <button onclick="closeReportModal()"
+                        class="btn-secondary"
+                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); color: #9aa4b2; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.08)'"
+                        onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+                    Abbrechen
+                </button>
+                <button onclick="submitReport()"
+                        class="btn-primary"
+                        style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: 1px solid rgba(239, 68, 68, 0.3); color: white; padding: 0.75rem 2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);"
+                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(239, 68, 68, 0.4)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(239, 68, 68, 0.3)'">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                        <line x1="4" y1="22" x2="4" y2="15"></line>
+                    </svg>
+                    Meldung absenden
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000;"></div>
+
     <!-- WEBSOCKET SCRIPT -->
     <script th:inline="javascript">
         // Thymeleaf variables
@@ -127,14 +216,13 @@
 
         let stompClient = null;
         let typingTimeout = null;
+        let currentReportMessageId = null;
 
         let messageSubscription = null;
         let typingSubscription = null;
         let readSubscription = null;
 
-
         function connect() {
-            // Falls bereits verbunden, erst trennen (verhindert Zombie-Verbindungen)
             if (stompClient !== null && stompClient.connected) {
                 stompClient.disconnect();
             }
@@ -144,8 +232,7 @@
             });
 
             stompClient = Stomp.over(socket);
-            // Debug-Ausgaben deaktivieren, falls sie stören
-            // stompClient.debug = null;
+            stompClient.debug = null;
 
             stompClient.connect({}, onConnected, onError);
         }
@@ -153,26 +240,21 @@
         function onConnected() {
             console.log('WebSocket verbunden!');
 
-            // WICHTIG: Alte Subscriptions löschen, bevor neue erstellt werden!
             if (messageSubscription) messageSubscription.unsubscribe();
             if (typingSubscription) typingSubscription.unsubscribe();
             if (readSubscription) readSubscription.unsubscribe();
 
-            // Neu abonnieren und Referenzen speichern
             messageSubscription = stompClient.subscribe('/user/queue/messages', onMessageReceived);
             typingSubscription = stompClient.subscribe('/user/queue/typing', onTypingReceived);
             readSubscription = stompClient.subscribe('/user/queue/read', onReadReceived);
 
-            // Initial lesen markieren
             sendReadNotification();
         }
 
         function onError(error) {
-            console.error('WebSocket Verbindungsfehler:', error);
-            // Retry nach 5 Sekunden
+            console.log('WebSocket Fehler: ', error);
             setTimeout(connect, 5000);
         }
-
 
         function sendMessage(event) {
             event.preventDefault();
@@ -180,96 +262,52 @@
             const messageInput = document.getElementById('message-input');
             const content = messageInput.value.trim();
 
-            if (content && stompClient) {
-                const chatMessage = {
-                    receiverId: otherUserId,
-                    content: content,
-                    courseId: null
-                };
+            if (!content || content.length < 1) return;
 
-                // Nur senden. NICHT lokal hinzufügen (das macht onMessageReceived)
-                stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
+            const msg = {
+                recipientId: otherUserId,
+                content: content
+            };
 
+            if (stompClient && stompClient.connected) {
+                stompClient.send("/app/chat", {}, JSON.stringify(msg));
                 messageInput.value = '';
+            } else {
+                showToast('Verbindung unterbrochen. Versuche erneut...', 'error');
+                connect();
             }
         }
-
 
         function onMessageReceived(payload) {
             const message = JSON.parse(payload.body);
 
-            // Double-Check: Verhindern, dass Nachricht doppelt eingefügt wird (falls ID vorhanden)
-            // Prüfen, ob eine Nachricht mit dieser ID schon im DOM ist
-            if (message.id && document.querySelector(`.message-bubble[data-message-id="${message.id}"]`)) {
-                return; // Nachricht existiert schon -> Abbrechen
-            }
+            if (message.senderId === otherUserId || message.senderId === currentUserId) {
+                const container = document.getElementById('messages-container');
+                const noMessages = document.getElementById('no-messages');
+                if (noMessages) noMessages.remove();
 
-            // Entferne "Keine Nachrichten" Placeholder
-            const noMessages = document.getElementById('no-messages');
-            if (noMessages) {
-                noMessages.remove();
-            }
-
-            // Füge Nachricht hinzu
-            const container = document.getElementById('messages-container');
-            const messageBubbleHTML = createMessageBubble(message);
-
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = messageBubbleHTML;
-            const newElement = tempDiv.firstElementChild;
-
-            // Neue ID sicher als Zahl parsen
-            const newMsgId = Number(message.id);
-
-            const allMessages = Array.from(container.querySelectorAll('.message-bubble'));
-            let inserted = false;
-
-            // Rückwärts suchen
-            for (let i = allMessages.length - 1; i >= 0; i--) {
-                const existingRow = allMessages[i];
-
-                // Dataset ist der moderne Weg, data-message-id zu lesen
-                // Fallback auf getAttribute für ältere Browser
-                const rawId = existingRow.dataset.messageId || existingRow.getAttribute('data-message-id');
-                const existingId = Number(rawId);
-
-                // DEBUGGING: Falls die Reihenfolge komisch ist, schau in die Konsole (F12)
-                // console.log(`Vergleiche: Alt(${existingId}) < Neu(${newMsgId}) ?`, existingId < newMsgId);
-
-                if (!isNaN(existingId) && existingId < newMsgId) {
-                    existingRow.insertAdjacentElement('afterend', newElement);
-                    inserted = true;
-                    break;
+                const existingMsg = container.querySelector(`[data-message-id="${message.id}"]`);
+                if (!existingMsg) {
+                    container.insertAdjacentHTML('beforeend', createMessageBubble(message));
+                    container.scrollTop = container.scrollHeight;
                 }
-            }
 
-            // Wenn keine ältere Nachricht gefunden wurde (oder Liste leer), ab nach oben
-            if (!inserted) {
-                container.insertAdjacentElement('afterbegin', newElement);
-            }
-
-            // Scroll zu neuester Nachricht
-            container.scrollTop = container.scrollHeight;
-
-            // Wenn Nachricht vom anderen User, markiere als gelesen
-            if (message.senderId === otherUserId) {
-                sendReadNotification();
+                if (message.senderId === otherUserId) {
+                    sendReadNotification();
+                }
             }
         }
 
         function createMessageBubble(message) {
             const isFromMe = message.senderId === currentUserId;
-            // Fallback für Zeit, falls sentAt null ist (beim direkten Senden manchmal der Fall)
             const dateObj = message.sentAt ? new Date(message.sentAt) : new Date();
             const time = dateObj.toLocaleTimeString('de-DE', {
                 hour: '2-digit',
                 minute: '2-digit'
             });
 
-            // HTML Escape für Sicherheit
             const safeContent = escapeHtml(message.content);
             const safeSender = escapeHtml(message.senderName || 'User');
-            // Nutze ID wenn vorhanden, sonst Timestamp als Fallback für Duplikat-Check
             const msgId = message.id || ('temp-' + Date.now());
 
             if (isFromMe) {
@@ -287,17 +325,27 @@
                         <div style="max-width: 70%; background: rgba(124, 58, 237, 0.1); border: 1px solid rgba(124, 58, 237, 0.2); border-radius: 12px 12px 12px 4px; padding: 1rem;">
                             <div style="font-size: 0.75rem; color: #7c3aed; font-weight: 600; margin-bottom: 0.5rem;">${safeSender}</div>
                             <p style="color: #e6eef8; margin: 0 0 0.5rem 0; word-wrap: break-word;">${safeContent}</p>
-                            <div style="font-size: 0.75rem; color: #9aa4b2; text-align: right;">${time}</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                                <button onclick="reportMessageModal(${message.id})" class="report-button"
+                                        style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.75rem; padding: 0; opacity: 0.6; display: flex; align-items: center; gap: 4px; transition: opacity 0.2s;"
+                                        title="Nachricht melden">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                                        <line x1="4" y1="22" x2="4" y2="15"></line>
+                                    </svg>
+                                    Melden
+                                </button>
+                                <div style="font-size: 0.75rem; color: #9aa4b2;">${time}</div>
+                            </div>
                         </div>
                     </div>
                 `;
             }
         }
 
-
         function onTyping() {
             if (stompClient) {
-                stompClient.send("/app/typing", {}, JSON.stringify({ receiverId: otherUserId }));
+                stompClient.send("/app/typing", {}, JSON.stringify({ recipientId: otherUserId }));
             }
         }
 
@@ -325,13 +373,92 @@
             console.log('Nachricht wurde gelesen');
         }
 
+        // Report Modal Functions
+        function reportMessageModal(messageId) {
+            currentReportMessageId = messageId;
+            const modal = document.getElementById('report-modal');
+            modal.style.display = 'flex';
+            document.getElementById('report-category').value = '';
+            document.getElementById('report-details').value = '';
+        }
+
+        function closeReportModal() {
+            const modal = document.getElementById('report-modal');
+            modal.style.display = 'none';
+            currentReportMessageId = null;
+        }
+
+        function submitReport() {
+            const category = document.getElementById('report-category').value;
+            const details = document.getElementById('report-details').value;
+
+            if (!category) {
+                showToast('Bitte wähle eine Kategorie aus', 'error');
+                return;
+            }
+
+            const reason = details ? `${category}: ${details}` : category;
+
+            // CSRF
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+            const headers = {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            };
+            if (csrfToken && csrfHeader) {
+                headers[csrfHeader] = csrfToken;
+            }
+
+            fetch(`/messages/${currentReportMessageId}/report`, {
+                method: 'POST',
+                headers: headers,
+                body: `reason=${encodeURIComponent(reason)}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    closeReportModal();
+                    if (data.status === 'success') {
+                        showToast(data.message, 'success');
+                    } else {
+                        showToast(data.message || 'Ein Fehler ist aufgetreten', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    closeReportModal();
+                    showToast('Ein Fehler ist aufgetreten', 'error');
+                });
+        }
+
+        function showToast(message, type) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = `
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                margin-bottom: 0.5rem;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                animation: slideInRight 0.3s;
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
         function escapeHtml(text) {
             if (!text) return "";
             const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
             return text.replace(/[&<>"']/g, m => map[m]);
         }
 
-
+        // Event Listeners
         document.getElementById('message-form').addEventListener('submit', sendMessage);
 
         const messageInput = document.getElementById('message-input');
@@ -342,6 +469,16 @@
                 onTyping();
                 lastTypingTime = now;
             }
+        });
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeReportModal();
+        });
+
+        // Close modal on outside click
+        document.getElementById('report-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'report-modal') closeReportModal();
         });
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -365,6 +502,39 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
             }
         }
 
@@ -393,6 +563,37 @@
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
+        }
+
+        .report-button:hover {
+            opacity: 1 !important;
+        }
+
+        /* Report Modal Scrollbar */
+        #report-details::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #report-details::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.02);
+            border-radius: 3px;
+        }
+
+        #report-details::-webkit-scrollbar-thumb {
+            background: rgba(124, 58, 237, 0.3);
+            border-radius: 3px;
+        }
+
+        #report-details::-webkit-scrollbar-thumb:hover {
+            background: rgba(124, 58, 237, 0.5);
+        }
+
+        /* Form Input Focus States */
+        #report-category:focus,
+        #report-details:focus {
+            outline: none;
+            border-color: rgba(124, 58, 237, 0.5);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
         }
     </style>
 </section>

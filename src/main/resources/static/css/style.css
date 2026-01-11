@@ -44,7 +44,7 @@ body {
    ======================================== */
 .navbar404 {
     background: linear-gradient(180deg, rgba(124, 58, 237, 0.12), transparent),
-        linear-gradient(180deg, #071028 0%, var(--bg) 60%);
+    linear-gradient(180deg, #071028 0%, var(--bg) 60%);
     color: #e6eef8;
     box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
@@ -227,7 +227,7 @@ body {
    ======================================== */
 .footer {
     background: linear-gradient(180deg, rgba(124, 58, 237, 0.12), transparent),
-        linear-gradient(180deg, #071028 0%, var(--bg) 60%);
+    linear-gradient(180deg, #071028 0%, var(--bg) 60%);
     color: #e6eef8;
     box-shadow: 0 -8px 30px rgba(2, 6, 23, 0.6);
     display: flex;
@@ -1310,4 +1310,195 @@ body {
     color: var(--muted);
     margin: 0.5rem 0 0 0;
     font-style: italic;
+}
+/* ========================================
+   MESSAGES & CONVERSATIONS
+   ======================================== */
+
+/* Conversation Card Hover Effects */
+.conversation-card {
+    transition: all 0.2s;
+}
+
+.conversation-card:hover {
+    background: #0f1724 !important;
+    border-color: rgba(124, 58, 237, 0.3) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(2, 6, 23, 0.4);
+}
+
+.conversation-unread {
+    border-color: rgba(124, 58, 237, 0.3) !important;
+}
+
+/* Messages Container Scrollbar */
+#messages-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+#messages-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
+}
+
+#messages-container::-webkit-scrollbar-thumb {
+    background: rgba(124, 58, 237, 0.3);
+    border-radius: 4px;
+}
+
+#messages-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(124, 58, 237, 0.5);
+}
+
+/* Typing Indicator Animation */
+#typing-indicator {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ========================================
+   MODERATION & REPORTS
+   ======================================== */
+
+/* Report Button */
+.report-button {
+    transition: opacity 0.2s;
+}
+
+.report-button:hover {
+    opacity: 1 !important;
+}
+
+/* Report Modal Animation */
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Report Details Textarea Scrollbar */
+#report-details::-webkit-scrollbar {
+    width: 6px;
+}
+
+#report-details::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 3px;
+}
+
+#report-details::-webkit-scrollbar-thumb {
+    background: rgba(124, 58, 237, 0.3);
+    border-radius: 3px;
+}
+
+#report-details::-webkit-scrollbar-thumb:hover {
+    background: rgba(124, 58, 237, 0.5);
+}
+
+/* Form Input Focus States */
+#report-category:focus,
+#report-details:focus {
+    outline: none;
+    border-color: rgba(124, 58, 237, 0.5);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+/* Report Card Hover Effect */
+.report-card {
+    transition: all 0.2s;
+}
+
+.report-card:hover {
+    border-color: rgba(124, 58, 237, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(2, 6, 23, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Report Card Message Content Scrollbar */
+.report-card > div:nth-child(2) > div:last-child {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(124, 58, 237, 0.3) rgba(255, 255, 255, 0.02);
+}
+
+.report-card > div:nth-child(2) > div:last-child::-webkit-scrollbar {
+    width: 6px;
+}
+
+.report-card > div:nth-child(2) > div:last-child::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 3px;
+}
+
+.report-card > div:nth-child(2) > div:last-child::-webkit-scrollbar-thumb {
+    background: rgba(124, 58, 237, 0.3);
+    border-radius: 3px;
+}
+
+.report-card > div:nth-child(2) > div:last-child::-webkit-scrollbar-thumb:hover {
+    background: rgba(124, 58, 237, 0.5);
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+/* Slide In Animation */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slide In Right (Toast Notifications) */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Slide Out Right (Toast Notifications) */
+@keyframes slideOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+}
+
+/* Message Bubble Animation */
+.message-bubble {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Stack report card content vertically on mobile */
+    .report-card > div:nth-child(2) {
+        grid-template-columns: 1fr !important;
+    }
 }

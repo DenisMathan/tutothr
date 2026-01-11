@@ -63,6 +63,10 @@ public class User extends BaseEntity implements Serializable {
 
 	private boolean verified;
 
+	private int strikes = 0;
+	private boolean accountNonLocked = true;
+
+
 	public Set<Role> getRoles() {
 		return roles;
 	}
@@ -128,5 +132,15 @@ public class User extends BaseEntity implements Serializable {
 	}
 	public void setTwoFactorEnabled(boolean twoFactorEnabled) {
 		this.twoFactorEnabled = twoFactorEnabled;
+	}
+
+	public int getStrikes() { return strikes; }
+	public void setStrikes(int strikes) { this.strikes = strikes; }
+
+	public boolean isAccountNonLocked() {
+		return accountNonLocked;
+	}
+	public void setAccountNonLocked(boolean accountNonLocked) {
+		this.accountNonLocked = accountNonLocked;
 	}
 }
