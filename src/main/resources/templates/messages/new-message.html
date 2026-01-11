@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+<head>
+    <title>Nachricht schreiben</title>
+</head>
+
+<section layout:fragment="mybody">
+    <div class="form-container" style="max-width: 600px; margin: 2rem auto;">
+
+        <div class="form-header">
+            <h2 class="form-title">Nachricht schreiben</h2>
+            <p class="form-subtitle" th:if="${recipient}">
+                An: <strong th:text="${recipient.username}">User Name</strong>
+            </p>
+            <p class="form-subtitle" th:if="${course}" style="color: #9aa4b2;">
+                Bezüglich: <span th:text="${course.title}">Kurs</span>
+            </p>
+        </div>
+
+        <form th:action="@{/messages/send}" method="post" class="dark-form">
+
+            <input type="hidden" name="recipientId" th:value="${recipient.id}" />
+            <input type="hidden" name="courseId" th:value="${course?.id}" th:if="${course}" />
+
+            <div class="form-group">
+                <label class="form-label" for="content">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    Nachricht
+                </label>
+                <textarea
+                        id="content"
+                        name="content"
+                        class="form-input"
+                        rows="8"
+                        placeholder="Schreibe deine Nachricht..."
+                        required
+                        minlength="10"
+                        maxlength="1000"></textarea>
+                <small style="color: #9aa4b2; font-size: 0.875rem;">
+                    Mindestens 10 Zeichen
+                </small>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/courses/{id}(id=${course?.id})}" class="btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    Abbrechen
+                </a>
+                <button type="submit" class="btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"/>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                    Nachricht senden
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</section>
+</html>

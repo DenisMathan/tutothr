@@ -52,7 +52,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/h2-console/**"));
+        http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/h2-console/**", "/ws/**"));
         http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
