@@ -1,174 +1,56 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
-<head>
-    <title>Moderation</title>
-</head>
+<head><title>Moderation</title></head>
 <section layout:fragment="mybody">
     <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 2rem 1rem;">
 
-        <div class="form-header" style="margin-bottom: 2rem;">
-            <h2 class="form-title" style="display: flex; align-items: center; gap: 0.75rem;">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                    <line x1="12" y1="9" x2="12" y2="13"/>
-                    <line x1="12" y1="17" x2="12.01" y2="17"/>
-                </svg>
-                Moderation
-            </h2>
-            <p class="form-subtitle">
-                Überprüfe gemeldete Nachrichten und verwalte User-Strikes
-            </p>
-        </div>
-
-        <div th:if="${successMessage}" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
-            <span style="color: #10b981;" th:text="${successMessage}"></span>
-        </div>
-
-        <div th:if="${errorMessage}" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="15" y1="9" x2="9" y2="15"/>
-                <line x1="9" y1="9" x2="15" y2="15"/>
-            </svg>
-            <span style="color: #ef4444;" th:text="${errorMessage}"></span>
-        </div>
-
-        <div style="background: #0b1220; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <div th:if="${pendingCount > 0}" style="flex: 1;">
-                    <div style="font-size: 2rem; font-weight: 700; color: #7c3aed;" th:text="${pendingCount}">0</div>
-                    <div style="color: #9aa4b2; font-size: 0.875rem;">Offene Meldung(en)</div>
-                </div>
-                <div th:if="${pendingCount == 0}" style="flex: 1; display: flex; align-items: center; gap: 0.75rem;">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                        <polyline points="22 4 12 14.01 9 11.01"/>
-                    </svg>
-                    <div>
-                        <div style="font-weight: 600; color: #10b981;">Alles erledigt!</div>
-                        <div style="color: #9aa4b2; font-size: 0.875rem;">Keine offenen Meldungen</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div th:if="${pendingCount > 0}" style="display: grid; gap: 1.5rem;">
-            <div th:each="report : ${reports}"
-                 class="report-card"
-                 style="background: #0b1220; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 1.5rem;">
+            <div th:each="report : ${reports}" class="report-card" style="background: #0b1220; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 1.5rem;">
 
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" style="flex-shrink: 0;">
-                            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-                            <line x1="4" y1="22" x2="4" y2="15"></line>
-                        </svg>
-                        <div>
-                            <div style="color: #e6eef8; font-weight: 600; margin-bottom: 0.25rem;">
-                                Meldung von <span th:text="${report.reporterUsername}">Reporter</span>
-                            </div>
-                            <div style="color: #9aa4b2; font-size: 0.875rem;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.25rem;">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <polyline points="12 6 12 12 16 14"/>
-                                </svg>
-                                <span th:text="${#temporals.format(report.reportedAt, 'dd.MM.yyyy HH:mm')}">01.01.2024 12:00</span>
-                            </div>
-                        </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <div style="color: #e6eef8; font-weight: 600;">Von <span th:text="${report.reporterUsername}">User</span></div>
+                        <div style="color: #9aa4b2; font-size: 0.8rem;" th:text="${#temporals.format(report.reportedAt, 'dd.MM.yyyy HH:mm')}">Datum</div>
                     </div>
 
-                    <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); padding: 0.5rem 1rem; border-radius: 8px;">
-                        <span style="color: #ef4444; font-size: 0.875rem; font-weight: 600;" th:text="${report.reason}">Kategorie</span>
+                    <div th:switch="${report.type}">
+                        <span th:case="'MESSAGE'" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.8rem; border: 1px solid rgba(59, 130, 246, 0.2);">Nachricht</span>
+                        <span th:case="'COURSE'"  style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.8rem; border: 1px solid rgba(16, 185, 129, 0.2);">Kurs</span>
+                        <span th:case="'CHAPTER'" style="background: rgba(236, 72, 153, 0.1); color: #ec4899; padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.8rem; border: 1px solid rgba(236, 72, 153, 0.2);">Kapitel</span>
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1.5rem;">
-
-                    <div style="background: rgba(124, 58, 237, 0.05); border: 1px solid rgba(124, 58, 237, 0.1); border-radius: 8px; padding: 1rem;">
-                        <div style="color: #9aa4b2; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">
-                            Beschuldigter User
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 0.75rem;">
-                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="background: rgba(124, 58, 237, 0.1); border-radius: 50%; padding: 0.5rem;">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                <circle cx="12" cy="7" r="4"/>
-                            </svg>
-                            <div style="flex: 1;">
-                                <div style="color: #e6eef8; font-weight: 600; margin-bottom: 0.25rem;" th:text="${report.offenderUsername}">
-                                    Username
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <span
-                                            style="padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;"
-                                            th:style="${report.offenderStrikes >= 2} ?
-                                                   'background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444;' :
-                                                   'background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); color: #fbbf24;'"
-                                            th:text="'⚠️ ' + ${report.offenderStrikes} + ' Strike(s)'">
-                                        ⚠️ 0 Strikes
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div style="background: rgba(124, 58, 237, 0.05); padding: 1rem; border-radius: 8px;">
+                        <div style="text-transform: uppercase; font-size: 0.7rem; color: #9aa4b2; margin-bottom: 0.5rem;">Beschuldigter</div>
+                        <div style="color: #e6eef8; font-weight: bold;" th:text="${report.offenderUsername}">User</div>
+                        <div style="font-size: 0.8rem;" th:text="'Strikes: ' + ${report.offenderStrikes}">Strikes: 0</div>
                     </div>
 
-                    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 1rem;">
-                        <div style="color: #9aa4b2; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">
-                            Gemeldete Nachricht
+                    <div style="background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px;">
+                        <div style="text-transform: uppercase; font-size: 0.7rem; color: #9aa4b2; margin-bottom: 0.5rem;">
+                            <span th:text="${report.contextInfo}">Inhalt</span>
                         </div>
-                        <div style="color: #e6eef8; font-style: italic; line-height: 1.6; max-height: 80px; overflow-y: auto;" th:text="${report.messageContent}">
-                            Nachrichteninhalt wird hier angezeigt...
+                        <div style="color: #e6eef8; font-style: italic;" th:text="${report.contentPreview}">Inhalt...</div>
+
+                        <div th:if="${report.type == 'COURSE'}" style="margin-top: 0.5rem;">
+                            <a th:href="@{'/courses/' + ${report.targetId}}" target="_blank" style="color: #7c3aed; font-size: 0.8rem;">Zum Kurs →</a>
                         </div>
                     </div>
                 </div>
 
-                <div style="display: flex; gap: 1rem; justify-content: flex-end; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06);">
-                    <form th:action="@{/admin/reports/{id}/resolve(id=${report.id})}" method="post">
-                        <input type="hidden" name="strike" value="false">
-                        <button type="submit"
-                                style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); color: #9aa4b2; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem;"
-                                onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.borderColor='rgba(255,255,255,0.15)'"
-                                onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.1)'">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"/>
-                                <line x1="15" y1="9" x2="9" y2="15"/>
-                                <line x1="9" y1="9" x2="15" y2="15"/>
-                            </svg>
-                            Ignorieren
-                        </button>
-                    </form>
-
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
                     <form th:action="@{/admin/reports/{id}/resolve(id=${report.id})}" method="post">
                         <input type="hidden" name="strike" value="true">
-                        <button type="submit"
-                                style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: 1px solid rgba(239, 68, 68, 0.3); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);"
-                                th:title="${report.offenderStrikes >= 2} ? '⚠️ USER WIRD GESPERRT!' : 'Strike vergeben'"
-                                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(239, 68, 68, 0.4)'"
-                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(239, 68, 68, 0.3)'">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                                <line x1="12" y1="9" x2="12" y2="13"/>
-                                <line x1="12" y1="17" x2="12.01" y2="17"/>
-                            </svg>
-                            <span th:text="${report.offenderStrikes >= 2} ? 'Strike & SPERREN' : 'Strike vergeben'">
-                                Strike vergeben
-                            </span>
-                        </button>
+                        <button type="submit" class="btn-danger">Strike</button>
+                    </form>
+                    <form th:action="@{/admin/reports/{id}/resolve(id=${report.id})}" method="post">
+                        <input type="hidden" name="strike" value="false">
+                        <button type="submit" class="btn-secondary">Ignorieren</button>
                     </form>
                 </div>
-            </div>
-        </div>
 
-        <div th:if="${pendingCount == 0}" style="text-align: center; padding: 4rem 2rem; background: #0b1220; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px;">
-            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="rgba(124, 58, 237, 0.3)" stroke-width="2" style="margin: 0 auto 1.5rem;">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
-            <h3 style="color: #e6eef8; margin-bottom: 0.5rem;">Keine offenen Meldungen</h3>
-            <p style="color: #9aa4b2; margin: 0;">Alle Reports wurden bearbeitet.</p>
+            </div>
         </div>
 
     </div>

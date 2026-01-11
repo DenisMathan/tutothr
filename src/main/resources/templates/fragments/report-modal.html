@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="reportModal">
+
+    <input type="hidden" id="report-target-type">
+    <input type="hidden" id="report-target-id">
+
+    <div id="report-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center;">
+        <div style="background: linear-gradient(135deg, #0f1724 0%, #0b1220 100%); border: 1px solid rgba(124, 58, 237, 0.2); border-radius: 16px; max-width: 520px; width: 90%; padding: 0; box-shadow: 0 20px 60px rgba(0,0,0,0.6); animation: modalSlideIn 0.3s ease-out;">
+
+            <div style="padding: 2rem 2rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                    <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; padding: 0.75rem; display: flex; align-items: center; justify-content: center;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+                            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                            <line x1="4" y1="22" x2="4" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h3 id="report-modal-title" style="margin: 0; color: #e6eef8; font-size: 1.5rem; font-weight: 700;">Inhalt melden</h3>
+                </div>
+                <p style="color: #9aa4b2; margin: 0; font-size: 0.9375rem;">
+                    Hilf uns, die Community sicher zu halten
+                </p>
+            </div>
+
+            <div style="padding: 2rem;">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="color: #e6eef8; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; display: block;">
+                        Was ist das Problem?
+                    </label>
+                    <select id="report-category" class="form-input" style="width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.1); color: #e6eef8; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9375rem;">
+                        <option value="" style="background: #0b1220;">Kategorie wählen...</option>
+                        <option value="Spam" style="background: #0b1220;">Spam</option>
+                        <option value="Beleidigung" style="background: #0b1220;">Beleidigung / Hassrede</option>
+                        <option value="Unangemessener Inhalt" style="background: #0b1220;">Unangemessener Inhalt</option>
+                        <option value="Betrug" style="background: #0b1220;">Betrug / Scam</option>
+                        <option value="Urheberrecht" style="background: #0b1220;">Urheberrechtsverletzung</option>
+                        <option value="Sonstiges" style="background: #0b1220;">Sonstiges</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 0;">
+                    <label style="color: #e6eef8; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; display: block;">
+                        Zusätzliche Details <span style="color: #9aa4b2; font-weight: 400;">(optional)</span>
+                    </label>
+                    <textarea id="report-details"
+                              class="form-input"
+                              rows="4"
+                              placeholder="Beschreibe das Problem genauer..."
+                              style="width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.1); color: #e6eef8; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9375rem; resize: vertical; min-height: 100px;"></textarea>
+                </div>
+            </div>
+
+            <div style="padding: 1.5rem 2rem 2rem; border-top: 1px solid rgba(255,255,255,0.06); display: flex; gap: 1rem; justify-content: flex-end;">
+                <button onclick="closeReportModal()"
+                        class="btn-secondary"
+                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); color: #9aa4b2; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.08)'"
+                        onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+                    Abbrechen
+                </button>
+                <button onclick="submitReport()"
+                        class="btn-primary"
+                        style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: 1px solid rgba(239, 68, 68, 0.3); color: white; padding: 0.75rem 2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);"
+                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(239, 68, 68, 0.4)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(239, 68, 68, 0.3)'">
+                    Meldung absenden
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /**
+         * Öffnet das Modal für verschiedene Typen.
+         * @param {string} type - 'MESSAGE', 'COURSE', oder 'CHAPTER'
+         * @param {number} id - Die ID des Objekts
+         */
+        function openReportModal(type, id) {
+            document.getElementById('report-target-type').value = type;
+            document.getElementById('report-target-id').value = id;
+
+            // Reset Form
+            document.getElementById('report-category').value = '';
+            document.getElementById('report-details').value = '';
+
+            // Titel anpassen
+            const titleElem = document.getElementById('report-modal-title');
+            if (type === 'MESSAGE') titleElem.textContent = 'Nachricht melden';
+            else if (type === 'COURSE') titleElem.textContent = 'Kurs melden';
+            else if (type === 'CHAPTER') titleElem.textContent = 'Kapitel melden';
+            else titleElem.textContent = 'Inhalt melden';
+
+            const modal = document.getElementById('report-modal');
+            modal.style.display = 'flex';
+        }
+
+        function closeReportModal() {
+            const modal = document.getElementById('report-modal');
+            modal.style.display = 'none';
+        }
+
+        function submitReport() {
+            const type = document.getElementById('report-target-type').value;
+            const id = document.getElementById('report-target-id').value;
+            const category = document.getElementById('report-category').value;
+            const details = document.getElementById('report-details').value;
+
+            if (!category) {
+                if (typeof showToast === 'function') showToast('Bitte wähle eine Kategorie aus', 'error');
+                else alert('Bitte wähle eine Kategorie aus');
+                return;
+            }
+
+            const reason = details ? `${category}: ${details}` : category;
+
+            // URL bestimmen basierend auf Typ
+            let url = '';
+            if (type === 'MESSAGE') url = `/messages/${id}/report`;
+            else if (type === 'COURSE') url = `/courses/${id}/report`; // DEIN NEUER ENDPOINT
+            // else if (type === 'CHAPTER') url = `/chapters/${id}/report`;
+
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+            const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+            if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+
+            fetch(url, {
+                method: 'POST',
+                headers: headers,
+                body: `reason=${encodeURIComponent(reason)}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    closeReportModal();
+                    if (typeof showToast === 'function') {
+                        if (data.status === 'success') showToast(data.message, 'success');
+                        else showToast(data.message || 'Fehler', 'error');
+                    } else {
+                        alert(data.message || (data.status === 'success' ? 'Gemeldet!' : 'Fehler'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    closeReportModal();
+                    if (typeof showToast === 'function') showToast('Ein Fehler ist aufgetreten', 'error');
+                });
+        }
+
+        // Close on ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeReportModal();
+        });
+        document.getElementById('report-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'report-modal') closeReportModal();
+        });
+    </script>
+</div>
+</html>
