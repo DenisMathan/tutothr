@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import tutothr.auth.config.MyUserDetails;
+import tutothr.moderation.ModerationService;
 import tutothr.user.User;
 import tutothr.user.UserService;
 import tutothr.course.Course;
@@ -30,17 +31,28 @@ public class MessageController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+    @Autowired
+    private ModerationService moderationService;
+
     @GetMapping("/inbox")
     public String showInbox(Model model) {
         Long currentUserId = getCurrentUserId();
 
-        List<MessageService.ConversationPreview> conversations =
-                messageService.getConversations(currentUserId);
+        List<ConversationDTO> conversations = messageService.getConversations(currentUserId);
 
+        // Anzahl ungelesener Nachrichten
         long unreadCount = messageService.getUnreadCount(currentUserId);
 
         model.addAttribute("conversations", conversations);
         model.addAttribute("unreadCount", unreadCount);
+
+        // Anzahl offener Reports für Admin-Badge
+        try {
+            long pendingReports = moderationService.getPendingReportsCount();
+            model.addAttribute("pendingReportsCount", pendingReports);
+        } catch (Exception e) {
+            model.addAttribute("pendingReportsCount", 0);
+        }
 
         return "messages/inbox";
     }
@@ -74,7 +86,8 @@ public class MessageController {
 
         User recipient = userService.getUserById(recipientId);
 
-        ChatMessageDTO dto = new ChatMessageDTO(message);
+        // Hier nutzen wir bereits das MessageDTO für den WebSocket
+        MessageDTO dto = new MessageDTO(message);
 
         messagingTemplate.convertAndSendToUser(
                 recipient.getUsername(),

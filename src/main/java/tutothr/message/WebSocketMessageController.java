@@ -29,73 +29,101 @@ public class WebSocketMessageController {
     public void sendMessage(@Payload SendMessageRequest request) {
         Long senderId = getCurrentUserId();
 
-        if (senderId == null) return;
+        if (senderId == null) {
+            System.err.println("WebSocket: senderId is null");
+            return;
+        }
 
-        Message message = messageService.sendMessage(
-                senderId,
-                request.getReceiverId(),
-                request.getContent(),
-                request.getCourseId()
-        );
+        Long recipientId = request.getRecipientId();
+        if (recipientId == null) {
+            System.err.println("WebSocket: recipientId is null");
+            return;
+        }
 
-        ChatMessageDTO dto = new ChatMessageDTO(message);
+        try {
+            Message message = messageService.sendMessage(
+                    senderId,
+                    recipientId,
+                    request.getContent(),
+                    request.getCourseId()
+            );
 
-        User receiver = userService.getUserById(request.getReceiverId());
+            MessageDTO dto = new MessageDTO(message);
 
-        messagingTemplate.convertAndSendToUser(
-                receiver.getUsername(),
-                "/queue/messages",
-                dto
-        );
+            User recipient = userService.getUserById(recipientId);
+            User sender = userService.getUserById(senderId);
 
-        User sender = userService.getUserById(senderId);
+            messagingTemplate.convertAndSendToUser(
+                    recipient.getUsername(),
+                    "/queue/messages",
+                    dto
+            );
 
-        messagingTemplate.convertAndSendToUser(
-                receiver.getUsername(),
-                "/queue/messages",
-                dto
-        );
+            messagingTemplate.convertAndSendToUser(
+                    sender.getUsername(),
+                    "/queue/messages",
+                    dto
+            );
 
-        messagingTemplate.convertAndSendToUser(
-                sender.getUsername(),
-                "/queue/messages",
-                dto
-        );
+        } catch (Exception e) {
+            System.err.println("WebSocket sendMessage Error: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @MessageMapping("/typing")
     public void userTyping(@Payload TypingNotification notification) {
         Long senderId = getCurrentUserId();
 
-        ChatMessageDTO dto = new ChatMessageDTO();
-        dto.setSenderId(senderId);
-        dto.setReceiverId(notification.getReceiverId());
-        dto.setType(ChatMessageDTO.MessageType.TYPING);
+        if (senderId == null || notification.getRecipientId() == null) {
+            return;
+        }
 
-        messagingTemplate.convertAndSendToUser(
-                notification.getReceiverId().toString(),
-                "/queue/typing",
-                dto
-        );
+        try {
+            MessageDTO dto = MessageDTO.createTypingNotification(
+                    senderId,
+                    notification.getRecipientId()
+            );
+
+            User recipient = userService.getUserById(notification.getRecipientId());
+
+            messagingTemplate.convertAndSendToUser(
+                    recipient.getUsername(),
+                    "/queue/typing",
+                    dto
+            );
+        } catch (Exception e) {
+            System.err.println("Typing notification error: " + e.getMessage());
+        }
     }
 
     @MessageMapping("/read")
     public void markAsRead(@Payload ReadNotification notification) {
         Long currentUserId = getCurrentUserId();
-        messageService.markConversationAsRead(currentUserId, notification.getOtherUserId());
 
-        ChatMessageDTO dto = new ChatMessageDTO();
-        dto.setSenderId(currentUserId);
-        dto.setReceiverId(notification.getOtherUserId());
-        dto.setType(ChatMessageDTO.MessageType.READ);
+        if (currentUserId == null || notification.getOtherUserId() == null) {
+            return;
+        }
 
-        messagingTemplate.convertAndSendToUser(
-                notification.getOtherUserId().toString(),
-                "/queue/read",
-                dto
-        );
+        try {
+            messageService.markConversationAsRead(currentUserId, notification.getOtherUserId());
+
+            MessageDTO dto = MessageDTO.createReadNotification(
+                    currentUserId,
+                    notification.getOtherUserId()
+            );
+
+            User otherUser = userService.getUserById(notification.getOtherUserId());
+
+            messagingTemplate.convertAndSendToUser(
+                    otherUser.getUsername(),
+                    "/queue/read",
+                    dto
+            );
+        } catch (Exception e) {
+            System.err.println("Read notification error: " + e.getMessage());
+        }
     }
-
 
     private Long getCurrentUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -122,16 +150,15 @@ public class WebSocketMessageController {
         return null;
     }
 
-
     static class TypingNotification {
-        private Long receiverId;
+        private Long recipientId;
 
-        public Long getReceiverId() {
-            return receiverId;
+        public Long getRecipientId() {
+            return recipientId;
         }
 
-        public void setReceiverId(Long receiverId) {
-            this.receiverId = receiverId;
+        public void setRecipientId(Long recipientId) {
+            this.recipientId = recipientId;
         }
     }
 
