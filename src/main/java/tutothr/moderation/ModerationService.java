@@ -3,6 +3,8 @@ package tutothr.moderation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tutothr.chapter.Chapter;
+import tutothr.chapter.ChapterService;
 import tutothr.message.Message;
 import tutothr.message.interfaces.MessageRepositoryI;
 import tutothr.course.Course;
@@ -27,6 +29,8 @@ public class ModerationService {
     private CourseService courseService;
     @Autowired
     private ModerationMapperI moderationMapperI;
+    @Autowired
+    private ChapterService chapterService;
 
     public void reportMessage(Long reporterId, Long messageId, String reason) {
         User reporter = userRepository.findById(reporterId).orElseThrow();
@@ -54,6 +58,21 @@ public class ModerationService {
         }
 
         reportRepository.save(new Report(reporter, course, reason));
+    }
+
+    public void reportChapter(Long reporterId, Long chaperId, String reason) {
+        User reporter = userRepository.findById(reporterId).orElseThrow();
+        Chapter chapter = chapterService.findById(chaperId);
+        Course course = chapter.getCourse();
+
+        if(course.getOwnerId().equals(reporterId)) {
+            throw new IllegalArgumentException("Eigener Kurs kann nicht gemeldet werden");
+        }
+        if(reportRepository.existsByReporterAndChapterAndStatus(reporter, chapter, ReportStatus.PENDING)) {
+            throw new IllegalArgumentException("Bereits gemeldet");
+        }
+
+        reportRepository.save(new Report(reporter, chapter, reason));
     }
 
     // --- ADMIN METHODEN ---

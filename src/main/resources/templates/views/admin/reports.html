@@ -34,7 +34,7 @@
                         <div style="color: #e6eef8; font-style: italic;" th:text="${report.contentPreview}">Inhalt...</div>
 
                         <div th:if="${report.type == 'COURSE'}" style="margin-top: 0.5rem;">
-                            <a th:href="@{'/courses/' + ${report.targetId}}" target="_blank" style="color: #7c3aed; font-size: 0.8rem;">Zum Kurs →</a>
+                            <a th:href="@{/courses/{id}(id=${report.targetId})}" target="_blank" style="color: #7c3aed; font-size: 0.8rem;">Zum Kurs →</a>
                         </div>
                     </div>
                 </div>

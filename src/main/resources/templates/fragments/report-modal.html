@@ -44,61 +44,61 @@
                     <label style="color: #e6eef8; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; display: block;">
                         Zusätzliche Details <span style="color: #9aa4b2; font-weight: 400;">(optional)</span>
                     </label>
-                    <textarea id="report-details"
-                              class="form-input"
-                              rows="4"
-                              placeholder="Beschreibe das Problem genauer..."
-                              style="width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.1); color: #e6eef8; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9375rem; resize: vertical; min-height: 100px;"></textarea>
+                    <textarea id="report-details" class="form-input" rows="4" placeholder="Beschreibe das Problem genauer..." style="width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.1); color: #e6eef8; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9375rem; resize: vertical; min-height: 100px;"></textarea>
                 </div>
             </div>
 
             <div style="padding: 1.5rem 2rem 2rem; border-top: 1px solid rgba(255,255,255,0.06); display: flex; gap: 1rem; justify-content: flex-end;">
-                <button onclick="closeReportModal()"
-                        class="btn-secondary"
-                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); color: #9aa4b2; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
-                        onmouseover="this.style.background='rgba(255,255,255,0.08)'"
-                        onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+                <button onclick="closeReportModal()" class="btn-secondary" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); color: #9aa4b2; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
                     Abbrechen
                 </button>
-                <button onclick="submitReport()"
-                        class="btn-primary"
-                        style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: 1px solid rgba(239, 68, 68, 0.3); color: white; padding: 0.75rem 2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);"
-                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(239, 68, 68, 0.4)'"
-                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(239, 68, 68, 0.3)'">
+                <button onclick="submitReport()" class="btn-primary" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: 1px solid rgba(239, 68, 68, 0.3); color: white; padding: 0.75rem 2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(239, 68, 68, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(239, 68, 68, 0.3)'">
                     Meldung absenden
                 </button>
             </div>
         </div>
     </div>
 
+    <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000;"></div>
+
+    <style>
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: scale(0.95) translateY(-20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideOutRight {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(100px); }
+        }
+        /* Focus Styles für Inputs */
+        #report-category:focus, #report-details:focus {
+            outline: none; border-color: rgba(124, 58, 237, 0.5); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+    </style>
+
     <script th:inline="javascript">
-        /**
-         * Öffnet das Modal für verschiedene Typen.
-         * @param {string} type - 'MESSAGE', 'COURSE', oder 'CHAPTER'
-         * @param {number} id - Die ID des Objekts
-         */
+        // --- MODAL FUNKTIONEN ---
         function openReportModal(type, id) {
             document.getElementById('report-target-type').value = type;
             document.getElementById('report-target-id').value = id;
-
-            // Reset Form
             document.getElementById('report-category').value = '';
             document.getElementById('report-details').value = '';
 
-            // Titel anpassen
             const titleElem = document.getElementById('report-modal-title');
             if (type === 'MESSAGE') titleElem.textContent = 'Nachricht melden';
             else if (type === 'COURSE') titleElem.textContent = 'Kurs melden';
             else if (type === 'CHAPTER') titleElem.textContent = 'Kapitel melden';
             else titleElem.textContent = 'Inhalt melden';
 
-            const modal = document.getElementById('report-modal');
-            modal.style.display = 'flex';
+            document.getElementById('report-modal').style.display = 'flex';
         }
 
         function closeReportModal() {
-            const modal = document.getElementById('report-modal');
-            modal.style.display = 'none';
+            document.getElementById('report-modal').style.display = 'none';
         }
 
         function submitReport() {
@@ -108,18 +108,16 @@
             const details = document.getElementById('report-details').value;
 
             if (!category) {
-                if (typeof showToast === 'function') showToast('Bitte wähle eine Kategorie aus', 'error');
-                else alert('Bitte wähle eine Kategorie aus');
+                showToast('Bitte wähle eine Kategorie aus', 'error');
                 return;
             }
 
             const reason = details ? `${category}: ${details}` : category;
 
-            // URL bestimmen basierend auf Typ
             let url = '';
             if (type === 'MESSAGE') url = `/messages/${id}/report`;
-            else if (type === 'COURSE') url = `/courses/${id}/report`; // DEIN NEUER ENDPOINT
-            // else if (type === 'CHAPTER') url = `/chapters/${id}/report`;
+            else if (type === 'COURSE') url = `/courses/${id}/report`;
+            else if (type === 'CHAPTER') url = `/chapters/${id}/report`;
 
             const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
             const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
@@ -135,25 +133,47 @@
                 .then(response => response.json())
                 .then(data => {
                     closeReportModal();
-                    if (typeof showToast === 'function') {
-                        if (data.status === 'success') showToast(data.message, 'success');
-                        else showToast(data.message || 'Fehler', 'error');
-                    } else {
-                        alert(data.message || (data.status === 'success' ? 'Gemeldet!' : 'Fehler'));
-                    }
+                    if (data.status === 'success') showToast(data.message, 'success');
+                    else showToast(data.message || 'Fehler', 'error');
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     closeReportModal();
-                    if (typeof showToast === 'function') showToast('Ein Fehler ist aufgetreten', 'error');
+                    showToast('Ein Fehler ist aufgetreten', 'error');
                 });
         }
 
-        // Close on ESC
+        function showToast(message, type) {
+            const container = document.getElementById('toast-container');
+            if (!container) return; // Sicherheitshalber
+
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = `
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                margin-bottom: 0.5rem;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                animation: slideInRight 0.3s;
+                font-size: 0.9rem;
+                font-family: inherit;
+                z-index: 10001;
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Event Listeners
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeReportModal();
         });
-        document.getElementById('report-modal').addEventListener('click', (e) => {
+        document.addEventListener('click', (e) => {
             if (e.target.id === 'report-modal') closeReportModal();
         });
     </script>

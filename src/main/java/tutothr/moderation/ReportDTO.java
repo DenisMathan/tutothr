@@ -7,13 +7,11 @@ public class ReportDTO {
     private Long reporterId;
     private String reporterUsername;
 
-    private String type;           // "MESSAGE", "COURSE", "CHAPTER"
-    private Long targetId;         // ID des gemeldeten Objekts
+    private String type;
+    private Long targetId;
+    private String contentPreview;
+    private String contextInfo;
 
-    private String contentPreview; // Nachrichtentext ODER Kurstitel
-    private String contextInfo;    // Zusatzinfo (z.B. "Kapitel in Kurs X")
-
-    // Der "Bösewicht" (generisch)
     private Long offenderId;
     private String offenderUsername;
     private int offenderStrikes;
@@ -24,7 +22,6 @@ public class ReportDTO {
 
     public ReportDTO() {}
 
-    // Getter & Setter
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Long getReporterId() { return reporterId; }

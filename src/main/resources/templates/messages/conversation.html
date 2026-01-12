@@ -123,7 +123,6 @@
 
     <div th:replace="~{fragments/report-modal :: reportModal}"></div>
 
-    <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000;"></div>
 
     <script th:inline="javascript">
         // Thymeleaf variables
@@ -312,26 +311,6 @@
             console.log('Nachricht wurde gelesen');
         }
 
-        function showToast(message, type) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.textContent = message;
-            toast.style.cssText = `
-                background: ${type === 'success' ? '#10b981' : '#ef4444'};
-                color: white;
-                padding: 1rem 1.5rem;
-                border-radius: 8px;
-                margin-bottom: 0.5rem;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                animation: slideInRight 0.3s;
-            `;
-            container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.style.animation = 'slideOutRight 0.3s';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
 
         function escapeHtml(text) {
             if (!text) return "";
@@ -372,39 +351,6 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(100px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes slideOutRight {
-            from {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            to {
-                opacity: 0;
-                transform: translateX(100px);
-            }
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95) translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
             }
         }
 

@@ -17,18 +17,22 @@ public class ModerationController {
 
     @Autowired private ModerationService moderationService;
 
-    // MESSAGE REPORT
     @PostMapping("/messages/{id}/report")
     @ResponseBody
     public ResponseEntity<?> reportMessage(@PathVariable Long id, @RequestParam String reason) {
         return handleReport(() -> moderationService.reportMessage(getCurrentUserId(), id, reason));
     }
 
-    // COURSE REPORT
     @PostMapping("/courses/{id}/report")
     @ResponseBody
     public ResponseEntity<?> reportCourse(@PathVariable Long id, @RequestParam String reason) {
         return handleReport(() -> moderationService.reportCourse(getCurrentUserId(), id, reason));
+    }
+
+    @PostMapping("/chapters/{id}/report")
+    @ResponseBody
+    public ResponseEntity<?> reportChapter(@PathVariable Long id, @RequestParam String reason) {
+        return handleReport(() -> moderationService.reportChapter(getCurrentUserId(), id, reason));
     }
 
     // Helper für JSON Responses
