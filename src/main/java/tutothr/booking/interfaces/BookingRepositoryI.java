@@ -1,7 +1,11 @@
 package tutothr.booking.interfaces;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import tutothr.booking.Booking;
 import tutothr.booking.BookingStatus;
 import tutothr.booking.TimeSlot;
@@ -19,4 +23,23 @@ public interface BookingRepositoryI extends MyBaseRepository<Booking, Long> {
 	List<Booking> findByTimeSlot(TimeSlot timeSlot);
 	
 	List<Booking> findByCourse(Course course);
+
+	long countByStudent(User student);
+	long countByTimeSlotTutor(User tutor);
+
+	@Query("SELECT SUM(b.price) FROM Booking b WHERE b.timeSlot.tutor = :tutor AND b.status = 'COMPLETED'")
+	Double calculateTotalRevenue(@Param("tutor") User tutor);
+
+	@Query("SELECT SUM(b.price) FROM Booking b WHERE b.student = :student AND b.status = 'COMPLETED'")
+	Double calculateTotalSpent(@Param("student") User student);
+
+	@Query("SELECT SUM(b.price) FROM Booking b WHERE b.student = :student AND b.status = 'COMPLETED' AND b.createdAt >= :date")
+	Double calculateSpentSince(@Param("student") User student, @Param("date") LocalDateTime date);
+
+	@Query("SELECT b.course.title, SUM(b.price) as revenue " +
+			"FROM Booking b " +
+			"WHERE b.timeSlot.tutor = :tutor AND b.status = 'COMPLETED' " +
+			"GROUP BY b.course.title " +
+			"ORDER BY revenue DESC")
+	List<Object[]> findBestPerformingCourse(@Param("tutor") User tutor, PageRequest pageable);
 }

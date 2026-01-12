@@ -13,7 +13,7 @@ public class TutorRole implements RoleI {
 
 	@Override
 	public RolesEnum getRoleType() {
-		return RolesEnum.STUDENT;
+		return RolesEnum.TUTOR;
 	}
 
 	@Override
