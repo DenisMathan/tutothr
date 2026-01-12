@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 <head>
     <title>Konversation</title>
-    <!-- SockJS und STOMP Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 </head>
@@ -10,7 +9,6 @@
 <section layout:fragment="mybody">
     <div class="container" style="max-width: 900px; margin: 0 auto; padding: 2rem 1rem;">
 
-        <!-- Header mit Zurück-Button -->
         <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
             <a th:href="@{/messages/inbox}" class="btn-secondary">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -19,7 +17,6 @@
                 Zurück
             </a>
 
-            <!-- Chat Partner Info -->
             <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="background: rgba(124, 58, 237, 0.1); border-radius: 50%; padding: 0.5rem;">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -33,25 +30,20 @@
                         @username
                     </div>
                 </div>
-                <!-- "tippt gerade..." Anzeige -->
                 <div id="typing-indicator" style="display: none; font-size: 0.875rem; color: #7c3aed; font-style: italic;">
                     tippt gerade...
                 </div>
             </div>
         </div>
 
-        <!-- Chat-Bereich -->
         <div style="background: #0b1220; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; overflow: hidden;">
 
-            <!-- Nachrichten-Liste -->
             <div id="messages-container" style="padding: 1.5rem; max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem;">
 
-                <!-- Keine Nachrichten -->
                 <div th:if="${#lists.isEmpty(messages)}" id="no-messages" style="text-align: center; padding: 2rem; color: #9aa4b2;">
                     Noch keine Nachrichten in dieser Konversation
                 </div>
 
-                <!-- Nachricht (von anderem User) -->
                 <div th:each="message : ${messages}"
                      th:if="${message.sender.id != currentUserId}"
                      th:data-message-id="${message.id}"
@@ -65,7 +57,7 @@
                             Nachrichtentext
                         </p>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
-                            <button th:onclick="'reportMessageModal(' + ${message.id} + ')'"
+                            <button th:onclick="'openReportModal(\'MESSAGE\', ' + ${message.id} + ')'"
                                     type="button"
                                     class="report-button"
                                     style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.75rem; padding: 0; opacity: 0.6; display: flex; align-items: center; gap: 4px; transition: opacity 0.2s;"
@@ -83,7 +75,6 @@
                     </div>
                 </div>
 
-                <!-- Nachricht (von mir) -->
                 <div th:each="message : ${messages}"
                      th:if="${message.sender.id == currentUserId}"
                      th:data-message-id="${message.id}"
@@ -101,7 +92,6 @@
 
             </div>
 
-            <!-- Antwort-Formular -->
             <form id="message-form" style="border-top: 1px solid rgba(255,255,255,0.06); padding: 1.5rem;">
 
                 <div style="display: flex; gap: 1rem; align-items: flex-end;">
@@ -131,83 +121,10 @@
 
     </div>
 
-    <!-- Report Modal -->
-    <div id="report-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center;">
-        <div style="background: linear-gradient(135deg, #0f1724 0%, #0b1220 100%); border: 1px solid rgba(124, 58, 237, 0.2); border-radius: 16px; max-width: 520px; width: 90%; padding: 0; box-shadow: 0 20px 60px rgba(0,0,0,0.6); animation: modalSlideIn 0.3s ease-out;">
+    <div th:replace="~{fragments/report-modal :: reportModal}"></div>
 
-            <!-- Modal Header -->
-            <div style="padding: 2rem 2rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06);">
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-                    <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; padding: 0.75rem; display: flex; align-items: center; justify-content: center;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
-                            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-                            <line x1="4" y1="22" x2="4" y2="15"></line>
-                        </svg>
-                    </div>
-                    <h3 style="margin: 0; color: #e6eef8; font-size: 1.5rem; font-weight: 700;">Nachricht melden</h3>
-                </div>
-                <p style="color: #9aa4b2; margin: 0; font-size: 0.9375rem;">
-                    Hilf uns, die Community sicher zu halten
-                </p>
-            </div>
-
-            <!-- Modal Body -->
-            <div style="padding: 2rem;">
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="color: #e6eef8; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; display: block;">
-                        Was ist das Problem?
-                    </label>
-                    <select id="report-category" class="form-input" style="width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.1); color: #e6eef8; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9375rem;">
-                        <option value="" style="background: #0b1220;">Kategorie wählen...</option>
-                        <option value="Spam" style="background: #0b1220;">Spam</option>
-                        <option value="Beleidigung" style="background: #0b1220;">Beleidigung / Hassrede</option>
-                        <option value="Unangemessener Inhalt" style="background: #0b1220;">Unangemessener Inhalt</option>
-                        <option value="Betrug" style="background: #0b1220;">Betrug / Scam</option>
-                        <option value="Belästigung" style="background: #0b1220;">Belästigung</option>
-                        <option value="Sonstiges" style="background: #0b1220;">Sonstiges</option>
-                    </select>
-                </div>
-
-                <div style="margin-bottom: 0;">
-                    <label style="color: #e6eef8; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; display: block;">
-                        Zusätzliche Details <span style="color: #9aa4b2; font-weight: 400;">(optional)</span>
-                    </label>
-                    <textarea id="report-details"
-                              class="form-input"
-                              rows="4"
-                              placeholder="Beschreibe das Problem genauer, damit wir besser helfen können..."
-                              style="width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.1); color: #e6eef8; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9375rem; resize: vertical; min-height: 100px;"></textarea>
-                </div>
-            </div>
-
-            <!-- Modal Footer -->
-            <div style="padding: 1.5rem 2rem 2rem; border-top: 1px solid rgba(255,255,255,0.06); display: flex; gap: 1rem; justify-content: flex-end;">
-                <button onclick="closeReportModal()"
-                        class="btn-secondary"
-                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); color: #9aa4b2; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
-                        onmouseover="this.style.background='rgba(255,255,255,0.08)'"
-                        onmouseout="this.style.background='rgba(255,255,255,0.05)'">
-                    Abbrechen
-                </button>
-                <button onclick="submitReport()"
-                        class="btn-primary"
-                        style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: 1px solid rgba(239, 68, 68, 0.3); color: white; padding: 0.75rem 2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);"
-                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(239, 68, 68, 0.4)'"
-                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(239, 68, 68, 0.3)'">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-                        <line x1="4" y1="22" x2="4" y2="15"></line>
-                    </svg>
-                    Meldung absenden
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification Container -->
     <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000;"></div>
 
-    <!-- WEBSOCKET SCRIPT -->
     <script th:inline="javascript">
         // Thymeleaf variables
         const otherUserId = /*[[${otherUser.id}]]*/ 0;
@@ -216,7 +133,6 @@
 
         let stompClient = null;
         let typingTimeout = null;
-        let currentReportMessageId = null;
 
         let messageSubscription = null;
         let typingSubscription = null;
@@ -286,11 +202,34 @@
                 const noMessages = document.getElementById('no-messages');
                 if (noMessages) noMessages.remove();
 
-                const existingMsg = container.querySelector(`[data-message-id="${message.id}"]`);
-                if (!existingMsg) {
-                    container.insertAdjacentHTML('beforeend', createMessageBubble(message));
-                    container.scrollTop = container.scrollHeight;
+                // Smart Insert Logic (wie in deiner vorherigen Version)
+                const messageBubbleHTML = createMessageBubble(message);
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = messageBubbleHTML;
+                const newElement = tempDiv.firstElementChild;
+                const newMsgId = Number(message.id);
+
+                const allMessages = Array.from(container.querySelectorAll('.message-bubble'));
+                let inserted = false;
+
+                for (let i = allMessages.length - 1; i >= 0; i--) {
+                    const existingRow = allMessages[i];
+                    const rawId = existingRow.dataset.messageId || existingRow.getAttribute('data-message-id');
+                    const existingId = Number(rawId);
+
+                    if (!isNaN(existingId) && existingId < newMsgId) {
+                        existingRow.insertAdjacentElement('afterend', newElement);
+                        inserted = true;
+                        break;
+                    }
                 }
+
+                if (!inserted) {
+                    container.insertAdjacentElement('afterbegin', newElement);
+                }
+
+                // Scrollen
+                container.scrollTop = container.scrollHeight;
 
                 if (message.senderId === otherUserId) {
                     sendReadNotification();
@@ -326,7 +265,7 @@
                             <div style="font-size: 0.75rem; color: #7c3aed; font-weight: 600; margin-bottom: 0.5rem;">${safeSender}</div>
                             <p style="color: #e6eef8; margin: 0 0 0.5rem 0; word-wrap: break-word;">${safeContent}</p>
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
-                                <button onclick="reportMessageModal(${message.id})" class="report-button"
+                                <button onclick="openReportModal('MESSAGE', ${message.id})" class="report-button"
                                         style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.75rem; padding: 0; opacity: 0.6; display: flex; align-items: center; gap: 4px; transition: opacity 0.2s;"
                                         title="Nachricht melden">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -373,64 +312,6 @@
             console.log('Nachricht wurde gelesen');
         }
 
-        // Report Modal Functions
-        function reportMessageModal(messageId) {
-            currentReportMessageId = messageId;
-            const modal = document.getElementById('report-modal');
-            modal.style.display = 'flex';
-            document.getElementById('report-category').value = '';
-            document.getElementById('report-details').value = '';
-        }
-
-        function closeReportModal() {
-            const modal = document.getElementById('report-modal');
-            modal.style.display = 'none';
-            currentReportMessageId = null;
-        }
-
-        function submitReport() {
-            const category = document.getElementById('report-category').value;
-            const details = document.getElementById('report-details').value;
-
-            if (!category) {
-                showToast('Bitte wähle eine Kategorie aus', 'error');
-                return;
-            }
-
-            const reason = details ? `${category}: ${details}` : category;
-
-            // CSRF
-            const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
-            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
-
-            const headers = {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            };
-            if (csrfToken && csrfHeader) {
-                headers[csrfHeader] = csrfToken;
-            }
-
-            fetch(`/messages/${currentReportMessageId}/report`, {
-                method: 'POST',
-                headers: headers,
-                body: `reason=${encodeURIComponent(reason)}`
-            })
-                .then(response => response.json())
-                .then(data => {
-                    closeReportModal();
-                    if (data.status === 'success') {
-                        showToast(data.message, 'success');
-                    } else {
-                        showToast(data.message || 'Ein Fehler ist aufgetreten', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    closeReportModal();
-                    showToast('Ein Fehler ist aufgetreten', 'error');
-                });
-        }
-
         function showToast(message, type) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -471,16 +352,6 @@
             }
         });
 
-        // Close modal on ESC key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeReportModal();
-        });
-
-        // Close modal on outside click
-        document.getElementById('report-modal').addEventListener('click', (e) => {
-            if (e.target.id === 'report-modal') closeReportModal();
-        });
-
         window.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('messages-container');
             if (container) container.scrollTop = container.scrollHeight;
@@ -492,7 +363,6 @@
         });
     </script>
 
-    <!-- STYLES & ANIMATIONS -->
     <style>
         @keyframes slideIn {
             from {
@@ -567,33 +437,6 @@
 
         .report-button:hover {
             opacity: 1 !important;
-        }
-
-        /* Report Modal Scrollbar */
-        #report-details::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        #report-details::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.02);
-            border-radius: 3px;
-        }
-
-        #report-details::-webkit-scrollbar-thumb {
-            background: rgba(124, 58, 237, 0.3);
-            border-radius: 3px;
-        }
-
-        #report-details::-webkit-scrollbar-thumb:hover {
-            background: rgba(124, 58, 237, 0.5);
-        }
-
-        /* Form Input Focus States */
-        #report-category:focus,
-        #report-details:focus {
-            outline: none;
-            border-color: rgba(124, 58, 237, 0.5);
-            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
         }
     </style>
 </section>

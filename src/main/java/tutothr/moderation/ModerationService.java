@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tutothr.message.Message;
 import tutothr.message.interfaces.MessageRepositoryI;
+import tutothr.course.Course;
+import tutothr.course.CourseService;
 import tutothr.moderation.interfaces.ModerationMapperI;
 import tutothr.moderation.interfaces.ReportRepositoryI;
 import tutothr.user.User;
@@ -15,33 +17,54 @@ import java.util.List;
 @Service
 public class ModerationService {
 
-    @Autowired private ReportRepositoryI reportRepository;
-    @Autowired private UserRepositoryI userRepository;
-    @Autowired private MessageRepositoryI messageRepositoryI;
-    @Autowired private ModerationMapperI moderationMapperI;
+    @Autowired
+    private ReportRepositoryI reportRepository;
+    @Autowired
+    private UserRepositoryI userRepository;
+    @Autowired
+    private MessageRepositoryI messageRepositoryI;
+    @Autowired
+    private CourseService courseService;
+    @Autowired
+    private ModerationMapperI moderationMapperI;
 
     public void reportMessage(Long reporterId, Long messageId, String reason) {
-        User reporter = userRepository.findById(reporterId)
-                .orElseThrow(() -> new RuntimeException("Reporter not found"));
-        Message message = messageRepositoryI.findById(messageId)
-                .orElseThrow(() -> new RuntimeException("Message not found"));
+        User reporter = userRepository.findById(reporterId).orElseThrow();
+        Message message = messageRepositoryI.findById(messageId).orElseThrow();
 
         if(message.getSender().getId().equals(reporterId)) {
-            throw new IllegalArgumentException("Cannot report your own message");
+            throw new IllegalArgumentException("Eigene Nachricht kann nicht gemeldet werden");
         }
-
         if(reportRepository.existsByReporterAndMessageAndStatus(reporter, message, ReportStatus.PENDING)) {
-            throw new IllegalArgumentException("You have already reported this message");
+            throw new IllegalArgumentException("Bereits gemeldet");
         }
 
-        Report report = new Report(reporter, message, reason);
-        reportRepository.save(report);
+        reportRepository.save(new Report(reporter, message, reason));
     }
+
+    public void reportCourse(Long reporterId, Long courseId, String reason) {
+        User reporter = userRepository.findById(reporterId).orElseThrow();
+        Course course = courseService.findById(courseId);
+
+        if(course.getOwnerId().equals(reporterId)) {
+            throw new IllegalArgumentException("Eigener Kurs kann nicht gemeldet werden");
+        }
+        if(reportRepository.existsByReporterAndCourseAndStatus(reporter, course, ReportStatus.PENDING)) {
+            throw new IllegalArgumentException("Bereits gemeldet");
+        }
+
+        reportRepository.save(new Report(reporter, course, reason));
+    }
+
+    // --- ADMIN METHODEN ---
 
     public List<ReportDTO> getPendingReports() {
         List<Report> reports = reportRepository.findByStatusOrderByReportedAtDesc(ReportStatus.PENDING);
-        // Umwandlung Entity -> DTO
         return moderationMapperI.toDtos(reports);
+    }
+
+    public long getPendingReportsCount() {
+        return reportRepository.findByStatusOrderByReportedAtDesc(ReportStatus.PENDING).size();
     }
 
     @Transactional
@@ -50,36 +73,42 @@ public class ModerationService {
                 .orElseThrow(() -> new RuntimeException("Report not found"));
 
         if(report.getStatus() != ReportStatus.PENDING) {
-            throw new IllegalStateException("Report has already been resolved");
+            throw new IllegalStateException("Report already resolved");
         }
 
         if (issueStrike) {
             report.setStatus(ReportStatus.ACCEPTED);
-            User offender = report.getMessage().getSender();
 
-            int newStrikes = offender.getStrikes() + 1;
-            offender.setStrikes(newStrikes);
+            User offender = null;
+            switch (report.getType()) {
+                case MESSAGE:
+                    offender = report.getMessage().getSender();
+                    break;
 
-            if (newStrikes >= 3) {
-                offender.setAccountNonLocked(false);
+                case COURSE:
+                    Long creatorId = report.getCourse().getOwnerId();
+                    offender = userRepository.findById(creatorId).orElse(null);
+                    break;
+
+                case CHAPTER:
+                    Long chapterCreatorId = report.getChapter().getCourse().getOwnerId();
+                    offender = userRepository.findById(chapterCreatorId).orElse(null);
+                    break;
             }
-            userRepository.save(offender);
+
+            if (offender != null) {
+                int newStrikes = offender.getStrikes() + 1;
+                offender.setStrikes(newStrikes);
+
+                if (newStrikes >= 3) {
+                    offender.setAccountNonLocked(false);
+                }
+                userRepository.save(offender);
+            }
         } else {
             report.setStatus(ReportStatus.REJECTED);
         }
 
         reportRepository.save(report);
-    }
-
-    public List<ReportDTO> getReportsByUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        List<Report> reports = reportRepository.findByStatusOrderByReportedAtDesc(ReportStatus.ACCEPTED);
-        return moderationMapperI.toDtos(reports);
-    }
-
-    public long getPendingReportsCount() {
-        return reportRepository.findByStatusOrderByReportedAtDesc(ReportStatus.PENDING).size();
     }
 }

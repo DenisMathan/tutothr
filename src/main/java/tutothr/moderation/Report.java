@@ -2,6 +2,8 @@ package tutothr.moderation;
 
 import jakarta.persistence.*;
 import tutothr.message.Message;
+import tutothr.course.Course;
+import tutothr.chapter.Chapter;
 import tutothr.user.User;
 import java.time.LocalDateTime;
 
@@ -14,11 +16,22 @@ public class Report {
     @ManyToOne
     private User reporter;
 
+    @Enumerated(EnumType.STRING)
+    private ReportType type;
+
     @ManyToOne
+    @JoinColumn(name = "message_id")
     private Message message;
 
-    private String reason;
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
 
+    @ManyToOne
+    @JoinColumn(name = "chapter_id")
+    private Chapter chapter;
+
+    private String reason;
     private LocalDateTime reportedAt = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
@@ -29,54 +42,40 @@ public class Report {
     public Report(User reporter, Message message, String reason) {
         this.reporter = reporter;
         this.message = message;
+        this.type = ReportType.MESSAGE;
         this.reason = reason;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getReporter() {
-        return reporter;
-    }
-
-    public void setReporter(User reporter) {
+    public Report(User reporter, Course course, String reason) {
         this.reporter = reporter;
-    }
-
-    public Message getMessage() {
-        return message;
-    }
-
-    public void setMessage(Message message) {
-        this.message = message;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
+        this.course = course;
+        this.type = ReportType.COURSE;
         this.reason = reason;
     }
 
-    public ReportStatus getStatus() {
-        return status;
+    public Report(User reporter, Chapter chapter, String reason) {
+        this.reporter = reporter;
+        this.chapter = chapter;
+        this.type = ReportType.CHAPTER;
+        this.reason = reason;
     }
 
-    public void setStatus(ReportStatus status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getReportedAt() {
-        return reportedAt;
-    }
-
-    public void setReportedAt(LocalDateTime reportedAt) {
-        this.reportedAt = reportedAt;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public User getReporter() { return reporter; }
+    public void setReporter(User reporter) { this.reporter = reporter; }
+    public ReportType getType() { return type; }
+    public void setType(ReportType type) { this.type = type; }
+    public Message getMessage() { return message; }
+    public void setMessage(Message message) { this.message = message; }
+    public Course getCourse() { return course; }
+    public void setCourse(Course course) { this.course = course; }
+    public Chapter getChapter() { return chapter; }
+    public void setChapter(Chapter chapter) { this.chapter = chapter; }
+    public String getReason() { return reason; }
+    public void setReason(String reason) { this.reason = reason; }
+    public LocalDateTime getReportedAt() { return reportedAt; }
+    public void setReportedAt(LocalDateTime reportedAt) { this.reportedAt = reportedAt; }
+    public ReportStatus getStatus() { return status; }
+    public void setStatus(ReportStatus status) { this.status = status; }
 }
