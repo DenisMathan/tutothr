@@ -66,4 +66,19 @@ public class MailService {
         mailSender.send(message);
     }
 
+    public void sendNewChatMail(tutothr.user.User user, tutothr.user.User sender) {
+        if(mail == null || mailPw == null) {
+            throw new IllegalStateException("Mail credentials are not set in environment variables.");
+        }
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("Du hast eine neue Chatanfrage!");
+        message.setText("Hallo " + user.getUsername() + " \n\n" +
+                "du hast eine neue Chatanfrage von " + sender.getUsername() + ". \n" +
+                "Schau mal in deinen Posteingang :) \n\n" +
+                "Viele Grüße,\n" +
+                "Dein TutOTHr-Team");
+        mailSender.send(message);
+    }
+
 }

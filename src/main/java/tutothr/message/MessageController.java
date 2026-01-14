@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import tutothr.auth.config.MyUserDetails;
+import tutothr.common.services.MailService;
 import tutothr.moderation.ModerationService;
 import tutothr.user.User;
 import tutothr.user.UserService;
@@ -33,6 +34,9 @@ public class MessageController {
 
     @Autowired
     private ModerationService moderationService;
+
+    @Autowired
+    private MailService mailService;
 
     @GetMapping("/inbox")
     public String showInbox(Model model) {
@@ -85,8 +89,9 @@ public class MessageController {
         Message message = messageService.sendMessage(senderId, recipientId, content, courseId);
 
         User recipient = userService.getUserById(recipientId);
+        Long currentUserId = getCurrentUserId();
+        User sender = userService.getUserById(currentUserId);
 
-        // Hier nutzen wir bereits das MessageDTO für den WebSocket
         MessageDTO dto = new MessageDTO(message);
 
         messagingTemplate.convertAndSendToUser(
@@ -94,7 +99,7 @@ public class MessageController {
                 "/queue/messages",
                 dto
         );
-
+        mailService.sendNewChatMail(recipient, sender);
         return "redirect:/messages/inbox";
     }
 
