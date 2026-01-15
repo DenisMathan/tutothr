@@ -1,17 +1,14 @@
 <!-- templates/fragments/navbar/navbar.html -->
-<div th:fragment="navbar">
+<div th:fragment="navbar" xmlns:sec="http://www.w3.org/1999/xhtml">
     <nav class="navbar404" role="navigation" aria-label="Hauptnavigation">
         <div class="navbar404-container">
             <a class="navbar404-brand" th:href="@{/}">
                 <span class="navbar404-title">TUTOTHR</span>
             </a>
             <ul class="navbar404-links" role="menubar">
-                <li role="none"><a role="menuitem" th:href="@{/admin/categories}">Categories</a></li>
-                <li role="none"><a role="menuitem" th:href="@{/admin/all}">Users</a></li>
                 <li role="none"><a role="menuitem" th:href="@{/courses}">Kurse</a></li>
-                <li role="none"><a role="menuitem" th:href="@{/einstellungen}">Einstellungen</a></li>
                 <li role="none"><a role="menuitem" th:href="@{/messages/inbox}">Nachrichten</a></li>
-                <li role="none"><a role="menuitem" th:href="@{/dashboard}">Dashboard</a></li>
+                <li role="none" sec:authorize="hasRole('TUTOR')"><a role="menuitem" th:href="@{/tutor/timeslots}">Zeitslots</a></li>
             </ul>
             <div class="navbar404-actions">
                 <button class="navbar404-icon-btn notifications" aria-label="Benachrichtigungen">
