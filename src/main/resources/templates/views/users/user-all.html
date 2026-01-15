@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 <head>
-    <title>All Users</title>
+    <title>Benutzerverwaltung</title>
 </head>
 
 <section layout:fragment="mybody">
-    <div class="users-container">
-        <div class="users-header">
+    <div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
             <div>
-                <h1 class="users-title">Benutzerliste</h1>
-                <p class="users-count" th:text="'Gefundene Benutzer: ' + ${totalItems}"></p>
+                <h1 class="text-main" style="margin: 0; font-weight: 700;">Benutzerliste</h1>
+                <p class="text-muted" style="margin: 0.5rem 0 0 0;" th:text="'Gefundene Benutzer: ' + ${totalItems}"></p>
             </div>
             <a th:href="@{/}" class="btn-secondary">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -19,57 +20,52 @@
             </a>
         </div>
 
-        <!-- Liste der Benutzer -->
-        <div class="users-table-wrapper">
-            <table class="users-table">
+        <div class="table-wrapper">
+            <table class="styled-table">
                 <thead>
                 <tr>
-                    <th>ID</th>
+                    <th style="width: 60px;">ID</th>
                     <th>Login</th>
                     <th>Email</th>
                     <th>Rollen</th>
-                    <th>Aktiv</th>
+                    <th>Status</th>
                     <th>Erstellt am</th>
                     <th class="text-end">Aktionen</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="user : ${users}">
-                    <td th:text="${user.id}">1</td>
+                    <td class="text-muted" th:text="${user.id}">1</td>
                     <td>
-                        <div class="user-info">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="user-icon">
-                                <path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4 0-7 2-7 4v2h14v-2c0-2-3-4-7-4z"/>
-                            </svg>
-                            <span th:text="${user.username}">login</span>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 500;">
+                            <div style="background: var(--bg-hover); padding: 4px; border-radius: 50%; color: var(--accent);">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4 0-7 2-7 4v2h14v-2c0-2-3-4-7-4z"/>
+                                </svg>
+                            </div>
+                            <span th:text="${user.username}">User</span>
                         </div>
                     </td>
-                    <td th:text="${user.email}">email@example.com</td>
+                    <td class="text-muted" th:text="${user.email}">email@test.de</td>
                     <td>
-                            <span class="role-tags">
-                                <span th:each="role, iter : ${user.roles}"
-                                      class="role-tag"
-                                      th:text="${role.type}">
-                                </span>
-                            </span>
+                        <span th:each="role : ${user.roles}"
+                              class="role-tag"
+                              th:text="${role.type}">
+                        </span>
                     </td>
                     <td>
-                            <span th:if="${user.active}" class="status-badge status-active">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                                    <circle cx="12" cy="12" r="10"/>
-                                </svg>
-                                Aktiv
-                            </span>
-                        <span th:unless="${user.active}" class="status-badge status-inactive">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                                    <circle cx="12" cy="12" r="10"/>
-                                </svg>
-                                Inaktiv
-                            </span>
+                        <span th:if="${user.active}" class="badge status-active">
+                            <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                            Aktiv
+                        </span>
+                        <span th:unless="${user.active}" class="badge status-inactive">
+                            <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                            Inaktiv
+                        </span>
                     </td>
-                    <td th:text="${#temporals.format(user.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2005</td>
+                    <td class="text-muted" th:text="${#temporals.format(user.createdAt, 'dd.MM.yyyy')}">01.01.2025</td>
                     <td class="text-end">
-                        <a th:href="@{'/user/' + ${user.id}}" class="btn-action btn-view" title="Details anzeigen">
+                        <a th:href="@{'/user/' + ${user.id}}" class="btn-action" title="Details anzeigen">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                                 <circle cx="12" cy="12" r="3"/>
@@ -82,5 +78,4 @@
         </div>
     </div>
 </section>
-
 </html>

@@ -9,71 +9,70 @@
 </head>
 
 <section layout:fragment="mybody">
-    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 2rem 1rem;">
+    <div class="container" style="max-width: 1000px; margin: 0 auto; padding: 2rem 1rem;">
 
-        <div class="form-header" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <h2 class="form-title">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.5rem;">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                    </svg>
-                    Nachrichten
-                </h2>
-                <p class="form-subtitle" th:if="${unreadCount > 0}">
-                    <span style="color: #7c3aed; font-weight: 600;" th:text="${unreadCount}">0</span> ungelesene Nachricht(en)
-                </p>
-            </div>
+        <div style="margin-bottom: 2rem;">
+            <h1 class="text-main" style="margin: 0; font-weight: 700;">Nachrichten</h1>
+            <p class="text-muted" th:if="${unreadCount > 0}">
+                <span style="color: var(--accent); font-weight: 600;" th:text="${unreadCount}">0</span> ungelesene Nachricht(en)
+            </p>
         </div>
 
-        <div th:if="${#lists.isEmpty(conversations)}" class="no-ratings" style="text-align: center; padding: 3rem 1rem; background: #0b1220; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+        <div th:if="${#lists.isEmpty(conversations)}" class="no-content-placeholder">
             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.3; margin-bottom: 1rem;">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
             </svg>
-            <p style="color: #9aa4b2; margin: 0;">Noch keine Nachrichten vorhanden</p>
+            <p class="text-muted">Noch keine Nachrichten vorhanden</p>
         </div>
 
         <div th:if="${!#lists.isEmpty(conversations)}" class="conversations-list">
             <div th:each="conv : ${conversations}"
                  th:onclick="'window.location.href=\'/messages/conversation/' + ${conv.otherUserId} + '\''"
                  class="conversation-card"
-                 th:classappend="${conv.unreadCount > 0} ? 'conversation-unread' : ''"
-                 style="background: #0b1220; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; cursor: pointer;">
+                 th:classappend="${conv.unreadCount > 0} ? 'conversation-unread' : ''">
 
                 <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1; min-width: 0;">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="background: rgba(124, 58, 237, 0.1); border-radius: 50%; padding: 0.75rem; flex-shrink: 0;">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                        <div style="flex: 1; min-width: 0;">
-                            <div style="font-weight: 600; color: #e6eef8; margin-bottom: 0.25rem;" th:text="${conv.otherUserUsername}">
+                    <div style="display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 0;">
+                        <div style="background: var(--bg-hover); border-radius: 50%; padding: 0.75rem; display: flex; align-items: center; justify-content: center;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                        </div>
+
+                        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
+
+                            <div style="font-weight: 600; color: var(--text-main); margin-bottom: 0.1rem;" th:text="${conv.otherUserUsername}">
                                 User Name
                             </div>
-                            <div style="font-size: 0.875rem; color: #9aa4b2; margin-bottom: 0.5rem;" th:text="'@' + ${conv.otherUserUsername}">
+
+                            <div class="text-muted" style="font-size: 0.85rem; margin-bottom: 0.25rem;" th:text="'@' + ${conv.otherUserUsername}">
                                 @username
                             </div>
-                            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                <span th:if="${conv.lastMessageFromMe}" style="color: #7c3aed; font-size: 0.875rem; font-weight: 600;">Du:</span>
-                                <p style="color: #9aa4b2; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.875rem;" th:text="${conv.lastMessage}">
-                                    Letzte Nachricht...
-                                </p>
+
+                            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; min-width: 0;">
+                                <span th:if="${conv.lastMessageFromMe}" style="color: var(--accent); font-weight: 600; flex-shrink: 0;">Du:</span>
+
+                                <span class="text-muted"
+                                      style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;"
+                                      th:text="${conv.lastMessage}">
+                                        Letzte Nachricht...
+                                </span>
                             </div>
                         </div>
                     </div>
 
-                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; flex-shrink: 0; margin-left: 1rem;">
-                        <span style="font-size: 0.875rem; color: #9aa4b2; white-space: nowrap;" th:text="${#temporals.format(conv.lastMessageTime, 'dd.MM.yyyy')}">
-                            01.01.2025
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; margin-left: 1rem;">
+                        <span class="text-muted" style="font-size: 0.8rem;" th:text="${#temporals.format(conv.lastMessageTime, 'dd.MM.yy')}">
+                            01.01.25
                         </span>
-                        <span style="font-size: 0.75rem; color: #9aa4b2;" th:text="${#temporals.format(conv.lastMessageTime, 'HH:mm')}">
-                            12:00
-                        </span>
-                        <div th:if="${conv.unreadCount > 0}" style="background: #7c3aed; color: white; border-radius: 12px; padding: 0.25rem 0.5rem; font-size: 0.75rem; font-weight: 600; min-width: 20px; text-align: center;" th:text="${conv.unreadCount}">
-                            3
+                        <div th:if="${conv.unreadCount > 0}"
+                             style="background: var(--accent); color: white; border-radius: 10px; padding: 0.1rem 0.5rem; font-size: 0.75rem; font-weight: 700; min-width: 20px; text-align: center;"
+                             th:text="${conv.unreadCount}">
+                            1
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -82,34 +81,20 @@
     <script th:inline="javascript">
         (function() {
             let stompClient = null;
-
             function connect() {
-                const socket = new SockJS('/ws', null, {
-                    transports: ['websocket', 'xhr-streaming', 'xhr-polling']
-                });
-
+                const socket = new SockJS('/ws', null, { transports: ['websocket', 'xhr-streaming', 'xhr-polling'] });
                 stompClient = Stomp.over(socket);
                 stompClient.debug = null;
-
                 stompClient.connect({}, function(frame) {
-                    console.log('Inbox: Verbunden für Live-Updates');
-
                     stompClient.subscribe('/user/queue/messages', function(payload) {
-                        console.log('Neue Nachricht empfangen -> Aktualisiere Inbox...');
                         window.location.reload();
                     });
-
                 }, function(error) {
-                    console.log('Inbox WebSocket Fehler, versuche Reconnect in 5s...');
                     setTimeout(connect, 5000);
                 });
             }
-
             connect();
-
-            window.addEventListener('beforeunload', () => {
-                if (stompClient) stompClient.disconnect();
-            });
+            window.addEventListener('beforeunload', () => { if (stompClient) stompClient.disconnect(); });
         })();
     </script>
 </section>

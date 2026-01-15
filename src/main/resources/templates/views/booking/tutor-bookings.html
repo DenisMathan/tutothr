@@ -1,51 +1,66 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 
-  <head>
-    <title>Erhaltene Buchungen</title>
-  </head>
+<head>
+  <title>Erhaltene Buchungen</title>
+</head>
 
-  <body>
-    <div layout:fragment="mybody">
-      <h1>Erhaltene Buchungen</h1>
-  
-      <div th:if="${bookings.isEmpty()}" class="alert alert-info">Noch keine Buchungen erhalten.</div>
-  
-      <table th:if="${!bookings.isEmpty()}" class="table table-striped">
+<body>
+<section layout:fragment="mybody">
+  <div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
+
+    <h1 class="text-main" style="margin-bottom: 2rem; font-weight: 700;">Erhaltene Buchungen</h1>
+
+    <div th:if="${bookings.isEmpty()}" class="no-ratings">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <p>Noch keine Buchungen erhalten.</p>
+    </div>
+
+    <div th:if="${!bookings.isEmpty()}" class="table-wrapper">
+      <table class="styled-table">
         <thead>
-          <tr>
-            <th>Student</th>
-            <th>Kurs</th>
-            <th>Termin</th>
-            <th>Preis</th>
-            <th>Status</th>
-            <th>Beleg</th>
-          </tr>
+        <tr>
+          <th>Student</th>
+          <th>Kurs</th>
+          <th>Termin</th>
+          <th>Preis</th>
+          <th>Status</th>
+          <th class="text-end">Beleg</th>
+        </tr>
         </thead>
         <tbody>
-          <tr th:each="booking : ${bookings}">
-            <td th:text="${booking.studentName}"></td>
-            <td th:text="${booking.courseName}"></td>
-            <td th:text="${booking.timeSlotDisplay}"></td>
-            <td th:text="${booking.price} + ' €'"></td>
-            <td>
-              <span th:if="${booking.status.name() == 'PENDING'}" class="badge bg-warning">Ausstehend</span> 
-              <span th:if="${booking.status.name() == 'CONFIRMED'}" class="badge bg-success">Bestätigt</span>
-              <span th:if="${booking.status.name() == 'COMPLETED'}" class="badge bg-info">Abgeschlossen</span>
-              <span th:if="${booking.status.name() == 'CANCELLED'}" class="badge bg-secondary">Storniert</span>
-            </td>
-            <td>
-              <a th:if="${booking.invoiceId != null}" 
-                 th:href="@{/tutor/invoice/{id}/download(id=${booking.invoiceId})}" 
-                 class="btn btn-sm btn-info">
-                  Download
-              </a>
-            </td>
-          </tr>
+        <tr th:each="booking : ${bookings}">
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <div style="background: var(--bg-hover); padding: 4px; border-radius: 50%; color: var(--accent);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4 0-7 2-7 4v2h14v-2c0-2-3-4-7-4z"/></svg>
+              </div>
+              <span th:text="${booking.studentName}">Student</span>
+            </div>
+          </td>
+          <td style="font-weight: 600;" th:text="${booking.courseName}"></td>
+          <td class="text-muted" th:text="${booking.timeSlotDisplay}"></td>
+          <td th:text="${#numbers.formatDecimal(booking.price, 1, 2) + ' €'}"></td>
+          <td>
+            <span th:if="${booking.status.name() == 'PENDING'}" class="badge status-pending">Ausstehend</span>
+            <span th:if="${booking.status.name() == 'CONFIRMED'}" class="badge status-confirmed">Bestätigt</span>
+            <span th:if="${booking.status.name() == 'COMPLETED'}" class="badge status-completed">Abgeschlossen</span>
+            <span th:if="${booking.status.name() == 'CANCELLED'}" class="badge status-cancelled">Storniert</span>
+          </td>
+          <td class="text-end">
+            <a th:if="${booking.invoiceId != null}"
+               th:href="@{/tutor/invoice/{id}/download(id=${booking.invoiceId})}"
+               class="btn-secondary btn-sm">
+              Beleg PDF
+            </a>
+          </td>
+        </tr>
         </tbody>
       </table>
     </div>
-  </body>
+  </div>
+</section>
+</body>
 </html>

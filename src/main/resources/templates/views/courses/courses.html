@@ -5,42 +5,40 @@
     <title>Kurse</title>
 </head>
 
-
 <section layout:fragment="mybody">
-    <div class="courses-container">
-        <div class="courses-header">
-            <h1 class="courses-title">Kurse</h1>
+    <div class="container" style="padding: 2rem;">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1 class="text-main" style="margin: 0; font-weight: 700;">Kurse</h1>
             <a th:href="@{/tutor/courses/add}" class="btn-primary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 5v14M5 12h14"/>
                 </svg>
                 Neuer Kurs
             </a>
-
         </div>
 
-        <!-- Falls keine Kurse vorhanden sind -->
-        <div th:if="${#lists.isEmpty(courses)}" class="alert-info">
+        <div th:if="${#lists.isEmpty(courses)}" class="alert-info" style="margin-top: 2rem;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
             </svg>
             Es sind keine Kurse vorhanden.
         </div>
 
-        <!-- Kurskarten-Ansicht -->
-        <div class="row" th:if="${!#lists.isEmpty(courses)}">
-            <div class="mb-4" th:each="course : ${courses}">
-                <!-- <div th:replace="~{views/courses/course-card :: course-card (~{::course=${course}})}"></div> -->
+        <div class="courses-grid" th:if="${!#lists.isEmpty(courses)}">
+            <th:block th:each="course : ${courses}">
                 <div th:replace="~{fragments/courses/course-card :: course-card(${course})}"></div>
-            </div>
+            </th:block>
         </div>
+
     </div>
+
     <script type="text/javascript">
         function assignCourse(event, courseId) {
             event.stopPropagation();
             event.preventDefault();
             console.log("Assigning course with ID:", courseId);
-            // Hier können Sie AJAX-Aufrufe oder andere Logik hinzufügen, um den Kurs zuzuweisen
+            // AJAX Logik hier...
         }
     </script>
 </section>
