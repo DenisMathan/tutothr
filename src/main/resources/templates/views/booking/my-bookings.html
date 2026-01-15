@@ -1,74 +1,87 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 
-  <head>
-    <title>Meine Buchungen</title>
-  </head>
+<head>
+  <title>Meine Buchungen</title>
+</head>
 
-  <body>
-    <div layout:fragment="mybody">
-      <h1>Meine Buchungen</h1>
-      
-      <div th:if="${param.success}" class="alert alert-success">Zahlung erfolgreich!</div>
-      <div th:if="${param.error}" class="alert alert-danger">Zahlung fehlgeschlagen.</div>
-      <div th:if="${param.cancelled}" class="alert alert-warning">Zahlung abgebrochen.</div>
-  
-      <div th:if="${bookings.isEmpty()}" class="alert alert-info">Du hast noch keine Buchungen.</div>
-  
-      <table th:if="${!bookings.isEmpty()}" class="table table-striped">
+<body>
+<section layout:fragment="mybody">
+  <div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
+
+    <h1 class="text-main" style="margin-bottom: 2rem; font-weight: 700;">Meine Buchungen</h1>
+
+    <div th:if="${param.success}" class="alert-info" style="border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.1); margin-bottom: 1.5rem;">
+      Zahlung erfolgreich!
+    </div>
+    <div th:if="${param.error}" class="alert-info" style="border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.1); margin-bottom: 1.5rem;">
+      Zahlung fehlgeschlagen.
+    </div>
+
+    <div th:if="${bookings.isEmpty()}" class="no-ratings">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <p>Du hast noch keine Kurse gebucht.</p>
+      <div style="margin-top: 1rem;"><a th:href="@{/courses}" class="btn-primary">Kurse entdecken</a></div>
+    </div>
+
+    <div th:if="${!bookings.isEmpty()}" class="table-wrapper">
+      <table class="styled-table">
         <thead>
-          <tr>
-            <th>Kurs</th>
-            <th>Termin</th>
-            <th>Preis</th>
-            <th>Status</th>
-            <th>Aktion</th>
-            <th>Rechnung</th>
-          </tr>
+        <tr>
+          <th>Kurs</th>
+          <th>Termin</th>
+          <th>Preis</th>
+          <th>Status</th>
+          <th>Aktion</th>
+          <th class="text-end">Beleg</th>
+        </tr>
         </thead>
         <tbody>
-          <tr th:each="booking : ${bookings}">
-            <td th:text="${booking.courseName}"></td>
-            <td th:text="${booking.timeSlotDisplay}"></td>
-            <td th:text="${booking.price} + ' €'"></td>
-            <td>
-              <span th:if="${booking.status.name() == 'PENDING'}" class="badge bg-warning">Ausstehend</span> 
-              <span th:if="${booking.status.name() == 'CONFIRMED'}" class="badge bg-success">Bestätigt</span> 
-              <span th:if="${booking.status.name() == 'COMPLETED'}" class="badge bg-info">Abgeschlossen</span> 
-              <span th:if="${booking.status.name() == 'CANCELLED'}" class="badge bg-secondary">Storniert</span>
-            </td>
-            <td>
-              <a th:if="${booking.status.name() == 'PENDING'}" 
-                th:href="@{/booking/{id}/pay(id=${booking.id})}" 
-                class="btn btn-sm btn-success">
-                  Jetzt bezahlen
-              </a>
-            </td>
-            <td>
-              <a th:if="${booking.invoiceId != null}" 
-                th:href="@{/invoice/{id}/download(id=${booking.invoiceId})}" 
-                class="btn btn-sm btn-info">
-                  Download
-              </a>
-          </tr>
+        <tr th:each="booking : ${bookings}">
+          <td style="font-weight: 600;" th:text="${booking.courseName}"></td>
+          <td class="text-muted" th:text="${booking.timeSlotDisplay}"></td>
+          <td th:text="${#numbers.formatDecimal(booking.price, 1, 2) + ' €'}"></td>
+          <td>
+            <span th:if="${booking.status.name() == 'PENDING'}" class="badge status-pending">Ausstehend</span>
+            <span th:if="${booking.status.name() == 'CONFIRMED'}" class="badge status-confirmed">Bestätigt</span>
+            <span th:if="${booking.status.name() == 'COMPLETED'}" class="badge status-completed">Abgeschlossen</span>
+            <span th:if="${booking.status.name() == 'CANCELLED'}" class="badge status-cancelled">Storniert</span>
+          </td>
+          <td>
+            <a th:if="${booking.status.name() == 'PENDING'}"
+               th:href="@{/booking/{id}/pay(id=${booking.id})}"
+               class="btn-primary btn-sm">
+              Jetzt bezahlen
+            </a>
+          </td>
+          <td class="text-end">
+            <a th:if="${booking.invoiceId != null}"
+               th:href="@{/invoice/{id}/download(id=${booking.invoiceId})}"
+               class="btn-secondary btn-sm" title="Rechnung herunterladen">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              PDF
+            </a>
+        </tr>
         </tbody>
       </table>
     </div>
-    
-    <script>
-    	setTimeout(function() {
-        	['successAlert', 'errorAlert', 'cancelledAlert'].forEach(function(id) {
-            	var alert = document.getElementById(id);
-            	if (alert) {
-                	alert.style.transition = 'opacity 1s';
-                	alert.style.opacity = '0';
-                	setTimeout(function() { alert.remove(); }, 1000);
-            	}
-        	});
-    	}, 3000);
-	</script>
-  
-  </body>
+
+  </div>
+
+  <script>
+    // Auto-hide Alerts
+    setTimeout(function() {
+      const alerts = document.querySelectorAll('.alert-info');
+      alerts.forEach(alert => {
+        alert.style.transition = 'opacity 0.5s ease';
+        alert.style.opacity = '0';
+        setTimeout(() => alert.remove(), 500);
+      });
+    }, 3000);
+  </script>
+
+</section>
+</body>
 </html>
