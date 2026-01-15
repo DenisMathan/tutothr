@@ -58,7 +58,7 @@ public class MessageController {
             model.addAttribute("pendingReportsCount", 0);
         }
 
-        return "messages/inbox";
+        return "views/messages/inbox";
     }
 
     @GetMapping("/new")
@@ -75,7 +75,7 @@ public class MessageController {
             model.addAttribute("course", course);
         }
 
-        return "messages/new-message";
+        return "views/messages/new-message";
     }
 
     @PostMapping("/send")
@@ -116,7 +116,7 @@ public class MessageController {
         model.addAttribute("otherUser", otherUser);
         model.addAttribute("currentUserId", currentUserId);
 
-        return "messages/conversation";
+        return "/views/messages/conversation";
     }
 
     @PostMapping("/conversation/{userId}/reply")

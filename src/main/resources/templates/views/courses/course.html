@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}">
 
 <head>
     <title th:text="${course.title}">Kurs Details</title>
@@ -49,7 +50,7 @@
             <div class="course-actions-row" th:if="${!course.isOwner}"
                  style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
 
-                <a th:href="@{/courses/{id}/addRating(id=${course.id})}" class="btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                <a th:href="@{/courses/{id}/addRating(id=${course.id})}" class="btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 20h9"></path>
                         <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
@@ -76,6 +77,10 @@
                     </svg>
                     Melden
                 </button>
+
+                <a th:href="@{/course/{id}/book(id=${course.id})}" class="btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;" sec:authorize="hasRole('STUDENT')">
+                    Kurs buchen
+                </a>
             </div>
 
             <div class="course-section">

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
 <head><title>Dashboard</title></head>
 
 <section layout:fragment="mybody">
     <div class="container" style="padding: 2rem;">
 
-        <h1 class="mb-4">Willkommen zurück, <span th:text="${user.username}">User</span>! 👋</h1>
+        <h1 class="mb-4">Willkommen zurück, <span th:text="${user.username}">User</span>!</h1>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem;">
 
@@ -104,18 +104,48 @@
             <h3 style="color: #e6eef8; margin-bottom: 1rem;">Schnellzugriff</h3>
             <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
 
-                <a th:href="@{/courses/create}" class="btn-primary" th:if="${stats.activeCourses != null}">
+                <a th:href="@{/courses/create}" class="btn-primary" sec:authorize="hasRole('TUTOR')">
                     + Kurs erstellen
                 </a>
-                <a th:href="@{/tutor/bookings}" class="btn-secondary" th:if="${stats.receivedBookings != null}">
+                <a th:href="@{/tutor/bookings}" class="btn-primary" sec:authorize="hasRole('TUTOR')">
                     Buchungen verwalten
                 </a>
 
-                <a th:href="@{/courses}" class="btn-primary" th:if="${stats.myBookings != null}">
+                <a th:href="@{/courses}" class="btn-primary">
                     Neue Kurse entdecken
                 </a>
-                <a th:href="@{/my-bookings}" class="btn-secondary" th:if="${stats.myBookings != null}">
+                <a th:href="@{/my-bookings}" class="btn-primary" >
                     Zu meinen Buchungen
+                </a>
+
+            </div>
+        </div>
+
+        <div style="margin-top: 3rem;" sec:authorize="hasRole('ADMIN')">
+            <h3 style="color: #e6eef8; margin-bottom: 1rem;">Admin-Bereich</h3>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+
+                <a th:href="@{/admin/all}" class="btn-primary">
+                    User Management
+                </a>
+                <a th:href="@{/admin/categories}" class="btn-primary">
+                    Category Management
+                </a>
+                <a th:href="@{/admin/reports}"
+                   style="display: flex; align-items: center; gap: 0.5rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); padding: 0.75rem 1rem; border-radius: 8px; color: #ef4444; text-decoration: none; transition: all 0.2s;"
+                   onmouseover="this.style.background='rgba(239, 68, 68, 0.15)'"
+                   onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    <span>Moderation</span>
+                    <span th:if="${pendingReportsCount > 0}"
+                          style="background: #ef4444; color: white; border-radius: 12px; padding: 0.25rem 0.5rem; font-size: 0.75rem; font-weight: 600; min-width: 20px; text-align: center;"
+                          th:text="${pendingReportsCount}">
+                    0
+                </span>
                 </a>
 
             </div>
