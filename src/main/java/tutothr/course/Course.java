@@ -3,11 +3,19 @@ package tutothr.course;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import tutothr.category.Category;
 import tutothr.chapter.Chapter;
-import tutothr.rating.Rating;
 import tutothr.common.BaseEntity;
+import tutothr.hashtag.Hashtag;
+import tutothr.rating.Rating;
 
 @Entity
 public class Course extends BaseEntity {
@@ -26,10 +34,17 @@ public class Course extends BaseEntity {
     @OneToMany(mappedBy = "course", cascade = CascadeType.PERSIST)
     private List<Rating> ratings = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Chapter> chapters = new ArrayList<>();
-
+    
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+    	name = "courses_hashtags",
+    	joinColumns = @JoinColumn(name = "course_id"),
+    	inverseJoinColumns = @JoinColumn(name = "hashtag_id")
+    )
+    private List<Hashtag> hashtags = new ArrayList<>();
+    
     public List<Chapter> getChapters() {
         return chapters;
     }
@@ -93,6 +108,14 @@ public class Course extends BaseEntity {
         this.categories = categories;
     }
 
+    public List<Hashtag> getHashtags() {
+    	return hashtags;
+    }
+    
+    public void setHashtags(List<Hashtag> hashtags) {
+    	this.hashtags = hashtags;
+    }
+    
     public double avgRating() {
         return ratings.stream()
                 .mapToInt(Rating::getStars)

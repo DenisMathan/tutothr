@@ -1,10 +1,7 @@
-package tutothr.booking.interfaces;
+package tutothr.booking.timeslot;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import tutothr.booking.TimeSlot;
-import tutothr.booking.TimeSlotDTO;
 
 @Mapper(componentModel = "spring")
 public interface TimeSlotMapperI {

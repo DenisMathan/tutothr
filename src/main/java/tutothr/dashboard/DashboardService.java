@@ -3,10 +3,11 @@ package tutothr.dashboard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import tutothr.booking.interfaces.BookingRepositoryI;
+
 import tutothr.course.interfaces.CourseRepositoryI;
 import tutothr.message.interfaces.MessageRepositoryI;
 import tutothr.user.User;
+import tutothr.booking.BookingRepositoryI;
 import tutothr.common.utils.enums.RolesEnum;
 
 import java.time.LocalDateTime;

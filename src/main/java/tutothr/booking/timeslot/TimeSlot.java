@@ -1,4 +1,4 @@
-package tutothr.booking;
+package tutothr.booking.timeslot;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

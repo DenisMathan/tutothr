@@ -7,9 +7,10 @@ import org.mapstruct.Mapper;
 import tutothr.chapter.interfaces.ChapterMapperI;
 import tutothr.course.Course;
 import tutothr.course.CourseDTO;
+import tutothr.hashtag.HashtagMapperI;
 
 // @Mapper(componentModel = "spring", uses = { CourseMapper.class })
-@Mapper(componentModel = "spring", uses = { ChapterMapperI.class })
+@Mapper(componentModel = "spring", uses = { ChapterMapperI.class, HashtagMapperI.class })
 public interface CourseMapperI {
     CourseDTO toDTO(Course course);
 

@@ -1,46 +1,27 @@
-package tutothr.booking;
+package tutothr.booking.invoice;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import tutothr.common.BaseEntity;
+import tutothr.common.BaseDTO;
 
-@Entity
-@Table(name = "invoice")
-public class Invoice extends BaseEntity {
-	private String invoiceNumber; // z. B. 2026-0001
-
-	@OneToOne
-	@JoinColumn(name = "booking_id", nullable = false)
-	private Booking booking;
-
-	// Snapshot-Felder (Werte zum Zeitpunkt der Zahlung)
+public class InvoiceDTO extends BaseDTO {
+	private String invoiceNumber;
+	private Long bookingId;
+	
+	// Snapshot-Felder
 	private String studentName;
 	private String tutorName;
 	private String courseName;
 	private float price;
 	private LocalDateTime paidAt;
-
-	public Invoice() {
-		// Default-Konstruktor (fuer JPA)
-	}
-
-	public Invoice(String invoiceNumber, Booking booking, String studentName, String tutorName, String courseName,
-			float price, LocalDateTime paidAt) {
-		this.invoiceNumber = invoiceNumber;
-		this.booking = booking;
-		this.studentName = studentName;
-		this.tutorName = tutorName;
-		this.courseName = courseName;
-		this.price = price;
-		this.paidAt = paidAt;
+	
+	@Override
+	public void initFields() {
+		// Kein Formular noetig
 	}
 
 	// Getter und Setter
-
+	
 	public String getInvoiceNumber() {
 		return invoiceNumber;
 	}
@@ -49,12 +30,12 @@ public class Invoice extends BaseEntity {
 		this.invoiceNumber = invoiceNumber;
 	}
 
-	public Booking getBooking() {
-		return booking;
+	public Long getBookingId() {
+		return bookingId;
 	}
 
-	public void setBooking(Booking booking) {
-		this.booking = booking;
+	public void setBookingId(Long bookingId) {
+		this.bookingId = bookingId;
 	}
 
 	public String getStudentName() {

@@ -1,4 +1,4 @@
-package tutothr.booking;
+package tutothr.booking.invoice;
 
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
@@ -16,9 +16,8 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
-import tutothr.booking.interfaces.InvoiceMapperI;
-import tutothr.booking.interfaces.InvoiceRepositoryI;
-import tutothr.booking.interfaces.BookingRepositoryI;
+import tutothr.booking.Booking;
+import tutothr.booking.BookingRepositoryI;
 
 @Service
 public class InvoiceService {

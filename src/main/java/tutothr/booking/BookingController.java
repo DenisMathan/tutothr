@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import tutothr.auth.config.MyUserDetails;
+import tutothr.booking.timeslot.TimeSlotDTO;
+import tutothr.booking.timeslot.TimeSlotService;
 import tutothr.course.Course;
 import tutothr.course.CourseDTO;
 import tutothr.course.CourseService;

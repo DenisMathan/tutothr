@@ -1,10 +1,7 @@
-package tutothr.booking.interfaces;
+package tutothr.booking.invoice;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import tutothr.booking.Invoice;
-import tutothr.booking.InvoiceDTO;
 
 @Mapper(componentModel = "spring")
 public interface InvoiceMapperI {

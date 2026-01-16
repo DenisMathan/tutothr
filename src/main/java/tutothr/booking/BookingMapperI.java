@@ -1,10 +1,7 @@
-package tutothr.booking.interfaces;
+package tutothr.booking;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import tutothr.booking.Booking;
-import tutothr.booking.BookingDTO;
 
 @Mapper(componentModel = "spring")
 public interface BookingMapperI {

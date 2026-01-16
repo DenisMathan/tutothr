@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import tutothr.booking.InvoiceService;
 import tutothr.booking.BookingDTO;
 import tutothr.booking.BookingService;
 import tutothr.booking.BookingStatus;
+import tutothr.booking.invoice.InvoiceService;
 
 @Controller
 public class PaymentController {

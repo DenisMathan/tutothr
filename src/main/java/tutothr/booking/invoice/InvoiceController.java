@@ -1,4 +1,4 @@
-package tutothr.booking;
+package tutothr.booking.invoice;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package tutothr.booking;
+package tutothr.booking.timeslot;
 
 import java.util.List;
 import java.util.stream.Collector;
@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import tutothr.booking.interfaces.TimeSlotMapperI;
-import tutothr.booking.interfaces.TimeSlotRepositoryI;
 import tutothr.user.User;
 
 @Service

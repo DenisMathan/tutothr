@@ -5,9 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import tutothr.booking.interfaces.BookingMapperI;
-import tutothr.booking.interfaces.BookingRepositoryI;
-import tutothr.booking.interfaces.TimeSlotRepositoryI;
+import tutothr.booking.timeslot.TimeSlot;
+import tutothr.booking.timeslot.TimeSlotRepositoryI;
 import tutothr.course.Course;
 import tutothr.course.interfaces.CourseRepositoryI;
 import tutothr.user.User;

@@ -1,4 +1,4 @@
-package tutothr.booking;
+package tutothr.booking.timeslot;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

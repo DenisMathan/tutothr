@@ -67,10 +67,34 @@ INSERT INTO course (title, description, price, rating, owner_id, created_at, upd
 INSERT INTO course (title, description, price, rating, owner_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Calculus I', 'An introduction to differential and integral calculus.', 79.99, 4.4, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO course (title, description, price, rating, owner_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Chemistry Fundamentals', 'Understand the building blocks of matter.', 54.99, 4.5, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO course (title, description, price, rating, owner_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Music Theory 101', 'Learn the basics of music theory and notation.', 44.99, 4.3, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+
+-- ========================================================================================================================
 -- Paul - Fuer Tests
 INSERT INTO course (title, description, price, rating, owner_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
 VALUES ('Tutor-Testkurs', 'Ein Testkurs', 29.99, 4.0, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 
+-- Hashtags (mit creator_id)
+INSERT INTO hashtag (name, creator_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES ('Anfaenger', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO hashtag (name, creator_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES ('Klausurvorbereitung', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO hashtag (name, creator_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES ('Fortgeschritten', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO hashtag (name, creator_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES ('Praxisorientiert', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO hashtag (name, creator_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES ('Theorie', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+
+-- Verknuepfungen: courses_hashtags (course_id, hashtag_id)
+INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (1, 1);
+INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (1, 2);
+INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (2, 1);
+INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (2, 5);
+INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (3, 3);
+INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (3, 4);
+INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (5, 2);
+INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (5, 3);
+-- ========================================================================================================================
 
 INSERT INTO course_categories (id_course, id_category) VALUES (1, 1);
 INSERT INTO course_categories (id_course, id_category) VALUES (1, 2);

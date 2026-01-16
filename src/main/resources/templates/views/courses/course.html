@@ -104,6 +104,73 @@
                     </span>
                 </div>
             </div>
+            
+            <!-- HASHTAGS -->
+            <div class="course-section" 
+              th:if="${!#lists.isEmpty(course.hashtags)} or ${#authorization.expression('isAuthenticated()')}">
+                <h2 class="section-title">
+                  <svg width="20" 
+                    height="20" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    stroke-width="2">
+                      <path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/>
+                  </svg>
+                  Hashtags
+                </h2>
+                <div class="d-flex flex-wrap align-items-center gap-1">
+                  <!-- Bestehende Hashtags -->
+                  <div th:each="tag : ${course.hashtags}" class="d-inline-flex align-items-center me-1">
+                    <a th:href="@{/courses(hashtag=${tag.name})}" 
+                      class="badge rounded-pill bg-secondary text-decoration-none">
+                        #<span th:text="${tag.name}"></span>
+                    </a>
+                    <!-- Entfernen-Button (nur für Berechtigte) -->
+                    <form th:if="${course.isOwner or #authorization.expression('hasRole(''ADMIN'')')}" 
+                      th:action="@{/courses/{courseId}/hashtags/{hashtagId}(courseId=${course.id}, hashtagId=${tag.id})}" 
+                      method="post" 
+                      class="d-inline ms-1">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" 
+                          class="btn btn-link btn-sm p-0 text-danger" 
+                          style="font-size: 0.8rem; line-height: 1;"
+                          title="Hashtag entfernen"
+                          onclick="return confirm('Hashtag entfernen?');">
+                            ×
+                        </button>
+                    </form>
+                  </div>
+
+                  <!-- Hinzufuegen-Button (für eingeloggte User) -->
+                  <div th:if="${#authorization.expression('isAuthenticated()')}">
+                    <button type="button" 
+                      class="badge rounded-pill bg-primary text-decoration-none border-0"
+                      onclick="document.getElementById('hashtag-input').classList.toggle('d-none');"
+                      title="Hashtag hinzufügen">
+                        +
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Inline-Eingabefeld (versteckt) -->
+                <div id="hashtag-input" class="d-none mt-2">
+                  <form th:action="@{/courses/{id}/hashtags(id=${course.id})}" method="post" class="d-flex gap-2">
+                    <input type="text" 
+                      name="hashtags" 
+                      class="form-control form-control-sm" 
+                      placeholder="Statistik, Mathe, Klausur"
+                      style="max-width: 300px;"/>
+                    <button type="submit" class="btn btn-sm btn-primary">Hinzufügen</button>
+                    <button type="button" 
+                      class="btn btn-sm btn-secondary"
+                      onclick="document.getElementById('hashtag-input').classList.add('d-none');">
+                        Abbrechen
+                    </button>
+                  </form>
+                  <small class="text-muted">Mehrere Hashtags mit Komma trennen</small>
+                </div>
+            </div>
 
             <div class="course-section is-last">
                 <h2 class="section-title">

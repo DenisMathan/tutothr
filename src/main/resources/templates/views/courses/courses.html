@@ -1,47 +1,236 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:th="http://www.thymeleaf.org" 
+  layout:decorate="~{layout}">
 
-<head>
+  <head>
     <title>Kurse</title>
-</head>
+  </head>
 
-
-<section layout:fragment="mybody">
+  <section layout:fragment="mybody">
     <div class="courses-container">
-        <div class="courses-header">
-            <h1 class="courses-title">Kurse</h1>
-            <a th:href="@{/tutor/courses/add}" class="btn-primary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 5v14M5 12h14"/>
-                </svg>
-                Neuer Kurs
-            </a>
-
-        </div>
-
-        <!-- Falls keine Kurse vorhanden sind -->
-        <div th:if="${#lists.isEmpty(courses)}" class="alert-info">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-            </svg>
-            Es sind keine Kurse vorhanden.
-        </div>
-
-        <!-- Kurskarten-Ansicht -->
-        <div class="row" th:if="${!#lists.isEmpty(courses)}">
-            <div class="mb-4" th:each="course : ${courses}">
-                <!-- <div th:replace="~{views/courses/course-card :: course-card (~{::course=${course}})}"></div> -->
-                <div th:replace="~{fragments/courses/course-card :: course-card(${course})}"></div>
+      <div class="courses-header">
+        <h1 class="courses-title">Kurse</h1>
+        <a th:href="@{/tutor/courses/add}" class="btn-primary"> 
+          <svg width="16" 
+            height="16" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            stroke-width="2">
+              <path d="M12 5v14M5 12h14"/>
+          </svg> 
+          Neuer Kurs
+        </a>
+      </div>
+  
+      <!-- Suchformular -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <form th:action="@{/courses}" method="get" th:object="${searchDTO}">
+  
+            <!-- Suchbegriff -->
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label text-dark fw-semibold">Suchbegriff</label>
+              <div class="col-sm-6">
+                <input type="text" class="form-control" th:field="*{text}" placeholder="Titel oder Beschreibung...">
+              </div>
             </div>
+  
+            <!-- Tutor -->
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label text-dark fw-semibold">Tutor</label>
+              <div class="col-sm-6">
+                <input type="text" class="form-control" th:field="*{tutorName}" placeholder="Tutor-Name...">
+              </div>
+            </div>
+  
+            <!-- Kategorien (Dropdown mit Checkboxen) -->
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label text-dark fw-semibold">Kategorien</label>
+              <div class="col-sm-6">
+                <div class="dropdown">
+                  <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" 
+                    type="button"
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false">
+                      Kategorien wählen...
+                  </button>
+                  <ul class="dropdown-menu w-100">
+                    <li th:each="cat : ${categories}" class="px-3 py-1">
+                      <div class="form-check">
+                        <input type="checkbox" 
+                          class="form-check-input" 
+                          th:field="*{categoryIds}" 
+                          th:value="${cat.id}"
+                          th:id="${'cat-' + cat.id}"> 
+                        <label class="form-check-label" th:for="${'cat-' + cat.id}" th:text="${cat.title}"></label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Max. Preis -->
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label text-dark fw-semibold">Max. Preis</label>
+              <div class="col-sm-6">
+                <input type="number" 
+                  class="form-control" 
+                  th:field="*{maxPrice}" 
+                  step="0.1" 
+                  min="0"
+                  placeholder="z.B. 50.00">
+              </div>
+            </div>
+  
+            <!-- Mind. Bewertung -->
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label text-dark fw-semibold">Mind. Bewertung</label>
+              <div class="col-sm-6">
+                <select class="form-select" th:field="*{minRating}">
+                  <option value="">-</option>
+                  <option value="1">1+ Sterne</option>
+                  <option value="2">2+ Sterne</option>
+                  <option value="3">3+ Sterne</option>
+                  <option value="4">4+ Sterne</option>
+                  <option value="5">5 Sterne</option>
+                </select>
+              </div>
+            </div>
+  
+            <!-- Sortierung -->
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label text-dark fw-semibold">Sortierung</label>
+              <div class="col-sm-6">
+                <select class="form-select" th:field="*{sortBy}">
+                  <option value="CREATED_AT">Neueste zuerst</option>
+                  <option value="PRICE">Preis</option>
+                  <option value="RATING">Bewertung</option>
+                  <option value="TITLE">Alphabetisch</option>
+                </select>
+              </div>
+            </div>
+  
+            <!-- Richtung -->
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label text-dark fw-semibold">Richtung</label>
+              <div class="col-sm-6">
+                <select class="form-select" th:field="*{sortDirection}">
+                  <option value="DESC">Absteigend</option>
+                  <option value="ASC">Aufsteigend</option>
+                </select>
+              </div>
+            </div>
+  
+            <!-- Verfuegbarkeit -->
+            <div class="row mb-3">
+              <div class="col-sm-6 offset-sm-3">
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" th:field="*{onlyAvailable}" id="onlyAvailable">
+                  <label class="form-check-label text-dark" for="onlyAvailable">Termin verfügbar</label>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Such-Button -->
+            <div class="row">
+              <div class="col-sm-6 offset-sm-3">
+                <button type="submit" class="btn btn-primary">Suchen</button>
+              </div>
+            </div>
+  
+            <!-- Hidden: Seite zuruecksetzen -->
+            <input type="hidden" name="page" value="0">
+          </form>
         </div>
+      </div>
+  
+      <!-- Ergebnis-Info -->
+      <div class="mb-3" th:if="${totalItems != null}">
+        <span th:text="${totalItems} + ' Kurs(e) gefunden'"></span>
+      </div>
+  
+      <!-- Falls keine Kurse vorhanden sind -->
+      <div th:if="${#lists.isEmpty(courses)}" class="alert-info">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+        Keine Kurse gefunden.
+      </div>
+  
+      <!-- Kurskarten-Ansicht -->
+      <div class="row" th:if="${!#lists.isEmpty(courses)}">
+        <div class="mb-4" th:each="course : ${courses}">
+          <div th:replace="fragments/courses/course-card::course-card(${course})"></div>
+        </div>
+      </div>
+  
+      <!-- Paginierung -->
+      <nav th:if="${totalPages > 1}" aria-label="Kurs-Seiten">
+        <ul class="pagination justify-content-center">
+          <!-- Zurueck -->
+          <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+            <a class="page-link"
+              th:href="@{/courses(
+                             text=${searchDTO.text}, 
+                             categoryIds=${searchDTO.categoryIds},
+                             maxPrice=${searchDTO.maxPrice},
+                             minRating=${searchDTO.minRating}, 
+                             tutorName=${searchDTO.tutorName},
+                             onlyAvailable=${searchDTO.onlyAvailable},
+                             hashtag=${searchDTO.hashtag},
+                             sortBy=${searchDTO.sortBy}, 
+                             sortDirection=${searchDTO.sortDirection},
+                             page=${currentPage - 1}
+                         )}">
+              &laquo; 
+              Zurück 
+            </a>
+          </li>
+  
+          <!-- Seitenzahlen -->
+          <li class="page-item" 
+            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+            th:classappend="${i == currentPage} ? 'active'">
+              <a class="page-link"
+                th:href="@{/courses(
+                             text=${searchDTO.text}, 
+                             categoryIds=${searchDTO.categoryIds},
+                             maxPrice=${searchDTO.maxPrice},
+                             minRating=${searchDTO.minRating}, 
+                             tutorName=${searchDTO.tutorName},
+                             onlyAvailable=${searchDTO.onlyAvailable},
+                             hashtag=${searchDTO.hashtag},
+                             sortBy=${searchDTO.sortBy}, 
+                             sortDirection=${searchDTO.sortDirection},
+                             page=${i}
+                         )}"
+                th:text="${i + 1}"> 
+              </a>
+          </li>
+  
+          <!-- Vor -->
+          <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+            <a class="page-link"
+              th:href="@{/courses(
+                             text=${searchDTO.text}, 
+                             categoryIds=${searchDTO.categoryIds},
+                             maxPrice=${searchDTO.maxPrice},
+                             minRating=${searchDTO.minRating}, 
+                             tutorName=${searchDTO.tutorName},
+                             onlyAvailable=${searchDTO.onlyAvailable},
+                             hashtag=${searchDTO.hashtag},
+                             sortBy=${searchDTO.sortBy}, 
+                             sortDirection=${searchDTO.sortDirection},
+                             page=${currentPage + 1}
+                         )}">
+              Vor &raquo; 
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
-    <script type="text/javascript">
-        function assignCourse(event, courseId) {
-            event.stopPropagation();
-            event.preventDefault();
-            console.log("Assigning course with ID:", courseId);
-            // Hier können Sie AJAX-Aufrufe oder andere Logik hinzufügen, um den Kurs zuzuweisen
-        }
-    </script>
-</section>
+  </section>
 </html>

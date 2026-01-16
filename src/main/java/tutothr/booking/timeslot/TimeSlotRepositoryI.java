@@ -1,8 +1,7 @@
-package tutothr.booking.interfaces;
+package tutothr.booking.timeslot;
 
 import java.util.List;
 
-import tutothr.booking.TimeSlot;
 import tutothr.common.MyBaseRepository;
 import tutothr.user.User;
 

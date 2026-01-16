@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import tutothr.category.CategoryDTO;
 import tutothr.chapter.ChapterDTO;
 import tutothr.common.BaseDTO;
+import tutothr.hashtag.HashtagDTO;
 import tutothr.rating.Rating;
 
 public class CourseDTO extends BaseDTO {
@@ -30,6 +31,8 @@ public class CourseDTO extends BaseDTO {
     private double avgRating;
     private List<Rating> ratings = new ArrayList<>();
 
+    private List<HashtagDTO> hashtags = new ArrayList<>();
+    
     @Override
     public void initFields() {
         formFields = List.of(
@@ -117,5 +120,13 @@ public class CourseDTO extends BaseDTO {
     }
     public void setAddChapter(ChapterDTO addChapter) {
         this.addChapter = addChapter;
+    }
+    
+    public List<HashtagDTO> getHashtags() {
+    	return hashtags;
+    }
+    
+    public void setHashtags(List<HashtagDTO> hashtags) {
+    	this.hashtags = hashtags;
     }
 }

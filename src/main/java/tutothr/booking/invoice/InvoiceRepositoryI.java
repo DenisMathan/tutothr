@@ -1,11 +1,10 @@
-package tutothr.booking.interfaces;
+package tutothr.booking.invoice;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import tutothr.booking.Invoice;
 import tutothr.booking.Booking;
 import tutothr.common.MyBaseRepository;
 

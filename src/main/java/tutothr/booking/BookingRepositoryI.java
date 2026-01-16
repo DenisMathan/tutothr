@@ -1,4 +1,4 @@
-package tutothr.booking.interfaces;
+package tutothr.booking;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -6,9 +6,8 @@ import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import tutothr.booking.Booking;
-import tutothr.booking.BookingStatus;
-import tutothr.booking.TimeSlot;
+
+import tutothr.booking.timeslot.TimeSlot;
 import tutothr.common.MyBaseRepository;
 import tutothr.course.Course;
 import tutothr.user.User;

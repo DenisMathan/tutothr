@@ -7,6 +7,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import tutothr.booking.invoice.Invoice;
+import tutothr.booking.timeslot.TimeSlot;
 import tutothr.common.BaseEntity;
 import tutothr.course.Course;
 import tutothr.user.User;
