@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+<head>
+    <title>Nachrichten</title>
+</head>
+
+<section layout:fragment="mybody">
+    <div class="container" style="max-width: 600px; margin: 2rem auto; padding: 0 1rem;">
+
+        <div style="margin-bottom: 2rem;">
+            <h2 class="text-main" style="margin-bottom: 0.5rem; font-weight: 700;">Nachricht schreiben</h2>
+
+            <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <p class="text-muted" th:if="${recipient}" style="margin: 0;">
+                    An: <strong style="color: var(--text-main);" th:text="${recipient.username}">User</strong>
+                </p>
+                <p class="text-muted" th:if="${course}" style="margin: 0;">
+                    Bezüglich: <span style="color: var(--accent);" th:text="${course.title}">Kurs</span>
+                </p>
+            </div>
+        </div>
+
+        <form th:action="@{/messages/send}" method="post" class="card-base form-wrapper">
+
+            <input type="hidden" name="recipientId" th:value="${recipient.id}" />
+            <input type="hidden" name="courseId" th:value="${course?.id}" th:if="${course}" />
+
+            <div style="margin-bottom: 1.5rem;">
+                <label class="form-label" for="content">
+                    Deine Nachricht
+                </label>
+                <textarea
+                        id="content"
+                        name="content"
+                        class="form-input"
+                        rows="8"
+                        placeholder="Schreibe hier..."
+                        required
+                        minlength="10"
+                        maxlength="1000"
+                        style="resize: vertical; min-height: 150px;"></textarea>
+
+                <small class="text-muted" style="font-size: 0.8rem; display: block; margin-top: 0.5rem; text-align: right;">
+                    Max. 1000 Zeichen
+                </small>
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                <a th:href="@{/courses/{id}(id=${course?.id})}" class="btn-secondary">
+                    Abbrechen
+                </a>
+                <button type="submit" class="btn-primary" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"/>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                    Senden
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</section>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+<head>
+    <title>Konversation</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+
+<section layout:fragment="mybody">
+    <div class="container" style="max-width: 900px; margin: 0 auto; padding: 2rem 1rem;">
+
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+            <a th:href="@{/messages/inbox}" class="btn-secondary" style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Zurück
+            </a>
+
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
+                <div style="background: var(--bg-hover); border-radius: 50%; padding: 0.5rem; display: flex;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <div>
+                    <div style="font-weight: 600; color: var(--text-main);" th:text="${otherUser.username}">User</div>
+                    <div id="typing-indicator" style="display: none; font-size: 0.8rem; color: var(--accent); font-style: italic;">
+                        tippt gerade...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-card">
+
+            <div id="messages-container" class="chat-messages">
+
+                <div th:if="${#lists.isEmpty(messages)}" id="no-messages" style="text-align: center; padding: 2rem;" class="text-muted">
+                    Noch keine Nachrichten in dieser Konversation
+                </div>
+
+                <div th:each="message : ${messages}"
+                     th:if="${message.sender.id != currentUserId}"
+                     th:data-message-id="${message.id}"
+                     class="message-bubble"
+                     style="display: flex; justify-content: flex-start;">
+
+                    <div style="max-width: 75%;" class="message-bubble-received">
+                        <div style="font-size: 0.75rem; color: var(--accent); font-weight: 700; margin-bottom: 0.25rem;">
+                            <span th:text="${message.sender.username}">Sender</span>
+                        </div>
+                        <p style="margin: 0 0 0.5rem 0; word-wrap: break-word; line-height: 1.5;" th:text="${message.content}"></p>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; opacity: 0.7;">
+                            <button th:onclick="'openReportModal(\'MESSAGE\', ' + ${message.id} + ')'"
+                                    type="button"
+                                    class="report-button"
+                                    style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.75rem; padding: 0; display: flex; align-items: center; gap: 4px;"
+                                    title="Melden">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                                    <line x1="4" y1="22" x2="4" y2="15"></line>
+                                </svg>
+                                Melden
+                            </button>
+                            <div style="font-size: 0.7rem;" th:text="${#temporals.format(message.sentAt, 'HH:mm')}">12:00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:each="message : ${messages}"
+                     th:if="${message.sender.id == currentUserId}"
+                     th:data-message-id="${message.id}"
+                     class="message-bubble"
+                     style="display: flex; justify-content: flex-end;">
+
+                    <div style="max-width: 75%;" class="message-bubble-sent">
+                        <p style="margin: 0 0 0.25rem 0; word-wrap: break-word; line-height: 1.5;" th:text="${message.content}"></p>
+                        <div style="font-size: 0.7rem; opacity: 0.8; text-align: right;" th:text="${#temporals.format(message.sentAt, 'HH:mm')}">12:00</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <form id="message-form" class="chat-footer">
+                <div class="chat-input-wrapper">
+            <textarea
+                    id="message-input"
+                    class="chat-textarea"
+                    rows="1"
+                    placeholder="Schreibe eine Nachricht..."
+                    required
+                    minlength="1"
+                    maxlength="1000"
+                    oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+
+                    <button type="submit" class="btn-send">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13"/>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/report-modal :: reportModal}"></div>
+
+    <script th:inline="javascript">
+        const otherUserId = /*[[${otherUser.id}]]*/ 0;
+        const currentUserId = /*[[${currentUserId}]]*/ 0;
+        let stompClient = null;
+        let typingTimeout = null;
+
+        function connect() {
+            const socket = new SockJS('/ws', null, { transports: ['websocket', 'xhr-streaming', 'xhr-polling'] });
+            stompClient = Stomp.over(socket);
+            stompClient.debug = null;
+            stompClient.connect({}, onConnected, onError);
+        }
+
+        function onConnected() {
+            stompClient.subscribe('/user/queue/messages', onMessageReceived);
+            stompClient.subscribe('/user/queue/typing', onTypingReceived);
+            // Read Notification Logik hier...
+        }
+
+        function onError(error) { setTimeout(connect, 5000); }
+
+        function sendMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById('message-input');
+            const content = input.value.trim();
+            if (!content) return;
+
+            const msg = { recipientId: otherUserId, content: content };
+            if (stompClient && stompClient.connected) {
+                stompClient.send("/app/chat", {}, JSON.stringify(msg));
+                input.value = '';
+            } else {
+                alert('Verbindung verloren...');
+            }
+        }
+
+        function onMessageReceived(payload) {
+            const message = JSON.parse(payload.body);
+            if (message.senderId === otherUserId || message.senderId === currentUserId) {
+                const container = document.getElementById('messages-container');
+                const noMsg = document.getElementById('no-messages');
+                if (noMsg) noMsg.remove();
+
+                const div = document.createElement('div');
+                div.innerHTML = createMessageBubble(message);
+                container.appendChild(div.firstElementChild); // Einfach anhängen
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+
+        function onTypingReceived() {
+            const ind = document.getElementById('typing-indicator');
+            ind.style.display = 'block';
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => ind.style.display = 'none', 3000);
+        }
+
+        // --- WICHTIG: NEUE BUBBLE FUNKTION ---
+        function createMessageBubble(message) {
+            const isFromMe = message.senderId === currentUserId;
+            const dateObj = message.sentAt ? new Date(message.sentAt) : new Date();
+            const time = dateObj.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+            const safeContent = escapeHtml(message.content);
+            const msgId = message.id || ('temp-' + Date.now());
+
+            if (isFromMe) {
+                return `
+                    <div class="message-bubble" style="display: flex; justify-content: flex-end; animation: slideIn 0.3s;">
+                        <div style="max-width: 75%;" class="message-bubble-sent">
+                            <p style="margin: 0 0 0.25rem 0; word-wrap: break-word; line-height: 1.5;">${safeContent}</p>
+                            <div style="font-size: 0.7rem; opacity: 0.8; text-align: right;">${time}</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Bei "Empfangen" Bubble: Report Button Logik integriert
+                return `
+                    <div class="message-bubble" style="display: flex; justify-content: flex-start; animation: slideIn 0.3s;">
+                        <div style="max-width: 75%;" class="message-bubble-received">
+                            <div style="font-size: 0.75rem; color: var(--accent); font-weight: 700; margin-bottom: 0.25rem;">
+                                ${escapeHtml(message.senderName || 'User')}
+                            </div>
+                            <p style="margin: 0 0 0.5rem 0; word-wrap: break-word; line-height: 1.5;">${safeContent}</p>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; opacity: 0.7;">
+                                <button onclick="openReportModal('MESSAGE', ${message.id})"
+                                        class="report-button"
+                                        style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.75rem; padding: 0; display: flex; align-items: center; gap: 4px;">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                                    Melden
+                                </button>
+                                <div style="font-size: 0.7rem;">${time}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return "";
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        document.getElementById('message-form').addEventListener('submit', sendMessage);
+
+        // Typing Listener
+        const msgInput = document.getElementById('message-input');
+        let lastType = 0;
+        msgInput.addEventListener('input', () => {
+            if(Date.now() - lastType > 2000) {
+                if(stompClient) stompClient.send("/app/typing", {}, JSON.stringify({ recipientId: otherUserId }));
+                lastType = Date.now();
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const c = document.getElementById('messages-container');
+            if(c) c.scrollTop = c.scrollHeight;
+            connect();
+        });
+    </script>
+
+    <style>
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Scrollbars für Message Container */
+        #messages-container::-webkit-scrollbar { width: 6px; }
+        #messages-container::-webkit-scrollbar-track { background: var(--scroll-track); }
+        #messages-container::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
+    </style>
+</section>
+</html>
