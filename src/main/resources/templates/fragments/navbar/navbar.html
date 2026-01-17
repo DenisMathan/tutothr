@@ -1,17 +1,17 @@
-<div th:fragment="navbar" xmlns:sec="http://www.w3.org/1999/xhtml">
+<div th:fragment="navbar" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
     <nav class="navbar404" role="navigation">
         <div class="navbar404-container">
             <a class="navbar404-brand" th:href="@{/}">
                 <span class="navbar404-title">TUTOTHR</span>
             </a>
 
-            <ul class="navbar404-links">
+            <ul class="navbar404-links" sec:authorize="isAuthenticated()">
                 <li><a th:href="@{/courses}">Kurse</a></li>
                 <li><a th:href="@{/messages/inbox}">Nachrichten</a></li>
                 <li sec:authorize="hasRole('TUTOR')"><a th:href="@{/tutor/timeslots}">Zeitslots</a></li>
             </ul>
 
-            <div class="navbar404-actions">
+            <div class="navbar404-actions" sec:authorize="isAuthenticated()">
                 <button class="navbar404-icon-btn" onclick="toggleTheme()" aria-label="Design wechseln">
                     <svg id="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
                         <circle cx="12" cy="12" r="5"></circle>

@@ -1,44 +1,40 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Registrierung</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-    <style>
-        .card-register {
-            max-width: 520px;
-            margin-top: 60px;
-        }
-
-        .pw-note {
-            font-size: .9rem;
-            color: #6c757d;
-        }
-    </style>
 </head>
 
-<body>
-    <div class="container d-flex justify-content-center">
-        <div class="card card-register shadow-sm bg-body rounded" style="width: 100%; padding: 2rem;">
-            <div class="card-body">
-                <h3 class="card-title mb-3">Neues Konto erstellen</h3>
-                <div th:replace="~{fragments/forms/form :: form(object=${registrationForm}, action=@{/register})}">
+<section layout:fragment="mybody" class="d-flex align-items-center justify-content-center" style="min-height: 80vh; padding: 2rem 0;">
+    <div class="container" style="max-width: 550px;">
+        <!-- Card im Style des User-Profils -->
+        <div class="course-card" style="padding: 0; overflow: hidden; border: 1px solid var(--border-color); background: var(--bg-card); border-radius: 16px;">
+            
+            <!-- Header -->
+            <div style="background: var(--bg-hover); padding: 2rem; text-align: center; border-bottom: 1px solid var(--border-color);">
+                <h2 style="margin: 0; color: var(--text-main); font-weight: 700;">Neues Konto erstellen</h2>
+                <p style="margin: 0.5rem 0 0; color: var(--text-muted);">Werde Teil der TutoHR Community</p>
+            </div>
+
+            <!-- Body -->
+            <div style="padding: 2rem;">
+                <div th:replace="~{fragments/forms/form :: form(object=${registrationForm}, action=@{/register})}"></div>
+
+                <!-- Google Auth & Login Link -->
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); text-align: center;">
+                     <a th:href="@{/oauth2/authorization/google}" class="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center gap-2" 
+                       style="border-color: var(--border-color); color: var(--text-main); background: var(--bg-body);">
+                        <img style="height: 1.25rem; width: 1.25rem;" src="https://img.icons8.com/?size=100&id=17949&format=png&color=000000" />
+                        <span>Mit Google registrieren</span>
+                    </a>
+
+                    <p class="small mt-3 mb-0" style="color: var(--text-muted);">
+                        Schon ein Konto? <a th:href="@{/login}" style="color: var(--accent); text-decoration: none; font-weight: 600;">Jetzt anmelden</a>
+                    </p>
                 </div>
-                <hr />
-                <a th:href="@{/oauth2/authorization/google}" style="height: 2rem; width: 2rem; border-radius: 100%;">
-                    <img style="height: 2rem; width: 2rem;"
-                        src="https://img.icons8.com/?size=100&id=17949&format=png&color=000000" />
-                </a>
-                <p class="small mb-0">
-                    Schon ein Konto? <a th:href="@{/login}">Anmelden</a>
-                </p>
             </div>
         </div>
     </div>
-</body>
+</section>
 
 </html>
