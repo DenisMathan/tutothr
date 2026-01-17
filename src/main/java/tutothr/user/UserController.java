@@ -49,6 +49,7 @@ public class UserController {
             return "/error/404";
         }
         UserDTO userDTO = userService.mapToDTO(user);
+        System.out.println("userDTO roles: Admin=" + userDTO.isAdmin() + ", Tutor=" + userDTO.isTutor());
         model.addAttribute("user", userDTO);
         return "views/users/user-profile";
     }

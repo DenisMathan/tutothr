@@ -26,8 +26,9 @@ import tutothr.auth.twoFactorVerification.TwoFactorVerificationFilter;
 @EnableMethodSecurity
 @EnableWebSecurity
 public class SecurityConfig {
+        //TODO: adjust public endpoints as needed
     public static final String[] PUBLIC_ENDPOINTS = {
-            "/verify/**", "/admin/all", "/resources/**", "/css/**", "/api/**", "/api/workshops/**", "/webjars/**", "/h2-console/**",
+            "/verify/**", "/admin/all", "user/**", "/resources/**", "/css/**", "/api/**", "/api/workshops/**", "/webjars/**", "/h2-console/**",
             "/login",
             "/register", "/logout", "/404"
     };

@@ -2,25 +2,57 @@
   Erwartet:
   - "fields": Liste von Field-Objekten (z.B. java.lang.reflect.Field oder eigene DTOs)
   - "object": das zu bearbeitende Objekt
-  Beispiel Controller:
-  model.addAttribute("fields", Arrays.asList(MyClass.class.getDeclaredFields()));
-  model.addAttribute("object", myObject);
 -->
 
 <form th:fragment="form(object,action)" th:action="@{${action}}" th:object="${object}" method="post">
 
-    <!-- <input th:if="*{id != null}" th:value="*{id}"/>  -->
     <input type="hidden" name="_method" th:if="*{id != null}" value="put" />
     <input type="hidden" name="id" th:if="*{id != null}" th:value="*{id}" />
-    <div th:each="field : *{formFields}" style="margin-bottom: 1rem;">
+    
+    <div th:each="field : *{formFields}" class="mb-3">
         <input th:if="${field.type == 'hidden'}" type="hidden" th:id="${field.name}" th:name="${field.name}" th:value="*{__${field.name}__}"/>
+        
         <div class="form-group">
             <input type="hidden" name="fields" th:value="${field.name}" />
-            <label th:if="${field.type != 'hidden'}" th:for="${field.name}" th:text="${field.label}"></label>
-            <input th:if="${field.type == 'text' or field.type == 'number' or field.type == 'password'}" step="any" class="form-control" th:type="${field.type}" th:id="${field.name}" th:name="${field.name}" th:value="*{__${field.name}__}" />
-            <textarea th:if="${field.type == 'textarea'}" class="form-control" th:id="${field.name}" th:name="${field.name}" th:text="*{__${field.name}__}"></textarea>
-            <span th:if="${object.hasValidationError(field.name)}" th:text="${object.getValidationError(field.name)}" class="form-error"></span>
+            
+            <!-- Label with proper styling (muted text) -->
+            <label th:if="${field.type != 'hidden'}" 
+                   th:for="${field.name}" 
+                   th:text="${field.label}"
+                   style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; font-weight: 500;">
+            </label>
+            
+            <!-- Inputs using .form-input from style.css -->
+            <input th:if="${field.type == 'text' or field.type == 'number' or field.type == 'password' or field.type == 'email'}" 
+                   step="any" 
+                   class="form-input" 
+                   th:type="${field.type}" 
+                   th:id="${field.name}" 
+                   th:name="${field.name}" 
+                   th:value="*{__${field.name}__}" />
+
+            <!-- Textarea using .form-textarea from style.css -->
+            <textarea th:if="${field.type == 'textarea'}" 
+                      class="form-textarea" 
+                      rows="4"
+                      th:id="${field.name}" 
+                      th:name="${field.name}" 
+                      th:text="*{__${field.name}__}"></textarea>
+            
+            <!-- Error message styled nicely -->
+            <span th:if="${object.hasValidationError(field.name)}" 
+                  th:text="${object.getValidationError(field.name)}" 
+                  class="form-error"
+                  style="color: var(--status-error, #ef4444); font-size: 0.85rem; margin-top: 0.4rem; display: block;">
+            </span>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary w-100" th:text="${object.submitLabel}">Speichern</button>
+    
+    <!-- Button using .btn-primary from style.css -->
+    <button type="submit" 
+            class="btn-primary w-100" 
+            style="justify-content: center; margin-top: 1rem; height: 48px; font-size: 1rem;" 
+            th:text="${object.submitLabel}">
+        Speichern
+    </button>
 </form>
