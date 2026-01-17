@@ -8,7 +8,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import tutothr.common.BaseEntity;
-import tutothr.course.Course;
 import tutothr.user.User;
 
 @Entity

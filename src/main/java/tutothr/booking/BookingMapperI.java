@@ -2,8 +2,9 @@ package tutothr.booking;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BookingMapperI {
 	@Mapping(source = "student.id", target = "studentId")
 	@Mapping(source = "student.username", target = "studentName")

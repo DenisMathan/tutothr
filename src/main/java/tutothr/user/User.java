@@ -2,11 +2,9 @@ package tutothr.user;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.security.core.GrantedAuthority;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -56,10 +54,6 @@ public class User extends BaseEntity implements Serializable {
 			inverseJoinColumns = @JoinColumn(name="idrole")
 			)
 	private Set<Role> roles = new HashSet<>();
-
-	private String firstName;
-	private String lastName;
-	private String schedule;
 
 	private boolean verified;
 

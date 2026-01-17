@@ -20,5 +20,4 @@ public class TutorRole implements RoleI {
 	public Set<PermissionsEnum> getPermissions() {
 		return this.permissions;
 	}
-	//TODO METHODS
 }

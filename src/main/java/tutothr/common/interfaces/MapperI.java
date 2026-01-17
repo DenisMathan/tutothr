@@ -6,9 +6,8 @@ import org.mapstruct.Mapper;
 
 import tutothr.category.Category;
 import tutothr.category.CategoryDTO;
-import tutothr.course.Course;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface MapperI {
 
     CategoryDTO toDTO(Category category);

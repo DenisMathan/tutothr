@@ -20,9 +20,4 @@ public class StudentRole implements RoleI {
 	public Set<PermissionsEnum> getPermissions() {
 		return this.permissions;
 	}
-
-	//TODO Add Methods
-	public void bookCourse() {};
-	public void cancelBooking() {};
-	public void createRating() {};
 }

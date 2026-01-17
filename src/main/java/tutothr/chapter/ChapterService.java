@@ -11,14 +11,12 @@ import tutothr.course.CourseService;
 @Service
 public class ChapterService extends BaseService<ChapterDTO, Chapter> {
 
-    private ChapterPermissionService chapterPermissionService;
     private ChapterMapperI mapper;
     private CourseService courseService;
 
     public ChapterService(ChapterRepositoryI chapterRepository, ChapterPermissionService chapterPermissionService, ChapterMapperI mapper, CourseService courseService) {
         super(chapterRepository);
 
-        this.chapterPermissionService = chapterPermissionService;
         this.mapper = mapper;
         this.courseService = courseService;
     }

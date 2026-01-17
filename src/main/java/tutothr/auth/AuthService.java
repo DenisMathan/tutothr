@@ -2,7 +2,6 @@ package tutothr.auth;
 
 import java.util.Optional;
 
-import org.springframework.boot.autoconfigure.security.saml2.Saml2RelyingPartyProperties.AssertingParty.Verification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -76,7 +75,6 @@ public class AuthService extends BaseService<RegisterUserDTO, User> implements U
         User _user = repository.save(user);
         try {
             VerificationToken veri = verificationService.createToken(user);
-            //TODO reactivat email
             mailService.sendVerificationEmail(user, veri.getToken());
         } catch (Exception e) {
             System.err.println("Failed to send registration email: " + e.getMessage());

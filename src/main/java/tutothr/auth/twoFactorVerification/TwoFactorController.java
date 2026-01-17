@@ -33,9 +33,4 @@ public class TwoFactorController {
             return "redirect:/login/verify-2fa?error";
         }
     }
-
-    private boolean checkCode(Long userId, String code) {
-        // Hier deine Logik implementieren (TOTP oder DB-Token)
-        return "123456".equals(code); // Dummy
-    }
 }
