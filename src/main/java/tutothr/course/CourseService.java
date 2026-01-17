@@ -17,7 +17,7 @@ import tutothr.course.interfaces.CourseRepositoryI;
 @Service
 public class CourseService extends BaseService<CourseDTO, Course> {
 	private static final int DEFAULT_PAGE = 0;
-	private static final int DEFAULT_SIZE = 10;
+	private static final int DEFAULT_SIZE = 5;
 	private static final CourseSortFieldEnum DEFAULT_SORT_BY = CourseSortFieldEnum.CREATED_AT;
 	private static final SortDirectionEnum DEFAULT_SORT_DIRECTION = SortDirectionEnum.DESC;
 

@@ -91,10 +91,12 @@ button { font-family: inherit; }
     top: 0;
     left: 0;
     width: 100%;
+    height: 60px;
     z-index: 1000;
 }
 
 .navbar404-container {
+    height:100%;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0.75rem 1rem;

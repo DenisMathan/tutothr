@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <!-- 
+      Generisches Pagination-Fragment 
+      Parameter:
+        - currentPage: Die aktuelle Seitenzahl (0-basiert)
+        - totalPages:  Gesamtanzahl der Seiten
+    -->
+    <nav th:fragment="render(currentPage, totalPages)" 
+         th:if="${totalPages > 1}" 
+         aria-label="Seitenavigation" 
+         style="margin-top: 2rem;">
+         
+        <ul class="pagination justify-content-center">
+            
+            <!-- Zurück Button -->
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" 
+                   th:href="${@pageUrlLinkBuilder.replacePageParam(currentPage - 1)}"
+                   aria-label="Zurück">
+                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                   </svg>
+                </a>
+            </li>
+
+            <!-- Seitenzahlen -->
+            <!-- Hinweis: Bei sehr vielen Seiten könnte man hier eine Verkürzung (1, 2, ..., 10) einbauen -->
+            <li class="page-item" 
+                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" 
+                   th:href="${@pageUrlLinkBuilder.replacePageParam(i)}"
+                   th:text="${i + 1}">
+                </a>
+            </li>
+
+            <!-- Vor Button -->
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" 
+                   th:href="${@pageUrlLinkBuilder.replacePageParam(currentPage + 1)}"
+                   aria-label="Weiter">
+                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                   </svg>
+                </a>
+            </li>
+            
+        </ul>
+    </nav>
+
+</body>
+</html>

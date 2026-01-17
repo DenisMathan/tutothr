@@ -164,68 +164,7 @@
       </div>
 
       <!-- Paginierung -->
-      <nav th:if="${totalPages > 1}" aria-label="Kurs-Seiten" style="margin-top: 2rem;">
-        <ul class="pagination justify-content-center">
-          <!-- Zurueck -->
-          <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-            <a class="page-link"
-              th:href="@{/courses(
-                           text=${searchDTO.text}, 
-                           categoryIds=${searchDTO.categoryIds},
-                           maxPrice=${searchDTO.maxPrice},
-                           minRating=${searchDTO.minRating}, 
-                           tutorName=${searchDTO.tutorName},
-                           onlyAvailable=${searchDTO.onlyAvailable},
-                           hashtag=${searchDTO.hashtag},
-                           sortBy=${searchDTO.sortBy}, 
-                           sortDirection=${searchDTO.sortDirection},
-                           page=${currentPage - 1}
-                       )}">
-              &laquo; Zurück
-            </a>
-          </li>
-
-          <!-- Seitenzahlen -->
-          <li class="page-item" 
-            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-            th:classappend="${i == currentPage} ? 'active'">
-              <a class="page-link"
-                th:href="@{/courses(
-                           text=${searchDTO.text}, 
-                           categoryIds=${searchDTO.categoryIds},
-                           maxPrice=${searchDTO.maxPrice},
-                           minRating=${searchDTO.minRating}, 
-                           tutorName=${searchDTO.tutorName},
-                           onlyAvailable=${searchDTO.onlyAvailable},
-                           hashtag=${searchDTO.hashtag},
-                           sortBy=${searchDTO.sortBy}, 
-                           sortDirection=${searchDTO.sortDirection},
-                           page=${i}
-                       )}"
-                th:text="${i + 1}">
-              </a>
-          </li>
-
-          <!-- Vor -->
-          <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-            <a class="page-link"
-              th:href="@{/courses(
-                           text=${searchDTO.text}, 
-                           categoryIds=${searchDTO.categoryIds},
-                           maxPrice=${searchDTO.maxPrice},
-                           minRating=${searchDTO.minRating}, 
-                           tutorName=${searchDTO.tutorName},
-                           onlyAvailable=${searchDTO.onlyAvailable},
-                           hashtag=${searchDTO.hashtag},
-                           sortBy=${searchDTO.sortBy}, 
-                           sortDirection=${searchDTO.sortDirection},
-                           page=${currentPage + 1}
-                       )}">
-              Vor &raquo;
-            </a>
-          </li>
-        </ul>
-      </nav>
+      <div th:replace="~{fragments/pagination :: render(${currentPage}, ${totalPages})}"></div>
 
     </div>
 
