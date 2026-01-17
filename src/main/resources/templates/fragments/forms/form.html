@@ -39,6 +39,35 @@
                       th:name="${field.name}" 
                       th:text="*{__${field.name}__}"></textarea>
             
+            <!-- Group of Checkboxes (Tags Style) -->
+            <div th:if="${field.type == 'group'}" class="d-flex flex-wrap gap-2 mt-2">
+                 <div th:each="subField : ${field.subFields}">
+                     <input type="checkbox" 
+                            class="btn-check" 
+                            th:id="${subField.name}" 
+                            th:name="${subField.name}" 
+                            th:checked="*{__${subField.name}__}" 
+                            autocomplete="off">
+                     <label class="btn btn-tag btn-sm rounded-pill" 
+                            th:for="${subField.name}" 
+                            th:text="${subField.label}"></label>
+                 </div>
+            </div>
+
+            <!-- Single Checkbox -->
+            <div th:if="${field.type == 'checkbox'}" class="form-check mt-2">
+                <input class="form-check-input" 
+                       type="checkbox" 
+                       th:id="${field.name}" 
+                       th:name="${field.name}" 
+                       th:checked="*{__${field.name}__}">
+                <label class="form-check-label" 
+                       th:for="${field.name}" 
+                       th:text="${field.label}"
+                       style="color: var(--text-main);">
+                </label>
+            </div>
+
             <!-- Error message styled nicely -->
             <span th:if="${object.hasValidationError(field.name)}" 
                   th:text="${object.getValidationError(field.name)}" 

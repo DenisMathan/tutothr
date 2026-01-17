@@ -19,9 +19,11 @@ public class UserDTO extends BaseDTO {
         formFields = List.of(
             new tutothr.common.models.Field("username", "Benutzername", "text"),
             new tutothr.common.models.Field("email", "E-Mail", "email"),
-            new tutothr.common.models.Field("admin", "Administrator", "checkbox"),
-            new tutothr.common.models.Field("tutor", "Tutor", "checkbox"),
-            new tutothr.common.models.Field("student", "Student", "checkbox")
+            new tutothr.common.models.Field("roles", "Rollen", "group", List.of(
+                new tutothr.common.models.Field("admin", "Administrator", "checkbox"),
+                new tutothr.common.models.Field("tutor", "Tutor", "checkbox"),
+                new tutothr.common.models.Field("student", "Student", "checkbox")
+            ))
         );
     }
 

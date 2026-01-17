@@ -977,3 +977,35 @@ button { font-family: inherit; }
     font-size: 0.85rem;
     border-radius: 6px;
 }
+
+/* ========================================
+   Form & Checkbox Styles
+   ======================================== */
+.btn-tag {
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    background-color: transparent;
+    transition: all 0.2s ease;
+}
+
+.btn-tag:hover {
+    border-color: var(--border-hover);
+    color: var(--text-main);
+    background-color: var(--bg-hover);
+}
+
+.btn-check:checked + .btn-tag {
+    background-color: var(--accent);
+    color: var(--text-inverse);
+    border-color: var(--accent);
+}
+
+.form-check-input:checked {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+.form-check-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 0.25rem rgba(124, 58, 237, 0.25);
+}
