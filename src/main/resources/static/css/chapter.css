@@ -1,0 +1,183 @@
+
+/* ========================================
+   CHAPTER / ACCORDION STYLING
+   ======================================== */
+
+.chapter-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+    overflow: hidden; /* Ensures child rounded corners don't bleed */
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.chapter-item:hover {
+    border-color: var(--border-hover);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.chapter-item.paywalled {
+    border-color: rgba(251, 191, 36, 0.3); /* Goldish border for premium */
+}
+
+/* --- Header --- */
+.chapter-header {
+    background: transparent;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    transition: background-color 0.2s ease;
+    user-select: none;
+}
+
+.chapter-header:hover {
+    background-color: var(--bg-hover);
+}
+
+.chapter-title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.chapter-title {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 1rem;
+}
+
+/* --- Badges & Icons --- */
+.badge-premium {
+    color: #fbbf24;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(251, 191, 36, 0.1);
+    padding: 4px;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.badge-premium:hover {
+    background: rgba(251, 191, 36, 0.2);
+    transform: scale(1.05);
+}
+
+/* --- Actions & Controls --- */
+.chapter-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.chapter-item:hover .chapter-actions {
+    opacity: 1;
+}
+
+.btn-icon-action {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-icon-action:hover {
+    color: var(--text-main);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.btn-icon-action.danger:hover {
+    color: #ef4444; /* Red */
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* --- Arrow Animation --- */
+.accordion-arrow {
+    color: var(--text-muted);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Checkbox Logic for Expansion */
+/* Note: We use the immediate sibling combinator or standard sibling depending on HTML structure */
+input.chapter-toggle:checked ~ .chapter-header .accordion-arrow {
+    transform: rotate(180deg);
+    color: var(--accent);
+}
+
+input.chapter-toggle:checked ~ .chapter-content {
+    max-height: 2000px; /* Big enough number */
+    opacity: 1;
+    padding: 1.25rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* --- Content --- */
+.chapter-content {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--glass);
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* --- Edit Form --- */
+.chapter-edit-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.3s ease;
+}
+
+/* --- FAB (Floating Action Button style for Add Chapter) --- */
+.btn-fab-flat {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background-color: var(--bg-card);
+    border: 2px dashed var(--border-color);
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    margin: 0 auto; /* Center it */
+}
+
+.btn-fab-flat:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: scale(1.05);
+    background-color: var(--bg-hover);
+}
+
+.btn-fab-flat svg {
+    transition: transform 0.2s ease;
+}
+
+.btn-fab-flat:hover svg {
+    transform: rotate(90deg);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -1,6 +1,18 @@
-<form th:fragment="deleteButton (action)" th:if="${isOwner}" th:action="${action}" method="post">
+<form th:fragment="deleteButton (action)" 
+      th:if="${isOwner}" 
+      th:action="${action}" 
+      method="post"
+      style="display: inline-block; margin: 0; padding: 0;">
+    
     <input type="hidden" name="_method" value="delete"/>
-    <button class="btn-danger " type="submit"> 
-        <img class="w-1 h-1" style="width: 1rem; height: 1rem;" src="https://img.icons8.com/?size=100&id=85194&format=png&color=000000" alt="Delete"/>
+    
+    <button class="btn-icon-action danger" 
+            type="submit" 
+            title="Löschen"
+            onclick="return confirm('Wirklich löschen?');"> 
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
     </button>
 </form>
