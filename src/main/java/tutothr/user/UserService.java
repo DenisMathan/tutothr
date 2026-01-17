@@ -8,12 +8,13 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Service;
 
 import tutothr.auth.config.CustomOidcUser;
+import tutothr.common.BaseService;
 import tutothr.user.interfaces.UserMapperI;
 import tutothr.user.interfaces.UserRepositoryI;
 import tutothr.user.interfaces.UserServiceI;
 
 @Service
-public class UserService implements UserServiceI {
+public class UserService extends BaseService<UserDTO, User> implements UserServiceI {
 
 	UserRepositoryI userRepository;
 
@@ -21,7 +22,16 @@ public class UserService implements UserServiceI {
 	private UserMapperI userMapper;
 
 	public UserService(UserRepositoryI userRepository) {
+		super(userRepository);
 		this.userRepository = userRepository;
+	}
+
+	@Override
+	public UserDTO update(UserDTO dto) {
+		User user = getUserById(dto.getId());
+		userMapper.updateUserFromDTO(dto, user);
+		userRepository.save(user);
+		return mapToDTO(user);
 	}
 
 	@Override

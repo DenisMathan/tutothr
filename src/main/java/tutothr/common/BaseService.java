@@ -20,21 +20,37 @@ public abstract class BaseService<DTO extends BaseDTO, Entity extends BaseEntity
     @Override
     public DTO update(DTO obj) {
         Entity existingObj = findById(obj.getId());
-        for (Field field : obj.getFormFields()) {
-            try {
-                java.lang.reflect.Field dtoField = obj.getClass().getDeclaredField(field.getName());
-                dtoField.setAccessible(true);
-                Object newValue = dtoField.get(obj);
-
-                java.lang.reflect.Field entityField = existingObj.getClass().getDeclaredField(field.getName());
-                entityField.setAccessible(true);
-                entityField.set(existingObj, newValue);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
+        updateFieldsRecursive(obj, existingObj, obj.getFormFields());
         save(existingObj);
         return mapToDTO(existingObj);
+    }
+
+    private void updateFieldsRecursive(DTO obj, Entity existingObj, List<Field> fields) {
+        for (Field field : fields) {
+            String type = field.getType();
+            if ("group".equals(type) && field.getSubFields() != null) {
+                 updateFieldsRecursive(obj, existingObj, field.getSubFields());
+            } else if (!"group".equals(type) && !"hidden".equals(type)) { // Skip structural fields
+                try {
+                    transferField(obj, existingObj, field.getName());
+                } catch (NoSuchFieldException e) {
+                    // It is normal for DTOs to have fields that Entities do not have (e.g. view helpers, mapped fields)
+                    // We just ignore them in this generic auto-mapper.
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void transferField(Object source, Object target, String fieldName) throws NoSuchFieldException, IllegalAccessException {
+        java.lang.reflect.Field sourceField = source.getClass().getDeclaredField(fieldName);
+        sourceField.setAccessible(true);
+        Object newValue = sourceField.get(source);
+
+        java.lang.reflect.Field targetField = target.getClass().getDeclaredField(fieldName);
+        targetField.setAccessible(true);
+        targetField.set(target, newValue);
     }
 
     @Override

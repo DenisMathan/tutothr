@@ -10,9 +10,9 @@ public class UserDTO extends BaseDTO {
     private boolean admin;
     private boolean tutor;
     private boolean student;
-    private int strikes;
-    private boolean verified;
-    private boolean accountNonLocked;
+    private Integer strikes;
+    private Boolean verified;
+    private Boolean accountNonLocked;
 
     @Override
     public void initFields() {
@@ -67,27 +67,27 @@ public class UserDTO extends BaseDTO {
         this.student = student;
     }
 
-    public int getStrikes() {
+    public Integer getStrikes() {
         return strikes;
     }
 
-    public void setStrikes(int strikes) {
+    public void setStrikes(Integer strikes) {
         this.strikes = strikes;
     }
 
-    public boolean isVerified() {
+    public Boolean isVerified() {
         return verified;
     }
 
-    public void setVerified(boolean verified) {
+    public void setVerified(Boolean verified) {
         this.verified = verified;
     }
 
-    public boolean isAccountNonLocked() {
+    public Boolean isAccountNonLocked() {
         return accountNonLocked;
     }
 
-    public void setAccountNonLocked(boolean accountNonLocked) {
+    public void setAccountNonLocked(Boolean accountNonLocked) {
         this.accountNonLocked = accountNonLocked;
     }
 }

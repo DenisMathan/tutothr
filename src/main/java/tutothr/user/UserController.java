@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.validation.Valid;
 import tutothr.user.interfaces.UserRepositoryI;
 
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class UserController {
@@ -35,7 +37,7 @@ public class UserController {
             return "redirect:/login"; // Sicherheitsnetz
         String email = principal.getAttribute("email");
         User user = userRepository.findByEmailIgnoreCase(email).orElseThrow();
-        
+
         model.addAttribute("user", user);
         return "views/auth/set-username";
     }
@@ -49,16 +51,27 @@ public class UserController {
             return "/error/404";
         }
         UserDTO userDTO = userService.mapToDTO(user);
-        System.out.println("userDTO roles: Admin=" + userDTO.isAdmin() + ", Tutor=" + userDTO.isTutor());
         model.addAttribute("user", userDTO);
         return "views/users/user-profile";
     }
 
+    @PutMapping("/admin/user/save/{id}")
+    public String saveUser(@ModelAttribute @Valid UserDTO userDTO, BindingResult result, Model model,
+            @PathVariable Long id) {
+        if (result.hasErrors()) {
+            userDTO = userService.handleValidationErrors(userDTO, result.getFieldErrors());
+            model.addAttribute("user", userDTO);
+            return "/views/courses/course-edit";
+        }
+        userService.update(userDTO);
+        return "redirect:/admin/all";
+    }
+
     @PutMapping("/set-username")
-    public String setUsername(@ModelAttribute User user, BindingResult result, Model model, Authentication authentication) {
+    public String setUsername(@ModelAttribute User user, BindingResult result, Model model,
+            Authentication authentication) {
         userService.updateUsername(user, authentication);
         return "redirect:/home";
-
     }
 
     @GetMapping(value = { "", "/admin/all" })

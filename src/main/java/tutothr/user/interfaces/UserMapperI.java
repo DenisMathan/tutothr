@@ -4,6 +4,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.ReportingPolicy;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapping;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import tutothr.user.User;
 import tutothr.user.UserDTO;
@@ -26,6 +29,11 @@ public abstract class UserMapperI {
 
     public abstract UserDTO toUserDTO(User user);
     public abstract User toEntity(UserDTO dto);
+    
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "authProvider", ignore = true)
+    public abstract void updateUserFromDTO(UserDTO dto, @MappingTarget User user);
 
     @AfterMapping
     protected void mapRolesToBooleans(User user, @MappingTarget UserDTO dto) {
