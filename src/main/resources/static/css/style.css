@@ -356,6 +356,21 @@ button { font-family: inherit; }
 }
 .btn-secondary:hover { background: var(--bg-hover); border-color: var(--border-hover); }
 
+.btn-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.btn-danger:hover { background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.3); }
+
 /* Icons */
 .star-filled { fill: #fbbf24; stroke: #fbbf24; }
 .star-empty { fill: none; stroke: var(--text-muted); }

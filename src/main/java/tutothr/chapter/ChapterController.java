@@ -43,7 +43,8 @@ public class ChapterController {
             model.addAttribute("course", course);
             return "/views/courses/course";
         }
-
+        System.out.println("Saving chapter:" + chapterDTO.getCourseId());
+        System.out.println(chapterService.findCourseDTOById(chapterDTO.getCourseId()).getId());
         chapterService.saveDTO(chapterDTO);
         return "redirect:/courses/" + chapterDTO.getCourseId();
     }
@@ -55,7 +56,16 @@ public class ChapterController {
         Chapter _chapter =  chapterService.findById(id);
         if (result.hasErrors()) {
             chapterDTO = chapterService.handleValidationErrors(chapterDTO, result.getFieldErrors());
-            model.addAttribute("course", _chapter.getCourse());
+            chapterDTO.setId(id);
+            // Werte übernehmen, die nicht im Formular waren (z.B. paywalled), damit die Anzeige stimmt
+            chapterDTO.setPaywalled(_chapter.isPaywalled());
+            chapterDTO.setPosition(_chapter.getPosition());
+            
+            final ChapterDTO errorChapter = chapterDTO;
+            CourseDTO course =  chapterService.findCourseDTOById(_chapter.getCourse().getId());
+            course.setChapters(course.getChapters().stream().map(c -> c.getId().equals(id) ? errorChapter : c).toList());
+            
+            model.addAttribute("course", course);
             return "/views/courses/course";
         }
         chapterService.update(chapterDTO);

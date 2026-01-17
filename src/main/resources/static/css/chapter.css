@@ -2,11 +2,15 @@
 /* ========================================
    CHAPTER / ACCORDION STYLING
    ======================================== */
+.hidden {
+    display: none;
+}
 
 .chapter-item {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 0.75rem;
+    margin-bottom: 2rem;
     overflow: hidden; /* Ensures child rounded corners don't bleed */
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }

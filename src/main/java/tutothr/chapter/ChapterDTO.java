@@ -23,7 +23,8 @@ public class ChapterDTO extends BaseDTO {
        formFields = List.of(
             new Field("courseId", "Kurs ID", "hidden"),
             new Field("title", "Titel", "text"),
-            new Field("description", "Beschreibung", "textarea")
+            new Field("description", "Beschreibung", "textarea"),
+            new Field("paywalled", "Paywalled", "checkbox")
         ); 
     }
 

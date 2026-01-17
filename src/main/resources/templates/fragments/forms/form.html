@@ -16,7 +16,7 @@
             <input type="hidden" name="fields" th:value="${field.name}" />
             
             <!-- Label with proper styling (muted text) -->
-            <label th:if="${field.type != 'hidden'}" 
+            <label th:if="${field.type != 'hidden' and field.type != 'checkbox'}" 
                    th:for="${field.name}" 
                    th:text="${field.label}"
                    style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; font-weight: 500;">
