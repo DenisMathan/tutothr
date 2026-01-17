@@ -2,6 +2,7 @@ package tutothr.user;
 
 import java.util.List;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import tutothr.common.BaseDTO;
 
