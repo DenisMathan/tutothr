@@ -1,4 +1,5 @@
 package tutothr.user;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -7,6 +8,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Service;
 
 import tutothr.auth.config.CustomOidcUser;
+import tutothr.user.interfaces.UserMapperI;
 import tutothr.user.interfaces.UserRepositoryI;
 import tutothr.user.interfaces.UserServiceI;
 
@@ -14,6 +16,9 @@ import tutothr.user.interfaces.UserServiceI;
 public class UserService implements UserServiceI {
 
 	UserRepositoryI userRepository;
+
+	@Autowired
+	private UserMapperI userMapper;
 
 	public UserService(UserRepositoryI userRepository) {
 		this.userRepository = userRepository;
@@ -49,6 +54,13 @@ public class UserService implements UserServiceI {
 	@Override
 	public void delete(User user) {
 		userRepository.delete(user);
+	}
+
+	public UserDTO mapToDTO(User user) {
+		return userMapper.toUserDTO(user);
+	}
+	public User mapToEntity(UserDTO dto) {
+		return userMapper.toEntity(dto);
 	}
 
 	public void updateUsername(User user, Authentication currentAuth) {

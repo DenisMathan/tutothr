@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import tutothr.user.interfaces.UserRepositoryI;
@@ -34,8 +35,22 @@ public class UserController {
             return "redirect:/login"; // Sicherheitsnetz
         String email = principal.getAttribute("email");
         User user = userRepository.findByEmailIgnoreCase(email).orElseThrow();
+        
         model.addAttribute("user", user);
         return "views/auth/set-username";
+    }
+
+    @GetMapping("/user/{id}")
+    public String getUserProfile(@PathVariable Long id, Model model) {
+        // User user = userRepository.findById(id).orElseThrow();
+        User user = userService.getUserById(id);
+        if (user == null) {
+            model.addAttribute("errorMessage", "User not found");
+            return "/error/404";
+        }
+        UserDTO userDTO = userService.mapToDTO(user);
+        model.addAttribute("user", userDTO);
+        return "views/users/user-profile";
     }
 
     @PutMapping("/set-username")

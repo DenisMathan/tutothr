@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+
+<head>
+    <title th:text="${user.username}">User Profile</title>
+</head>
+<!-- <section layout:fragment="mybody">
+    <div th:text="${user.username}">
+        Username
+    </div>
+    <div th:text="${user.id}">
+        Username
+    </div>
+</section> -->
+
+<section layout:fragment="mybody">
+    <div th:replace="fragments/forms/form :: form(object=${user}, action=@{/tutor/user/save/{id}(id=${user.id})})">
+</section>
+
+</div>

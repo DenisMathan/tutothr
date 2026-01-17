@@ -1,5 +1,6 @@
 package tutothr.course;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ public class CourseService extends BaseService<CourseDTO, Course> {
 	private static final SortDirectionEnum DEFAULT_SORT_DIRECTION = SortDirectionEnum.DESC;
 
 	private CoursePermissionService coursePermissionService;
+	@Autowired
 	private CourseMapperI mapper;
 
 	public CourseService(CourseRepositoryI courseRepository, CoursePermissionService coursePermissionService,
