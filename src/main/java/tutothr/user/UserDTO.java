@@ -2,9 +2,13 @@ package tutothr.user;
 
 import java.util.List;
 
+import jakarta.validation.constraints.Size;
 import tutothr.common.BaseDTO;
 
 public class UserDTO extends BaseDTO {
+    
+	@NotBlank(message = "Username is mandatory")
+	@Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters.")
     private String username;
     private String email;
     private boolean admin;
@@ -18,7 +22,7 @@ public class UserDTO extends BaseDTO {
     public void initFields() {
         formFields = List.of(
             new tutothr.common.models.Field("username", "Benutzername", "text"),
-            new tutothr.common.models.Field("email", "E-Mail", "email"),
+            // new tutothr.common.models.Field("email", "E-Mail", "email"),
             new tutothr.common.models.Field("roles", "Rollen", "group", List.of(
                 new tutothr.common.models.Field("admin", "Administrator", "checkbox"),
                 new tutothr.common.models.Field("tutor", "Tutor", "checkbox"),
