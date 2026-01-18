@@ -44,66 +44,56 @@
                 <div th:each="message : ${messages}"
                      th:if="${message.sender.id != currentUserId}"
                      th:data-message-id="${message.id}"
-                     class="message-bubble"
-                     style="display: flex; justify-content: flex-start;">
+                     class="message-row received"> <div class="msg-content">
+                    <span class="msg-sender" th:text="${message.sender.username}">Sender</span>
+                    <p style="margin: 0; line-height: 1.4;" th:text="${message.content}">Inhalt</p>
 
-                    <div style="max-width: 75%;" class="message-bubble-received">
-                        <div style="font-size: 0.75rem; color: var(--accent); font-weight: 700; margin-bottom: 0.25rem;">
-                            <span th:text="${message.sender.username}">Sender</span>
-                        </div>
-                        <p style="margin: 0 0 0.5rem 0; word-wrap: break-word; line-height: 1.5;" th:text="${message.content}"></p>
-
-                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; opacity: 0.7;">
-                            <button th:onclick="'openReportModal(\'MESSAGE\', ' + ${message.id} + ')'"
-                                    type="button"
-                                    class="report-button"
-                                    style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.75rem; padding: 0; display: flex; align-items: center; gap: 4px;"
-                                    title="Melden">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-                                    <line x1="4" y1="22" x2="4" y2="15"></line>
-                                </svg>
-                                Melden
-                            </button>
-                            <div style="font-size: 0.7rem;" th:text="${#temporals.format(message.sentAt, 'HH:mm')}">12:00</div>
-                        </div>
+                    <div class="msg-footer">
+                        <button th:onclick="'openReportModal(\'MESSAGE\', ' + ${message.id} + ')'"
+                                type="button"
+                                class="btn-chat-report"
+                                title="Melden">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                                <line x1="4" y1="22" x2="4" y2="15"></line>
+                            </svg>
+                            Melden
+                        </button>
+                        <span class="msg-meta" th:text="${#temporals.format(message.sentAt, 'HH:mm')}">12:00</span>
                     </div>
+                </div>
                 </div>
 
                 <div th:each="message : ${messages}"
                      th:if="${message.sender.id == currentUserId}"
                      th:data-message-id="${message.id}"
-                     class="message-bubble"
-                     style="display: flex; justify-content: flex-end;">
-
-                    <div style="max-width: 75%;" class="message-bubble-sent">
-                        <p style="margin: 0 0 0.25rem 0; word-wrap: break-word; line-height: 1.5;" th:text="${message.content}"></p>
-                        <div style="font-size: 0.7rem; opacity: 0.8; text-align: right;" th:text="${#temporals.format(message.sentAt, 'HH:mm')}">12:00</div>
+                     class="message-row sent"> <div class="msg-content">
+                    <p style="margin: 0; line-height: 1.4;" th:text="${message.content}">Inhalt</p>
+                    <div class="msg-footer">
+                        <span class="msg-meta" th:text="${#temporals.format(message.sentAt, 'HH:mm')}">12:00</span>
                     </div>
+                </div>
                 </div>
 
             </div>
 
-            <form id="message-form" class="chat-footer">
-                <div class="chat-input-wrapper">
-            <textarea
-                    id="message-input"
-                    class="chat-textarea"
-                    rows="1"
-                    placeholder="Schreibe eine Nachricht..."
-                    required
-                    minlength="1"
-                    maxlength="1000"
-                    oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+            <div class="chat-footer">
+                <form id="message-form" class="chat-input-wrapper">
 
-                    <button type="submit" class="btn-send">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="22" y1="2" x2="11" y2="13"/>
-                            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                  <textarea id="message-input"
+                  class="chat-textarea"
+                  placeholder="Schreibe eine Nachricht..."
+                  rows="1"
+                  required></textarea>
+
+                    <button type="submit" class="btn-send" title="Senden">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: -2px;">
+                            <path d="M22 2L11 13"></path>
+                            <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
                         </svg>
                     </button>
-                </div>
-            </form>
+                </form>
+            </div>
 
         </div>
     </div>
@@ -167,45 +157,47 @@
             typingTimeout = setTimeout(() => ind.style.display = 'none', 3000);
         }
 
-        // --- WICHTIG: NEUE BUBBLE FUNKTION ---
         function createMessageBubble(message) {
             const isFromMe = message.senderId === currentUserId;
             const dateObj = message.sentAt ? new Date(message.sentAt) : new Date();
             const time = dateObj.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
             const safeContent = escapeHtml(message.content);
+            const safeSender = escapeHtml(message.senderName || 'User');
             const msgId = message.id || ('temp-' + Date.now());
 
             if (isFromMe) {
+                // Design für MICH (Rechts, Lila, ohne Name)
                 return `
-                    <div class="message-bubble" style="display: flex; justify-content: flex-end; animation: slideIn 0.3s;">
-                        <div style="max-width: 75%;" class="message-bubble-sent">
-                            <p style="margin: 0 0 0.25rem 0; word-wrap: break-word; line-height: 1.5;">${safeContent}</p>
-                            <div style="font-size: 0.7rem; opacity: 0.8; text-align: right;">${time}</div>
-                        </div>
+            <div class="message-row sent" data-message-id="${msgId}" style="animation: slideIn 0.3s;">
+                <div class="msg-content">
+                    <p style="margin: 0; line-height: 1.4;">${safeContent}</p>
+                    <div class="msg-footer">
+                        <span class="msg-meta">${time}</span>
                     </div>
-                `;
+                </div>
+            </div>
+        `;
             } else {
-                // Bei "Empfangen" Bubble: Report Button Logik integriert
+                // Design für ANDERE (Links, Grau, mit Name & Report)
                 return `
-                    <div class="message-bubble" style="display: flex; justify-content: flex-start; animation: slideIn 0.3s;">
-                        <div style="max-width: 75%;" class="message-bubble-received">
-                            <div style="font-size: 0.75rem; color: var(--accent); font-weight: 700; margin-bottom: 0.25rem;">
-                                ${escapeHtml(message.senderName || 'User')}
-                            </div>
-                            <p style="margin: 0 0 0.5rem 0; word-wrap: break-word; line-height: 1.5;">${safeContent}</p>
-
-                            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; opacity: 0.7;">
-                                <button onclick="openReportModal('MESSAGE', ${message.id})"
-                                        class="report-button"
-                                        style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.75rem; padding: 0; display: flex; align-items: center; gap: 4px;">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
-                                    Melden
-                                </button>
-                                <div style="font-size: 0.7rem;">${time}</div>
-                            </div>
-                        </div>
+            <div class="message-row received" data-message-id="${msgId}" style="animation: slideIn 0.3s;">
+                <div class="msg-content">
+                    <span class="msg-sender">${safeSender}</span>
+                    <p style="margin: 0; line-height: 1.4;">${safeContent}</p>
+                    <div class="msg-footer">
+                        <button onclick="openReportModal('MESSAGE', ${message.id})"
+                                class="btn-chat-report" title="Melden">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                                <line x1="4" y1="22" x2="4" y2="15"></line>
+                            </svg>
+                            Melden
+                        </button>
+                        <span class="msg-meta">${time}</span>
                     </div>
-                `;
+                </div>
+            </div>
+        `;
             }
         }
 

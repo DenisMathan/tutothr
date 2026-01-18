@@ -2,7 +2,9 @@ package tutothr.booking;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,9 @@ public class BookingController {
 	private final TimeSlotService timeSlotService;
 	private final CourseService courseService;
 	private final UserService userService;
+
+	@Autowired
+	private CalendarService calendarService;
 
 	public BookingController(BookingService bookingService, TimeSlotService timeSlotService,
 			CourseService courseService, UserService userService) {
@@ -73,6 +78,33 @@ public class BookingController {
 		List<BookingDTO> bookings = bookingService.findByStudent(userDetails.getDbUser());
 		model.addAttribute("bookings", bookings);
 		return "views/booking/my-bookings";
+	}
+
+	// ===== Termin zu Google Calendar hinzufügen =====
+	@GetMapping("/booking/{id}/add-to-calendar")
+	public String addToCalendar(@PathVariable Long id, OAuth2AuthenticationToken auth, RedirectAttributes redirectAttributes) {
+		try {
+
+			BookingDTO booking = bookingService.findById(id);
+			TimeSlotDTO timeslot = timeSlotService.findById(booking.getTimeSlotId());
+
+
+
+			calendarService.addEventToGoogleCalendar(
+					auth,
+					"Kurs: " + booking.getCourseName(),
+					"Gebucht über Uni-App",
+					timeslot.getDate(),
+					timeslot.getStartTime(),
+					timeslot.getEndTime()
+			);
+
+			redirectAttributes.addFlashAttribute("success", "Termin erfolgreich zu Google Calendar hinzugefügt!");
+		} catch (Exception e) {
+			e.printStackTrace(); // Fürs Debugging in der Konsole wichtig!
+			redirectAttributes.addFlashAttribute("error", "Fehler beim Kalender-Sync: " + e.getMessage());
+		}
+		return "redirect:/my-bookings"; // Zurück zur Liste
 	}
 
 	// ===== TUTOR: Buchungen fuer meine TimeSlots =====

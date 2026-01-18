@@ -1,6 +1,9 @@
 package tutothr.message;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -8,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import tutothr.auth.config.MyUserDetails;
 import tutothr.common.services.MailService;
+import tutothr.message.interfaces.MessageRepositoryI;
 import tutothr.moderation.ModerationService;
 import tutothr.user.User;
 import tutothr.user.UserService;
@@ -38,19 +42,26 @@ public class MessageController {
     @Autowired
     private MailService mailService;
 
+    @Autowired
+    private MessageRepositoryI messageRepository;
+
     @GetMapping("/inbox")
-    public String showInbox(Model model) {
+    public String showInbox(@RequestParam(defaultValue = "0") int page, Model model) {
         Long currentUserId = getCurrentUserId();
 
-        List<ConversationDTO> conversations = messageService.getConversations(currentUserId);
+        int pageSize = 10;
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Message> conversationPage = messageRepository.findLatestConversations(currentUserId, pageable);
 
-        // Anzahl ungelesener Nachrichten
+        model.addAttribute("conversations", conversationPage.getContent());
+        model.addAttribute("currentPage", conversationPage.getNumber());
+        model.addAttribute("totalPages", conversationPage.getTotalPages());
+        model.addAttribute("totalItems", conversationPage.getTotalElements());
+        model.addAttribute("currentUser", userService.getUserById(currentUserId));
+
         long unreadCount = messageService.getUnreadCount(currentUserId);
-
-        model.addAttribute("conversations", conversations);
         model.addAttribute("unreadCount", unreadCount);
 
-        // Anzahl offener Reports für Admin-Badge
         try {
             long pendingReports = moderationService.getPendingReportsCount();
             model.addAttribute("pendingReportsCount", pendingReports);

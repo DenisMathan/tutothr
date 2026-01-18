@@ -100,4 +100,8 @@ public class BookingService {
 
 		return dto;
 	}
+
+	public boolean hasUserBookedCourse(Long userId, Long courseId) {
+		return bookingRepository.existsByStudentIdAndCourseId(userId, courseId);
+	}
 }
