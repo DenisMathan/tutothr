@@ -221,14 +221,19 @@ h1, h2, h3, h4, h5, h6 {
     position: absolute;
     right: 0;
     top: 120%;
+
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    width: 180px;
+    width: 200px;
     padding: 0.5rem;
+
     display: none;
     flex-direction: column;
+    gap: 0.25rem;
+
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 2000;
 }
 
 .navbar404-profile.open .navbar404-profile-menu { display: flex; }
@@ -240,9 +245,14 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--text-main);
     width: 100%;
     text-align: left;
-    background: none;
+    background: transparent;
     border: none;
     cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: block;
+    transition: background 0.2s, color 0.2s;
 }
 
 .navbar404-profile-menu a:hover,
