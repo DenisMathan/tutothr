@@ -6,79 +6,62 @@
     <input type="hidden" id="report-target-type">
     <input type="hidden" id="report-target-id">
 
-    <div id="report-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center;">
-        <div style="background: linear-gradient(135deg, #0f1724 0%, #0b1220 100%); border: 1px solid rgba(124, 58, 237, 0.2); border-radius: 16px; max-width: 520px; width: 90%; padding: 0; box-shadow: 0 20px 60px rgba(0,0,0,0.6); animation: modalSlideIn 0.3s ease-out;">
+    <div id="report-modal" class="modal-overlay">
 
-            <div style="padding: 2rem 2rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06);">
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-                    <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; padding: 0.75rem; display: flex; align-items: center; justify-content: center;">
+        <div class="modal-card">
+
+            <div class="modal-header">
+                <div class="modal-title-row">
+                    <div class="modal-icon-wrapper">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
                             <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
                             <line x1="4" y1="22" x2="4" y2="15"></line>
                         </svg>
                     </div>
-                    <h3 id="report-modal-title" style="margin: 0; color: #e6eef8; font-size: 1.5rem; font-weight: 700;">Inhalt melden</h3>
+                    <h3 id="report-modal-title" class="modal-title">Inhalt melden</h3>
                 </div>
-                <p style="color: #9aa4b2; margin: 0; font-size: 0.9375rem;">
+                <p class="modal-subtitle">
                     Hilf uns, die Community sicher zu halten
                 </p>
             </div>
 
-            <div style="padding: 2rem;">
+            <div class="modal-body">
                 <div style="margin-bottom: 1.5rem;">
-                    <label style="color: #e6eef8; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; display: block;">
-                        Was ist das Problem?
-                    </label>
-                    <select id="report-category" class="form-input" style="width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.1); color: #e6eef8; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9375rem;">
-                        <option value="" style="background: #0b1220;">Kategorie wählen...</option>
-                        <option value="Spam" style="background: #0b1220;">Spam</option>
-                        <option value="Beleidigung" style="background: #0b1220;">Beleidigung / Hassrede</option>
-                        <option value="Unangemessener Inhalt" style="background: #0b1220;">Unangemessener Inhalt</option>
-                        <option value="Betrug" style="background: #0b1220;">Betrug / Scam</option>
-                        <option value="Urheberrecht" style="background: #0b1220;">Urheberrechtsverletzung</option>
-                        <option value="Sonstiges" style="background: #0b1220;">Sonstiges</option>
+                    <label class="modal-label" for="report-category">Was ist das Problem?</label>
+                    <select id="report-category" class="form-input" style="cursor: pointer;">
+                        <option value="">Kategorie wählen...</option>
+                        <option value="Spam">Spam</option>
+                        <option value="Beleidigung">Beleidigung / Hassrede</option>
+                        <option value="Unangemessener Inhalt">Unangemessener Inhalt</option>
+                        <option value="Betrug">Betrug / Scam</option>
+                        <option value="Urheberrecht">Urheberrechtsverletzung</option>
+                        <option value="Sonstiges">Sonstiges</option>
                     </select>
                 </div>
 
-                <div style="margin-bottom: 0;">
-                    <label style="color: #e6eef8; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; display: block;">
-                        Zusätzliche Details <span style="color: #9aa4b2; font-weight: 400;">(optional)</span>
+                <div>
+                    <label class="modal-label" for="report-details">
+                        Details <span class="text-muted" style="font-weight: 400;">(optional)</span>
                     </label>
-                    <textarea id="report-details" class="form-input" rows="4" placeholder="Beschreibe das Problem genauer..." style="width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.1); color: #e6eef8; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9375rem; resize: vertical; min-height: 100px;"></textarea>
+                    <textarea id="report-details"
+                              class="form-textarea"
+                              rows="4"
+                              placeholder="Beschreibe das Problem genauer..."></textarea>
                 </div>
             </div>
 
-            <div style="padding: 1.5rem 2rem 2rem; border-top: 1px solid rgba(255,255,255,0.06); display: flex; gap: 1rem; justify-content: flex-end;">
-                <button onclick="closeReportModal()" class="btn-secondary" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); color: #9aa4b2; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+            <div class="modal-footer">
+                <button onclick="closeReportModal()" class="btn-secondary">
                     Abbrechen
                 </button>
-                <button onclick="submitReport()" class="btn-primary" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: 1px solid rgba(239, 68, 68, 0.3); color: white; padding: 0.75rem 2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(239, 68, 68, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(239, 68, 68, 0.3)'">
+                <button onclick="submitReport()" class="btn-danger" style="background: #ef4444; color: white; border: none;">
                     Meldung absenden
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000;"></div>
-
-    <style>
-        @keyframes modalSlideIn {
-            from { opacity: 0; transform: scale(0.95) translateY(-20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(100px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slideOutRight {
-            from { opacity: 1; transform: translateX(0); }
-            to { opacity: 0; transform: translateX(100px); }
-        }
-        /* Focus Styles für Inputs */
-        #report-category:focus, #report-details:focus {
-            outline: none; border-color: rgba(124, 58, 237, 0.5); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-        }
-    </style>
+    <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 0.5rem;"></div>
 
     <script th:inline="javascript">
         // --- MODAL FUNKTIONEN ---
@@ -145,31 +128,21 @@
 
         function showToast(message, type) {
             const container = document.getElementById('toast-container');
-            if (!container) return; // Sicherheitshalber
+            if (!container) return;
 
             const toast = document.createElement('div');
             toast.textContent = message;
-            toast.style.cssText = `
-                background: ${type === 'success' ? '#10b981' : '#ef4444'};
-                color: white;
-                padding: 1rem 1.5rem;
-                border-radius: 8px;
-                margin-bottom: 0.5rem;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                animation: slideInRight 0.3s;
-                font-size: 0.9rem;
-                font-family: inherit;
-                z-index: 10001;
-            `;
+            toast.className = `toast-card ${type === 'success' ? 'toast-success' : 'toast-error'}`;
+
             container.appendChild(toast);
 
             setTimeout(() => {
-                toast.style.animation = 'slideOutRight 0.3s';
+                toast.style.animation = 'slideOutRight 0.3s ease-in forwards';
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
 
-        // Event Listeners
+        // Close on ESC or Click Outside
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeReportModal();
         });
