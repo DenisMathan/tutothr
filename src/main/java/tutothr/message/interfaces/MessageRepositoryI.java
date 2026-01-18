@@ -1,5 +1,7 @@
 package tutothr.message.interfaces;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -27,4 +29,25 @@ public interface MessageRepositoryI extends MyBaseRepository<Message, Long> {
     long countByReceiverIdAndReadFalse(Long receiverId);
 
     List<Message> findByCourseIdOrderBySentAtDesc(Long courseId);
+
+    @Query(value = """
+        SELECT * FROM message m WHERE m.id IN (
+            SELECT MAX(m2.id) FROM message m2
+            WHERE m2.sender_id = :userId OR m2.receiver_id = :userId
+            GROUP BY CASE 
+                WHEN m2.sender_id = :userId THEN m2.receiver_id 
+                ELSE m2.sender_id 
+            END
+        ) ORDER BY m.sent_at DESC
+        """,
+            countQuery = """
+        SELECT COUNT(DISTINCT CASE 
+            WHEN m.sender_id = :userId THEN m.receiver_id 
+            ELSE m.sender_id 
+        END) 
+        FROM message m 
+        WHERE m.sender_id = :userId OR m.receiver_id = :userId
+        """,
+            nativeQuery = true)
+    Page<Message> findLatestConversations(@Param("userId") Long userId, Pageable pageable);
 }
