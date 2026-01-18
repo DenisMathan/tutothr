@@ -41,4 +41,6 @@ public interface BookingRepositoryI extends MyBaseRepository<Booking, Long> {
 			"GROUP BY b.course.title " +
 			"ORDER BY revenue DESC")
 	List<Object[]> findBestPerformingCourse(@Param("tutor") User tutor, PageRequest pageable);
+
+	boolean existsByStudentIdAndCourseId(Long studentId, Long courseId);
 }

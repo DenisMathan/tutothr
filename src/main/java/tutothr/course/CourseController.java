@@ -2,6 +2,7 @@ package tutothr.course;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 import tutothr.auth.config.MyUserDetails;
+import tutothr.booking.BookingService;
 import tutothr.category.CategoryDTO;
 import tutothr.category.CategoryService;
 import tutothr.hashtag.HashtagService;
@@ -28,6 +30,8 @@ public class CourseController {
 	private CourseService courseService;
 	private CategoryService categoryService;
 	private HashtagService hashtagService;
+	@Autowired
+	private BookingService bookingService;
 
 	public CourseController(CourseService courseService, CoursePermissionService coursePermissionService,
 			CategoryService categoryService, HashtagService hashtagService) {
@@ -71,6 +75,10 @@ public class CourseController {
 		double avgRating = course.getRatings().stream().mapToInt(Rating::getStars).average().orElse(0.0);
 		model.addAttribute("avgRating", avgRating);
 		model.addAttribute("course", courseDTO);
+
+		boolean hasBooked = false;
+		hasBooked = bookingService.hasUserBookedCourse(getCurrentUserId(), id);
+		model.addAttribute("hasBooked", hasBooked);
 		return "/views/courses/course";
 	}
 
@@ -153,5 +161,12 @@ public class CourseController {
 		boolean isAdmin = userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 		hashtagService.removeHashtagFromCourse(id, hashtagId, userDetails.getId(), isAdmin);
 		return "redirect:/courses/" + id;
+	}
+
+	private Long getCurrentUserId() {
+		return ((MyUserDetails) SecurityContextHolder.getContext()
+				.getAuthentication()
+				.getPrincipal())
+				.getId();
 	}
 }
