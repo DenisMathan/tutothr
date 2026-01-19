@@ -48,6 +48,16 @@ public class CategoryService extends BaseService<CategoryDTO, Category> {
         return mapper.toEntity(dto);
     }
 
+    public List<CategoryDTO> findAllByIds(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) return List.of();
+        return repository.findAllById(ids).stream().map(this::mapToDTO).collect(java.util.stream.Collectors.toList());
+    }
+
+    public List<Category> findAllEntitiesByIds(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) return List.of();
+        return repository.findAllById(ids);
+    }
+
     public Category findByTitle(String title) {
         return ((CategoryRepositoryI) repository).findByTitle(title).orElse(null);
     }

@@ -9,12 +9,19 @@ public class Field {
     private String type;
     private boolean readonly = false;
     private List<Field> subFields = new ArrayList<>();
+    private List<SelectOption> options = new ArrayList<>();
 
     // Konstruktor, Getter, Setter
     public Field(String name, String label, String type) {
         this.name = name;
         this.label = label;
         this.type = type;
+    }
+
+    public static Field withOptions(String name, String label, String type, List<SelectOption> options) {
+        Field field = new Field(name, label, type);
+        field.setOptions(options);
+        return field;
     }
 
     public Field(String name, String label, String type, boolean readonly) {
@@ -69,5 +76,13 @@ public class Field {
     }
     public void setSubFields(List<Field> subFields) {
         this.subFields = subFields;
+    }
+
+    public List<SelectOption> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<SelectOption> options) {
+        this.options = options;
     }
 }

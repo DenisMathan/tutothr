@@ -61,6 +61,24 @@
                  </div>
             </div>
 
+            <!-- Checkbox Group from Options -->
+            <div th:if="${field.type == 'checkbox-group'}" class="d-flex flex-wrap gap-2 mt-2">
+                 <div th:each="opt : ${field.options}">
+                     <input type="checkbox" 
+                            class="btn-check" 
+                            th:id="${field.name + '-' + opt.value}" 
+                            th:name="${field.name}" 
+                            th:value="${opt.value}"
+                            th:checked="${object['__${field.name}__'] != null and #lists.contains(object['__${field.name}__'], opt.value)}"
+                            autocomplete="off"
+                            th:disabled="${field.readonly}">
+                     <label class="btn btn-tag btn-sm rounded-pill" 
+                            th:for="${field.name + '-' + opt.value}" 
+                            th:text="${opt.label}"
+                            th:classappend="${field.readonly ? ' disabled' : ''}"></label>
+                 </div>
+            </div>
+
             <!-- Single Checkbox -->
             <div th:if="${field.type == 'checkbox'}" class="form-check mt-2">
                 <input class="form-check-input" 

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.validation.Valid;
 import tutothr.auth.config.MyUserDetails;
 import tutothr.booking.BookingService;
+import tutothr.category.Category;
 import tutothr.category.CategoryDTO;
 import tutothr.category.CategoryService;
 import tutothr.hashtag.HashtagService;
@@ -85,6 +86,7 @@ public class CourseController {
 	@GetMapping({ "/tutor/courses/add" })
 	public String getCreatePage(Model model, @PathVariable(required = false) Long id) {
 		CourseDTO course = new CourseDTO();
+		course.updateCategoryField(categoryService.getAllDTOs());
 		model.addAttribute("course", course);
 		return "/views/courses/course-edit";
 	}
@@ -99,6 +101,7 @@ public class CourseController {
 				model.addAttribute("errorMessage", "You are not authorized to edit this course.");
 				return "/error/403"; // Assuming you have a 403 error view
 			}
+			course.updateCategoryField(categoryService.getAllDTOs());
 			model.addAttribute("course", course);
 		} else {
 			// Handle the case where the course is not found
@@ -112,11 +115,18 @@ public class CourseController {
 	@PostMapping({ "/tutor/courses/save" })
 	public String processCourseForm(Model model, @ModelAttribute @Valid CourseDTO course, BindingResult result) {
 		if (result.hasErrors()) {
+			course.updateCategoryField(categoryService.getAllDTOs());
 			course = courseService.handleValidationErrors(course, result.getFieldErrors());
 			model.addAttribute("course", course);
 			return "/views/courses/course-edit";
 		}
 		Course courseEntity = courseService.mapToEntity(course);
+		List<Category> categories = new java.util.ArrayList<>();
+		if (course.getCategoryIds() != null) {
+			categories = categoryService.findAllEntitiesByIds(course.getCategoryIds());
+		}
+		courseEntity.setCategories(categories);
+
 		courseEntity.setOwnerId(((tutothr.auth.config.MyUserDetails) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal()).getId());
 		// Creating a new course
@@ -126,13 +136,33 @@ public class CourseController {
 
 	@PutMapping("/tutor/courses/save/{id}")
 	public String putMethodName(Model model, @ModelAttribute @Valid CourseDTO course, BindingResult result,
-			@RequestParam List<String> fields, @PathVariable(required = true) Long id) {
+			@PathVariable(required = true) Long id) {
+		System.out.println("DEBUG: Updating course " + id + ", title: '" + course.getTitle() + "'");
 		if (result.hasErrors()) {
+			System.out.println("DEBUG: Validation errors: " + result.getAllErrors());
+			course.updateCategoryField(categoryService.getAllDTOs());
 			course = courseService.handleValidationErrors(course, result.getFieldErrors());
 			model.addAttribute("course", course);
 			return "/views/courses/course-edit";
 		}
-		courseService.update(course);
+		
+		Course existingCourse = courseService.findById(id);
+		if (existingCourse == null) {
+			return "redirect:/courses"; // handle error better ideally
+		}
+		
+		// Update fields from DTO
+		existingCourse.setTitle(course.getTitle());
+		existingCourse.setDescription(course.getDescription());
+		existingCourse.setPrice(course.getPrice());
+		
+		List<Category> categories = new java.util.ArrayList<>();
+		if (course.getCategoryIds() != null) {
+			categories = categoryService.findAllEntitiesByIds(course.getCategoryIds());
+		}
+		existingCourse.setCategories(categories);
+		
+		courseService.save(existingCourse);
 		return "redirect:/courses";
 	}
 

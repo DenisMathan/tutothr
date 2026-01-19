@@ -13,13 +13,14 @@ import tutothr.rating.Rating;
 
 public class CourseDTO extends BaseDTO {
     @NotBlank(message = "Title cannot be empty.")
-    @Size(min = 3, max = 20, message = "Title must be between 3 and 20 characters.")
+    @Size(min = 3, max = 50, message = "Title must be between 3 and 50 characters.")
     String title;
     String description;
 
     float price;
     private Long ownerId;
     private List<CategoryDTO> categories;
+    private List<Long> categoryIds = new ArrayList<>();
     
     private List<ChapterDTO> chapters;
 
@@ -98,6 +99,30 @@ public class CourseDTO extends BaseDTO {
 
     public void setCategories(List<CategoryDTO> categories) {
         this.categories = categories;
+        if (categories != null) {
+            this.categoryIds = categories.stream().map(CategoryDTO::getId).collect(java.util.stream.Collectors.toList());
+        }
+    }
+
+    public List<Long> getCategoryIds() {
+        return categoryIds;
+    }
+
+    public void setCategoryIds(List<Long> categoryIds) {
+        this.categoryIds = categoryIds;
+    }
+
+    public void updateCategoryField(List<CategoryDTO> allCategories) {
+        List<tutothr.common.models.SelectOption> options = new ArrayList<>();
+        for (CategoryDTO cat : allCategories) {
+            options.add(new tutothr.common.models.SelectOption(cat.getTitle(), cat.getId()));
+        }
+        // Ensure it's mutable
+        this.formFields = new ArrayList<>(this.formFields);
+        
+        formFields.removeIf(f -> f.getName().equals("categoryIds"));
+        
+        formFields.add(tutothr.common.models.Field.withOptions("categoryIds", "Kategorien", "checkbox-group", options));
     }
 
     public boolean getIsOwner() {
