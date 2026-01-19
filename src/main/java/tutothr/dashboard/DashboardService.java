@@ -30,8 +30,8 @@ public class DashboardService {
 
         dto.setUnreadMessages(messageRepository.countByReceiverIdAndReadFalse(user.getId()));
 
-        boolean isTutor = user.getRoles().stream().anyMatch(r -> r.getType() == RolesEnum.TUTOR);
-        boolean isStudent = user.getRoles().stream().anyMatch(r -> r.getType() == RolesEnum.STUDENT);
+        boolean isTutor = user.getRoles().contains(RolesEnum.TUTOR);
+        boolean isStudent = user.getRoles().contains(RolesEnum.STUDENT);
 
         if (isTutor) {
             dto.setActiveCourses(courseRepository.countByOwnerId(user.getId()));

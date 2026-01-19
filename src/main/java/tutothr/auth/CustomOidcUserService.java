@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
 import tutothr.auth.config.CustomOidcUser;
-import tutothr.role.RoleRepositoryI;
+import tutothr.common.utils.enums.RolesEnum;
 import tutothr.user.User;
 import tutothr.user.interfaces.UserRepositoryI;
 
@@ -17,9 +17,6 @@ public class CustomOidcUserService extends OidcUserService {
 
     @Autowired
     private UserRepositoryI userRepository;
-
-    @Autowired
-    private RoleRepositoryI roleRepository;
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
@@ -32,9 +29,7 @@ public class CustomOidcUserService extends OidcUserService {
             user.setActive(true);
             user.setAuthProvider(AuthProvider.GOOGLE); 
             user.setVerified(true);
-            roleRepository.findByDescriptionIgnoreCase("STUDENT").ifPresent(role -> {
-                user.getRoles().add(role);
-            });
+            user.getRoles().add(RolesEnum.STUDENT);
             return userRepository.save(user);
         });
 

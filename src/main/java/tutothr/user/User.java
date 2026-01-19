@@ -5,21 +5,19 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import tutothr.auth.AuthProvider;
 import tutothr.common.BaseEntity;
-import tutothr.role.Role;
-import jakarta.persistence.JoinColumn;
-
-
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
+import tutothr.common.utils.enums.RolesEnum;
 
 @Entity
 @Table(name="user")
@@ -47,13 +45,11 @@ public class User extends BaseEntity implements Serializable {
 
 	private boolean twoFactorEnabled = false;
 	
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(
-			name="userrole",
-			joinColumns = @JoinColumn(name="iduser"),
-			inverseJoinColumns = @JoinColumn(name="idrole")
-			)
-	private Set<Role> roles = new HashSet<>();
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+	@Enumerated(EnumType.STRING)
+	@Column(name = "role")
+	private Set<RolesEnum> roles = new HashSet<>();
 
 	private boolean verified;
 
@@ -61,11 +57,11 @@ public class User extends BaseEntity implements Serializable {
 	private boolean accountNonLocked = true;
 
 
-	public Set<Role> getRoles() {
+	public Set<RolesEnum> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(Set<RolesEnum> roles) {
 		this.roles = roles;
 	}
 

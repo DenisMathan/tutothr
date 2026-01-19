@@ -44,14 +44,14 @@
                         onsubmit="return confirm('Möchtest du deinen Account wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.');">
                         <input type="hidden" name="_method" value="delete"/>
                         <button type="submit" class="btn-danger">
-                            Account löschen
+                            Deinen Account löschen
                         </button>
                     </form>
                     <form th:if="${!isOwnProfile}" th:action="@{/user/delete/{id}(id=${user.id})}" method="post"
                         onsubmit="return confirm('Möchtest du diesen Account wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden!');">
                         <input type="hidden" name="_method" value="delete"/>
                         <button type="submit" class="btn-danger">
-                            Account löschen
+                            DiesenAccount löschen
                         </button>
                     </form>
 
@@ -63,7 +63,7 @@
             <!-- Formular Body -->
             <div style="padding: 2rem;">
                 <div
-                    th:replace="~{fragments/forms/form :: form(object=${user}, action=@{/admin/user/save/{id}(id=${user.id})})}">
+                    th:replace="~{fragments/forms/form :: form(object=${user}, action=@{/user/save/{id}(id=${user.id})})}">
                 </div>
             </div>
 

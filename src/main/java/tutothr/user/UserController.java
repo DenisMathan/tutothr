@@ -42,7 +42,18 @@ public class UserController {
             authService.logout(request, response, authentication);
         }
 
-        return "redirect:/login?logout";
+        return "redirect:/login?deleted";
+    }
+    @DeleteMapping("/user/delete/{id}")
+    public String deleteUserById(@PathVariable Long id) {
+        User currentUser = authService.getCurrentUser();
+        boolean isAdmin = currentUser != null
+                && currentUser.getRoles().contains(tutothr.common.utils.enums.RolesEnum.ADMIN);
+        User user = userService.getUserById(id);
+        if (isAdmin && user != null) {
+            userService.delete(user);
+        }
+        return "redirect:/admin/all?deleted";
     }
 
     @GetMapping("/set-username")
@@ -56,7 +67,6 @@ public class UserController {
         return "views/auth/set-username";
     }
 
-
     @GetMapping("/user/{id}")
     public String getUserProfile(@PathVariable Long id, Model model) {
         // User user = userRepository.findById(id).orElseThrow();
@@ -64,9 +74,18 @@ public class UserController {
         User user = userService.getUserById(id);
         if (user == null) {
             model.addAttribute("errorMessage", "User not found");
-            return "/error/404";
+            return "error/404";
         }
         UserDTO userDTO = userService.mapToDTO(user);
+
+        // Check if current user is admin
+        boolean isAdmin = currentUser != null
+                && currentUser.getRoles().contains(tutothr.common.utils.enums.RolesEnum.ADMIN);
+
+        if (isAdmin) {
+            userDTO.setAdminFields();
+        }
+
         model.addAttribute("user", userDTO);
         model.addAttribute("isOwnProfile", currentUser != null && currentUser.getId().equals(id));
 
@@ -78,24 +97,48 @@ public class UserController {
         User user = authService.getCurrentUser();
         if (user == null) {
             System.out.println("No authenticated user found");
-            return "redirect:/login"; 
+            return "redirect:/login";
         }
         UserDTO userDTO = userService.mapToDTO(user);
+        // Check if current user is admin
+        boolean isAdmin = user.getRoles().contains(tutothr.common.utils.enums.RolesEnum.ADMIN);
+        if (isAdmin) {
+            userDTO.setAdminFields();
+        }
         model.addAttribute("user", userDTO);
-        model.addAttribute ("isOwnProfile", true);
+        model.addAttribute("isOwnProfile", true);
         return "views/users/user-profile";
     }
 
-    @PutMapping("/admin/user/save/{id}")
+    @PutMapping("/user/save/{id}")
     public String saveUser(@ModelAttribute @Valid UserDTO userDTO, BindingResult result, Model model,
-            @PathVariable Long id) {
+            @PathVariable Long id, Authentication authentication) {
+
+        User currentUser = authService.getCurrentUser();
+        boolean isAdmin = currentUser != null
+                && currentUser.getRoles().contains(tutothr.common.utils.enums.RolesEnum.ADMIN);
+
+        // Security Check 1: Normal users can only update themselves
+        if (!isAdmin && (currentUser == null || !currentUser.getId().equals(id))) {
+            return "redirect:/error/403";
+        }
+
+        // Security Check 2: Normal users cannot update sensitive fields
+        if (!isAdmin) {
+            userDTO.clearAdminFields();
+        }
+
         if (result.hasErrors()) {
             userDTO = userService.handleValidationErrors(userDTO, result.getFieldErrors());
             model.addAttribute("user", userDTO);
-            return "/views/courses/course-edit";
+            return "views/users/user-profile";
         }
         userService.update(userDTO);
-        return "redirect:/admin/all";
+
+        if (isAdmin) {
+            return "redirect:/user/" + id;
+        }
+        return "redirect:/users/profil";
     }
 
     @PutMapping("/set-username")
@@ -121,6 +164,6 @@ public class UserController {
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());
         }
-        return "/views/users/user-all";
+        return "views/users/user-all";
     }
 }

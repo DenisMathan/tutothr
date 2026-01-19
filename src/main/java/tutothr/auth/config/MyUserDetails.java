@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import tutothr.role.Role;
+import tutothr.common.utils.enums.RolesEnum;
 import tutothr.user.User;
 
 public class MyUserDetails implements UserDetails, AppPrincipal {
@@ -22,7 +22,7 @@ public class MyUserDetails implements UserDetails, AppPrincipal {
 	private Long id;
 	private boolean active;
 	private List<GrantedAuthority> authorities;
-	private Collection<Role> roles;
+	private Collection<RolesEnum> roles;
 
 
 	public MyUserDetails(User user) {
@@ -36,9 +36,9 @@ public class MyUserDetails implements UserDetails, AppPrincipal {
 		this.roles = user.getRoles();
 		this.authorities = new ArrayList<>();
 
-		for (Role role : roles) {
-			if (role.getType() != null) {
-				this.authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getType().name()));
+		for (RolesEnum role : roles) {
+			if (role != null) {
+				this.authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
 			}
 		}
 	}

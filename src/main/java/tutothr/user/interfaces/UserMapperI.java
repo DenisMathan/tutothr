@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import tutothr.user.User;
 import tutothr.user.UserDTO;
 import tutothr.auth.dtos.RegisterUserDTO;
-import tutothr.role.Role;
-import tutothr.role.RoleRepositoryI;
 import tutothr.common.utils.enums.RolesEnum;
 
 import java.util.HashSet;
@@ -21,8 +19,6 @@ import java.util.Set;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class UserMapperI {
 
-    @Autowired
-    protected RoleRepositoryI roleRepository;
 
     public abstract RegisterUserDTO toDTO(User user);
     public abstract User toEntity(RegisterUserDTO dto);
@@ -38,22 +34,29 @@ public abstract class UserMapperI {
     @AfterMapping
     protected void mapRolesToBooleans(User user, @MappingTarget UserDTO dto) {
         if (user.getRoles() == null) return;
-        dto.setAdmin(user.getRoles().stream().anyMatch(role -> role.getType() == RolesEnum.ADMIN));
-        dto.setTutor(user.getRoles().stream().anyMatch(role -> role.getType() == RolesEnum.TUTOR));
-        dto.setStudent(user.getRoles().stream().anyMatch(role -> role.getType() == RolesEnum.STUDENT));
+        dto.setAdmin(user.getRoles().contains(RolesEnum.ADMIN));
+        dto.setTutor(user.getRoles().contains(RolesEnum.TUTOR));
+        dto.setStudent(user.getRoles().contains(RolesEnum.STUDENT));
     }
 
     @AfterMapping
     protected void mapBooleansToRoles(UserDTO dto, @MappingTarget User user) {
-        Set<Role> roles = new HashSet<>();
-        if (dto.isAdmin()) {
-            roleRepository.findByType(RolesEnum.ADMIN).ifPresent(roles::add);
+        // If all role flags are null, do not update roles (assume no role fields in form)
+        if (dto.getAdmin() == null && dto.getTutor() == null && dto.getStudent() == null) {
+            return;
         }
-        if (dto.isTutor()) {
-            roleRepository.findByType(RolesEnum.TUTOR).ifPresent(roles::add);
+
+        Set<RolesEnum> roles = new HashSet<>();
+        
+        // Use Boolean.TRUE.equals to safely handle nulls
+        if (Boolean.TRUE.equals(dto.getAdmin())) {
+            roles.add(RolesEnum.ADMIN);
         }
-        if (dto.isStudent()) {
-            roleRepository.findByType(RolesEnum.STUDENT).ifPresent(roles::add);
+        if (Boolean.TRUE.equals(dto.getTutor())) {
+            roles.add(RolesEnum.TUTOR);
+        }
+        if (Boolean.TRUE.equals(dto.getStudent())) {
+            roles.add(RolesEnum.STUDENT);
         }
         user.setRoles(roles);
     }

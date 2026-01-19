@@ -30,9 +30,6 @@ VALUES ('markus', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgR
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, auth_provider, verified, two_factor_enabled, account_non_locked, strikes)
 VALUES ('Denice', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'denis.mathan@googlemail.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, 'GOOGLE', true, false, true, 0);
 
-INSERT INTO role (description, type) VALUES ('ADMIN', 'ADMIN');
-INSERT INTO role (description, type) VALUES ('STUDENT', 'STUDENT');
-INSERT INTO role (description, type) VALUES ('TUTOR', 'TUTOR');
 
 -- INSERT INTO verification_token (token, user_id, created_at, expires_at) VALUES ('token123', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + INTERVAL '24 HOURS');
 
@@ -41,17 +38,13 @@ INSERT INTO role (description, type) VALUES ('TUTOR', 'TUTOR');
 -- INSERT INTO authority (description) VALUES ( 'REGISTRATION');
 
 
-INSERT INTO userrole(iduser, idrole) VALUES (1,1);
-INSERT INTO userrole(iduser, idrole) VALUES (2,1);
-INSERT INTO userrole(iduser, idrole) VALUES (3,1);
-INSERT INTO userrole(iduser, idrole) VALUES (3,3);
-INSERT INTO userrole(iduser, idrole) VALUES (14,1);
-INSERT INTO userrole(iduser, idrole) VALUES (14,3);
+INSERT INTO user_roles(user_id, role) VALUES (1, 'ADMIN');
+INSERT INTO user_roles(user_id, role) VALUES (2, 'ADMIN');
+INSERT INTO user_roles(user_id, role) VALUES (3, 'ADMIN');
+INSERT INTO user_roles(user_id, role) VALUES (3, 'TUTOR');
+-- INSERT INTO user_roles(user_id, role) VALUES (14, 'ADMIN');
+-- INSERT INTO user_roles(user_id, role) VALUES (14, 'TUTOR');
 
--- Student is Student
-INSERT INTO userrole(iduser, idrole) VALUES (4,2);
--- Tutor is Tutor
-INSERT INTO userrole(iduser, idrole) VALUES (5,3);
 
 
 

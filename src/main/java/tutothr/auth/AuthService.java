@@ -20,7 +20,7 @@ import tutothr.auth.verifikation.VerificationService;
 import tutothr.auth.verifikation.VerificationToken;
 import tutothr.common.BaseService;
 import tutothr.common.services.MailService;
-import tutothr.role.RoleRepositoryI;
+import tutothr.common.utils.enums.RolesEnum;
 import tutothr.user.User;
 import tutothr.user.interfaces.UserMapperI;
 import tutothr.user.interfaces.UserRepositoryI;
@@ -28,15 +28,13 @@ import tutothr.user.interfaces.UserRepositoryI;
 @Service
 public class AuthService extends BaseService<RegisterUserDTO, User> implements UserDetailsService {
 
-    private final RoleRepositoryI roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
     private final UserMapperI userMapper;
     private final VerificationService verificationService;
 
-    public AuthService(UserRepositoryI userRepository, RoleRepositoryI roleRepository, PasswordEncoder passwordEncoder, MailService mailService, UserMapperI userMapper, VerificationService verificationService) {
+    public AuthService(UserRepositoryI userRepository, PasswordEncoder passwordEncoder, MailService mailService, UserMapperI userMapper, VerificationService verificationService) {
         super(userRepository);
-        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailService = mailService;
         this.userMapper = userMapper;
@@ -75,9 +73,7 @@ public class AuthService extends BaseService<RegisterUserDTO, User> implements U
 
 
         // Rolle holen und zuweisen (z.B. STUDENT)
-        roleRepository.findByDescriptionIgnoreCase("STUDENT").ifPresent(r -> {
-            user.getRoles().add(r);
-        });
+        user.getRoles().add(RolesEnum.STUDENT);
         User _user = repository.save(user);
         try {
             VerificationToken veri = verificationService.createToken(user);

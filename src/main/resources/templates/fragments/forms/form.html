@@ -29,7 +29,9 @@
                    th:type="${field.type}" 
                    th:id="${field.name}" 
                    th:name="${field.name}" 
-                   th:value="*{__${field.name}__}" />
+                   th:value="*{__${field.name}__}"
+                   th:readonly="${field.readonly}"
+                   th:classappend="${field.readonly} ? ' bg-light text-muted' : ''" />
 
             <!-- Textarea using .form-textarea from style.css -->
             <textarea th:if="${field.type == 'textarea'}" 
@@ -37,7 +39,9 @@
                       rows="4"
                       th:id="${field.name}" 
                       th:name="${field.name}" 
-                      th:text="*{__${field.name}__}"></textarea>
+                      th:text="*{__${field.name}__}"
+                      th:readonly="${field.readonly}"
+                      th:classappend="${field.readonly} ? ' bg-light text-muted' : ''"></textarea>
             
             <!-- Group of Checkboxes (Tags Style) -->
             <div th:if="${field.type == 'group'}" class="d-flex flex-wrap gap-2 mt-2">
@@ -47,10 +51,13 @@
                             th:id="${subField.name}" 
                             th:name="${subField.name}" 
                             th:checked="*{__${subField.name}__}" 
-                            autocomplete="off">
+                            autocomplete="off"
+                            th:disabled="${field.readonly or subField.readonly}">
                      <label class="btn btn-tag btn-sm rounded-pill" 
                             th:for="${subField.name}" 
-                            th:text="${subField.label}"></label>
+                            th:text="${subField.label}"
+                            th:classappend="${(subField.readonly) ? ' disabled' : ''}"
+                            th:style="${(field.readonly or subField.readonly) ? 'pointer-events: none; opacity: 0.65;' : ''}"></label>
                  </div>
             </div>
 
@@ -60,7 +67,8 @@
                        type="checkbox" 
                        th:id="${field.name}" 
                        th:name="${field.name}" 
-                       th:checked="*{__${field.name}__}">
+                       th:checked="*{__${field.name}__}"
+                       th:disabled="${field.readonly}">
                 <label class="form-check-label" 
                        th:for="${field.name}" 
                        th:text="${field.label}"
