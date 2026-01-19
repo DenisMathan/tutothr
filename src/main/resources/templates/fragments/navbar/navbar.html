@@ -43,13 +43,13 @@
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
                         </svg>
-                        <span class="navbar404-profile-name" th:text="${#authentication?.name ?: 'Profil'}">Profil</span>
+                        <span class="navbar404-profile-name" th:text="${#authentication.principal.dbUser.username}">Profil</span>
                         <svg class="navbar404-caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
                     </button>
                     <ul class="navbar404-profile-menu">
-                        <li><a th:href="@{/profil}">Mein Profil</a></li>
+                        <li><a th:href="@{/users/profil}">Mein Profil</a></li>
                         <li><a th:href="@{/account}">Account</a></li>
                         <li>
                             <form th:action="@{/logout}" method="post" style="margin:0">

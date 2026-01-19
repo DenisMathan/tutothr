@@ -6,11 +6,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import tutothr.auth.AuthService;
 import tutothr.user.interfaces.UserRepositoryI;
@@ -31,6 +34,17 @@ public class UserController {
         this.authService = authService;
     }
 
+    @DeleteMapping("/user/delete/self")
+    public String deleteSelf(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        User user = authService.getCurrentUser();
+        if (user != null) {
+            userService.delete(user);
+            authService.logout(request, response, authentication);
+        }
+
+        return "redirect:/login?logout";
+    }
+
     @GetMapping("/set-username")
     public String getMethodName(Model model) {
         User user = authService.getCurrentUser();
@@ -46,6 +60,7 @@ public class UserController {
     @GetMapping("/user/{id}")
     public String getUserProfile(@PathVariable Long id, Model model) {
         // User user = userRepository.findById(id).orElseThrow();
+        User currentUser = authService.getCurrentUser();
         User user = userService.getUserById(id);
         if (user == null) {
             model.addAttribute("errorMessage", "User not found");
@@ -53,11 +68,12 @@ public class UserController {
         }
         UserDTO userDTO = userService.mapToDTO(user);
         model.addAttribute("user", userDTO);
+        model.addAttribute("isOwnProfile", currentUser != null && currentUser.getId().equals(id));
 
         return "views/users/user-profile";
     }
 
-    @GetMapping("/profil")
+    @GetMapping("users/profil")
     public String getMyProfile(Model model) {
         User user = authService.getCurrentUser();
         if (user == null) {
@@ -66,6 +82,7 @@ public class UserController {
         }
         UserDTO userDTO = userService.mapToDTO(user);
         model.addAttribute("user", userDTO);
+        model.addAttribute ("isOwnProfile", true);
         return "views/users/user-profile";
     }
 

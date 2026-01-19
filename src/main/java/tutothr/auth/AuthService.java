@@ -8,8 +8,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import tutothr.auth.config.AppPrincipal;
 import tutothr.auth.config.MyUserDetails;
 import tutothr.auth.dtos.RegisterUserDTO;
@@ -85,7 +88,13 @@ public class AuthService extends BaseService<RegisterUserDTO, User> implements U
         return _user;
     }
 
-    public void login(){}
+    public void login(){} 
+
+    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        if (authentication != null) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
+        }
+    }
 
     @Override
     public RegisterUserDTO mapToDTO(User entity) {

@@ -22,10 +22,11 @@ public class HomeController {
 	DashboardService dashboardService;
 	@Autowired
 	ModerationService moderationService;
+	@Autowired
+	tutothr.auth.AuthService authService;
     @RequestMapping(method = RequestMethod.GET, value = {"/home", "/"})
 	public String home(Model model) {
 		User user = getCurrentUserById();
-
 		DashboardDTO stats = dashboardService.getStatsForUser(user);
 
 		model.addAttribute("stats", stats);

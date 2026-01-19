@@ -7,7 +7,7 @@
 
 <section layout:fragment="mybody">
     <div class="container" style="max-width: 800px; margin: 2rem auto; padding: 0 1rem;">
-        
+
         <!-- Header / Zurück Button (ähnlich wie user-all) -->
         <!-- <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
             <div>
@@ -17,30 +17,56 @@
 
         <!-- Card Container im gleichen Stil wie Course-Cards -->
         <div class="course-card" style="padding: 0; overflow: hidden;">
-            
+
             <!-- Profil Header -->
-            <div style="background: var(--bg-hover); padding: 2rem; display: flex; align-items: center; gap: 1.5rem; border-bottom: 1px solid var(--border-color);">
+            <div
+                style="background: var(--bg-hover); padding: 2rem; display: flex; align-items: center; gap: 1.5rem; border-bottom: 1px solid var(--border-color);">
                 <!-- Avatar Circle -->
-                <div style="width: 80px; height: 80px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+                <div
+                    style="width: 80px; height: 80px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                 </div>
                 <div>
-                    <h2 class="h3 margin-bottom-0" style="margin: 0; color: var(--text-main);" th:text="${user.username}">Username</h2>
+                    <h2 class="h3 margin-bottom-0" style="margin: 0; color: var(--text-main);"
+                        th:text="${user.username}">Username</h2>
                     <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
-                         <span class="badge" style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem;" 
-                               th:text="'ID: ' + ${user.id}">ID: 123</span>
+                        <span class="badge"
+                            style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem;"
+                            th:text="'ID: ' + ${user.id}">ID: 123</span>
                     </div>
+                </div>
+
+                <div style="margin-left: auto;">
+                    <form th:if="${isOwnProfile}" th:action="@{/user/delete/self}" method="post"
+                        onsubmit="return confirm('Möchtest du deinen Account wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.');">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" class="btn-danger">
+                            Account löschen
+                        </button>
+                    </form>
+                    <form th:if="${!isOwnProfile}" th:action="@{/user/delete/{id}(id=${user.id})}" method="post"
+                        onsubmit="return confirm('Möchtest du diesen Account wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden!');">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" class="btn-danger">
+                            Account löschen
+                        </button>
+                    </form>
+
+                    <!-- Admin Delete Link (falls benötigt, sollte auch idealerweise ein Formular sein) -->
+                    <!-- <a class="btn-danger" th:if="${!isOwnProfile}" href="/user/delete/{id}" th:href="@{/user/delete/{id}(id=${user.id})}"></a> -->
                 </div>
             </div>
 
             <!-- Formular Body -->
             <div style="padding: 2rem;">
-                 <div th:replace="~{fragments/forms/form :: form(object=${user}, action=@{/admin/user/save/{id}(id=${user.id})})}"></div>
+                <div
+                    th:replace="~{fragments/forms/form :: form(object=${user}, action=@{/admin/user/save/{id}(id=${user.id})})}">
+                </div>
             </div>
-            
+
         </div>
     </div>
 </section>

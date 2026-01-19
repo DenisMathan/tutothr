@@ -42,7 +42,7 @@ public class AuthenticationController {
             bindingResult.getFieldErrors().forEach(error -> 
                 form.addValidationError(error.getField(), error.getDefaultMessage())
             );
-            return "/views/auth/register";
+            return "views/auth/register";
         }
 
         User user = authService.register(form);
@@ -53,7 +53,7 @@ public class AuthenticationController {
     public String showRegister(Authentication authentication, Model model) {
         if (alreadyLoggedIn(authentication)) {
             // bereits angemeldet -> weiterleiten
-            return "redirect:/views/home";
+            return "redirect:/home";
         }
         RegisterUserDTO form = new RegisterUserDTO();
         //TODO remove test data
@@ -64,14 +64,14 @@ public class AuthenticationController {
         model.addAttribute("registrationForm", form);
         
         // nicht angemeldet -> Registrierungsseite zeigen
-        return "/views/auth/register";
+        return "views/auth/register";
     }
 
     @GetMapping({ "/login" })
     public String showLogin(Authentication authentication, Model model) {
         if (alreadyLoggedIn(authentication)) {
             // bereits angemeldet -> weiterleiten
-            return "redirect:/views/home";
+            return "redirect:/home";
         }
         LoginUserDTO form = new LoginUserDTO();
         //TODO remove test data
@@ -79,14 +79,14 @@ public class AuthenticationController {
         form.setEmail("denis@email.com");
         form.setPassword("Password123");
         model.addAttribute("loginForm", form);
-        return "/views/auth/login";
+        return "views/auth/login";
     }
     
     @GetMapping("/logout")
     public String postMethodName(Authentication auth) {
         if (!alreadyLoggedIn(auth))
-            return "redirect:/views/login";
+            return "redirect:/login";
 
-        return "/views/auth/login";
+        return "views/auth/login";
     }
 }

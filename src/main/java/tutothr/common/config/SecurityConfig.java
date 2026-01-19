@@ -29,7 +29,7 @@ import tutothr.auth.twoFactorVerification.TwoFactorVerificationFilter;
 public class SecurityConfig {
         //TODO: adjust public endpoints as needed
     public static final String[] PUBLIC_ENDPOINTS = {
-            "/verify/**", "/admin/all", "user/**", "/resources/**", "/css/**", "/api/**", "/api/workshops/**", "/webjars/**", "/h2-console/**",
+            "/verify/**", "/resources/**", "/css/**", "/api/**", "/api/workshops/**", "/webjars/**", "/h2-console/**",
             "/login",
             "/register", "/logout", "/404"
     };
@@ -64,7 +64,7 @@ public class SecurityConfig {
         http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-                .requestMatchers("/home", "/student").authenticated()
+                .requestMatchers("/home", "/student", "/users/**").authenticated()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/tutor/**").hasRole("TUTOR")
                 .requestMatchers("/registration/**").hasAuthority("REGISTRATION")

@@ -1,4 +1,7 @@
 package tutothr.user;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import tutothr.auth.config.CustomOidcUser;
 import tutothr.common.BaseService;
+import tutothr.hashtag.HashtagService;
 import tutothr.user.interfaces.UserMapperI;
 import tutothr.user.interfaces.UserRepositoryI;
 import tutothr.user.interfaces.UserServiceI;
@@ -16,14 +20,16 @@ import tutothr.user.interfaces.UserServiceI;
 @Service
 public class UserService extends BaseService<UserDTO, User> implements UserServiceI {
 
-	UserRepositoryI userRepository;
+	private final UserRepositoryI userRepository;
+	private final HashtagService hashtagService;
 
 	@Autowired
 	private UserMapperI userMapper;
 
-	public UserService(UserRepositoryI userRepository) {
+	public UserService(UserRepositoryI userRepository, HashtagService hashtagService) {
 		super(userRepository);
 		this.userRepository = userRepository;
+		this.hashtagService = hashtagService;
 	}
 
 	@Override
@@ -63,6 +69,7 @@ public class UserService extends BaseService<UserDTO, User> implements UserServi
 
 	@Override
 	public void delete(User user) {
+		hashtagService.releaseHashtagsFromCreator(user);
 		userRepository.delete(user);
 	}
 

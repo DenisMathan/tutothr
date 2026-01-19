@@ -94,4 +94,12 @@ public class HashtagService {
 		course.getHashtags().remove(hashtag);
 		courseRepository.save(course);
 	}
+
+	public void releaseHashtagsFromCreator(User user) {
+		List<Hashtag> hashtags = hashtagRepository.findByCreator(user);
+		for (Hashtag hashtag : hashtags) {
+			hashtag.setCreator(null);
+			hashtagRepository.save(hashtag);
+		}
+	}
 }
