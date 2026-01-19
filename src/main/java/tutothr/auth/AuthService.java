@@ -65,7 +65,6 @@ public class AuthService extends BaseService<RegisterUserDTO, User> implements U
         }
 
         // Benutzer anlegen
-
         User user = mapToEntity(form);
         user.setActive(true);
         user.setAuthProvider(AuthProvider.LOCAL);

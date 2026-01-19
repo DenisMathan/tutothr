@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Service;
 
 import tutothr.auth.config.CustomOidcUser;
+import tutothr.auth.verifikation.VerificationRepositoryI;
 import tutothr.common.BaseService;
 import tutothr.hashtag.HashtagService;
 import tutothr.user.interfaces.UserMapperI;
@@ -22,14 +23,16 @@ public class UserService extends BaseService<UserDTO, User> implements UserServi
 
 	private final UserRepositoryI userRepository;
 	private final HashtagService hashtagService;
+	private final VerificationRepositoryI verificationRepository;
 
 	@Autowired
 	private UserMapperI userMapper;
 
-	public UserService(UserRepositoryI userRepository, HashtagService hashtagService) {
+	public UserService(UserRepositoryI userRepository, HashtagService hashtagService, VerificationRepositoryI verificationRepository) {
 		super(userRepository);
 		this.userRepository = userRepository;
 		this.hashtagService = hashtagService;
+		this.verificationRepository = verificationRepository;
 	}
 
 	@Override
@@ -69,6 +72,7 @@ public class UserService extends BaseService<UserDTO, User> implements UserServi
 
 	@Override
 	public void delete(User user) {
+		verificationRepository.findByUserId(user.getId()).ifPresent(verificationRepository::delete);
 		hashtagService.releaseHashtagsFromCreator(user);
 		userRepository.delete(user);
 	}
