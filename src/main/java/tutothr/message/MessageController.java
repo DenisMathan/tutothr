@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import tutothr.auth.config.MyUserDetails;
+import tutothr.auth.config.AppPrincipal;
 import tutothr.common.services.MailService;
 import tutothr.message.interfaces.MessageRepositoryI;
 import tutothr.moderation.ModerationService;
@@ -142,7 +142,7 @@ public class MessageController {
     }
 
     private Long getCurrentUserId() {
-        return ((MyUserDetails) SecurityContextHolder.getContext()
+        return ((AppPrincipal) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal())
                 .getId();

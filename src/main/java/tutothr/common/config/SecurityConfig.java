@@ -64,10 +64,8 @@ public class SecurityConfig {
         http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-                .requestMatchers("/home", "/student", "/users/**").authenticated()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/tutor/**").hasRole("TUTOR")
-                .requestMatchers("/registration/**").hasAuthority("REGISTRATION")
                 .anyRequest().authenticated());
 
         // regular Login form

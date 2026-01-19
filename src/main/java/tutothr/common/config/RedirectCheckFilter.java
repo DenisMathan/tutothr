@@ -50,6 +50,13 @@ public class RedirectCheckFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
         String path = request.getRequestURI();
+        
+        // Prevent redirect loop if we are already on the target page
+        if (path.equals("/set-username")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         boolean isAllowed = Arrays.stream(PUBLIC_ENDPOINTS).anyMatch(path::startsWith);
         if (isAllowed) {
             filterChain.doFilter(request, response);
