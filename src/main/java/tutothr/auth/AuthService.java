@@ -2,12 +2,15 @@ package tutothr.auth;
 
 import java.util.Optional;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import tutothr.auth.config.AppPrincipal;
 import tutothr.auth.config.MyUserDetails;
 import tutothr.auth.dtos.RegisterUserDTO;
 import tutothr.auth.verifikation.VerificationService;
@@ -98,6 +101,31 @@ public class AuthService extends BaseService<RegisterUserDTO, User> implements U
         if (!user.isVerified()) {
             // throw new IllegalStateException("User email is not verified.");
         }
+    }
+
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() 
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            return null;
+        }
+        
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof AppPrincipal) {
+            return ((AppPrincipal) principal).getDbUser();
+        }
+        
+        // Fallback for OAuth2User if it doesn't implement AppPrincipal
+        if (principal instanceof org.springframework.security.oauth2.core.user.OAuth2User) {
+             String email = ((org.springframework.security.oauth2.core.user.OAuth2User) principal).getAttribute("email");
+             if (email != null) {
+                 return ((UserRepositoryI) repository).findByEmailIgnoreCase(email).orElse(null);
+             }
+        }
+
+        String email = authentication.getName();
+        return ((UserRepositoryI) repository).findByEmailIgnoreCase(email).orElse(null);
     }
     
 }

@@ -6,6 +6,7 @@ target/
 
 *.env
 .DS_Store
+**/.DS_Store
 
 ### VS-Code ###
 .qodo

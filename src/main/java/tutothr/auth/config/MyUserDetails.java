@@ -68,7 +68,8 @@ public class MyUserDetails implements UserDetails, AppPrincipal {
 
 	@Override
 	public String getUsername() {
-		return this.userName;
+		// Rückgabe der Email als eindeutiger Identifikator für Spring Security
+		return this.email;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package tutothr.common.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,16 +41,22 @@ public class SecurityConfig {
     private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     @Autowired
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    @Autowired
+    private org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
+
+    @Value("${app.security.remember-me.key}")
+    private String rememberMeKey;
 
     SecurityConfig(CustomOAuth2SuccessHandler customOAuth2SuccessHandler ) {
         this.customOAuth2SuccessHandler = customOAuth2SuccessHandler;
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public static PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
         // return new BCryptPasswordEncoder();
     }
+
 
     @Bean
     public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -72,6 +79,14 @@ public class SecurityConfig {
                 .successHandler(customAuthenticationSuccessHandler) // bei Erfolg
                 .failureHandler(customAuthenticationFailureHandler) // bei Fehler
                 .permitAll());
+
+        // Remember Me Konfiguration für Entwicklung
+        http.rememberMe(rememberMe -> rememberMe
+                .key(rememberMeKey)
+                .tokenValiditySeconds(7 * 24 * 60 * 60) // 7 Tage
+                .alwaysRemember(true) // Immer erinnern, auch ohne Checkbox
+                .userDetailsService(userDetailsService)
+        );
 
         // OAuth2 Login (Google)
         http.oauth2Login(oauth2 -> oauth2
