@@ -30,6 +30,11 @@ public class HashtagService {
 		return hashtagRepository.findByName(name).orElse(null);
 	}
 
+	public List<Hashtag> findAllEntitiesByIds(List<Long> ids) {
+		if (ids == null || ids.isEmpty()) return List.of();
+		return hashtagRepository.findAllById(ids);
+	}
+
 	public Hashtag save(Hashtag hashtag) {
 		return hashtagRepository.save(hashtag);
 	}

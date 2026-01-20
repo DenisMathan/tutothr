@@ -1,8 +1,10 @@
 package tutothr.common;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.util.ReflectionUtils;
 import org.springframework.validation.FieldError;
 
 import tutothr.common.interfaces.ServiceI;
@@ -23,6 +25,36 @@ public abstract class BaseService<DTO extends BaseDTO, Entity extends BaseEntity
         updateFieldsRecursive(obj, existingObj, obj.getFormFields());
         save(existingObj);
         return mapToDTO(existingObj);
+    }
+    
+    public DTO patch(Long id, Map<String, Object> updates) {
+        Entity entity = findById(id);
+        
+        updates.forEach((key, value) -> {
+            if ("id".equals(key)) return;
+            if (handleCustomPatch(entity, key, value)) return;
+
+            java.lang.reflect.Field field = ReflectionUtils.findField(entity.getClass(), key);
+            if (field != null) {
+                field.setAccessible(true);
+                try {
+                    if (value instanceof Integer && field.getType().equals(Long.class)) {
+                        ReflectionUtils.setField(field, entity, ((Integer) value).longValue());
+                    } else {
+                        ReflectionUtils.setField(field, entity, value);
+                    }
+                } catch (IllegalArgumentException e) {
+                   System.err.println("BaseService patch warning for field " + key + ": " + e.getMessage());
+                }
+            }
+        });
+        
+        save(entity);
+        return mapToDTO(entity);
+    }
+
+    protected boolean handleCustomPatch(Entity entity, String key, Object value) {
+        return false;
     }
 
     private void updateFieldsRecursive(DTO obj, Entity existingObj, List<Field> fields) {

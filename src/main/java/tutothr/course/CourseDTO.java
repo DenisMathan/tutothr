@@ -3,6 +3,8 @@ package tutothr.course;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -25,6 +27,7 @@ public class CourseDTO extends BaseDTO {
     float price;
     
     @Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "ID of the course owner")
+    @JsonIgnore
     private Long ownerId;
     
     @Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Categories associated with the course")
