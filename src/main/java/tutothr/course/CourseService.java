@@ -1,5 +1,7 @@
 package tutothr.course;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,6 +50,15 @@ public class CourseService extends BaseService<CourseDTO, Course> {
 		return mapper.toEntity(dto);
 	}
 
+	public ArrayList<CourseDTO> findAllDTOs() {
+		ArrayList<Course> courses = (ArrayList<Course>) repository.findAll();
+		ArrayList<CourseDTO> courseDTOs = new ArrayList<>();
+		for (Course course : courses) {
+			courseDTOs.add(mapToDTO(course));
+		}
+		return courseDTOs;
+	}
+
 	// Paul
 	/**
 	 * Sucht Kurse mit verschiedenen Filtern, Sortierung und Paging.
@@ -58,6 +69,8 @@ public class CourseService extends BaseService<CourseDTO, Course> {
 		Page<Course> results = repository.findAll(spec, pageable);
 		return results.map(this::mapToDTO);
 	}
+
+	
 
 	/**
 	 * Baut die Specification aus den Suchparametern. Nur nicht-null Parameter

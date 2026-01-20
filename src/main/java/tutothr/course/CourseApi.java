@@ -1,5 +1,7 @@
 package tutothr.course;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,9 +33,9 @@ public class CourseApi {
     }
 
     @GetMapping
-    @Operation(summary = "Get all courses", description = "Get a paginated list of all courses")
-    public String getAllCourses() {
-        return "new String()";
+    @Operation(summary = "Get all courses", description = "Get a list of all courses")
+    public ResponseEntity<List<CourseDTO>> getAllCourses() {
+        return ResponseEntity.ok(courseService.getAllDTOs());
     }
 
     @GetMapping("/filter")

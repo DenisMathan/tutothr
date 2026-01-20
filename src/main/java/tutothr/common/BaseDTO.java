@@ -12,7 +12,9 @@ import tutothr.common.models.Field;
 public class BaseDTO implements DTOI {
     private Long id;
     private Map<String, String> validationErrors = new HashMap<>();
+    @JsonIgnore
     protected List<Field> formFields;
+    @JsonIgnore
     private String submitLabel = "Speichern";
     public BaseDTO() {
         initFields();
@@ -41,7 +43,6 @@ public class BaseDTO implements DTOI {
         return validationErrors.containsKey(field);
     }
 
-    @JsonIgnore
 	public List<Field> getFormFields() {
 		return formFields;
 	}
