@@ -27,6 +27,9 @@ INSERT INTO user (username, password, email, active, created_at, updated_at, cre
 VALUES ('leonard', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'leonard@email', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
 VALUES ('markus', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'markus@email', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
+INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
+VALUES ('test', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'test@test.de', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
+
 -- INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, auth_provider, verified, two_factor_enabled, account_non_locked, strikes)
 -- VALUES ('Denice', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'denis.mathan@googlemail.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, 'GOOGLE', true, false, true, 0);
 
@@ -44,6 +47,7 @@ INSERT INTO user_roles(user_id, role) VALUES (3, 'ADMIN');
 INSERT INTO user_roles(user_id, role) VALUES (3, 'TUTOR');
 -- INSERT INTO user_roles(user_id, role) VALUES (14, 'ADMIN');
 -- INSERT INTO user_roles(user_id, role) VALUES (14, 'TUTOR');
+INSERT INTO user_roles(user_id, role) VALUES (14, 'STUDENT');
 
 
 
