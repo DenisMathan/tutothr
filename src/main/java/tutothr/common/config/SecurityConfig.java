@@ -16,6 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
 import tutothr.auth.CustomAuthenticationFailureHandler;
 import tutothr.auth.CustomAuthenticationSuccessHandler;
@@ -30,7 +33,7 @@ public class SecurityConfig {
         //TODO: adjust public endpoints as needed
     public static final String[] PUBLIC_ENDPOINTS = {
             "/verify/**", "/resources/**", "/css/**", "/api/**", "/api/workshops/**", "/webjars/**", "/h2-console/**",
-            "/login",
+            "/login", "/error",
             "/register", "/logout", "/404", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
     };
     @Autowired
@@ -57,9 +60,21 @@ public class SecurityConfig {
         // return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    @Order(1)
+    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/api/**")
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll());
+        return http.build();
+    }
 
     @Bean
     public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.securityMatcher("/**");
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/h2-console/**", "/ws/**"));
         http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
         http.authorizeHttpRequests(auth -> auth

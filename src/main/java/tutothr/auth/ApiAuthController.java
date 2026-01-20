@@ -31,19 +31,23 @@ public class ApiAuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Login to get a JWT token", description = "Authenticates user using email and password and returns a JWT token.")
-    public ResponseEntity<ApiLoginResponse> authenticate(@RequestBody ApiLoginRequest request) {
-        // Authenticate user
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+    public ResponseEntity<?> authenticate(@RequestBody ApiLoginRequest request) {
+        try {
+            // Authenticate user
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
 
-        // If authentication successful, generate token
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String jwtToken = tokenService.generateToken(userDetails);
+            // If authentication successful, generate token
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String jwtToken = tokenService.generateToken(userDetails);
 
-        return ResponseEntity.ok(new ApiLoginResponse(jwtToken));
+            return ResponseEntity.ok(new ApiLoginResponse(jwtToken));
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            return ResponseEntity.status(401).body("Invalid email or password");
+        }
     }
 }
