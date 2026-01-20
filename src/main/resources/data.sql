@@ -48,7 +48,7 @@ INSERT INTO user_roles(user_id, role) VALUES (3, 'TUTOR');
 INSERT INTO user_roles(user_id, role) VALUES (5, 'TUTOR');
 INSERT INTO user_roles(user_id, role) VALUES (6, 'STUDENT');
 INSERT INTO user_roles(user_id, role) VALUES (14, 'STUDENT');
--- INSERT INTO user_roles(user_id, role) VALUES (15, 'ADMIN');
+INSERT INTO user_roles(user_id, role) VALUES (15, 'ADMIN');
 INSERT INTO user_roles(user_id, role) VALUES (15, 'TUTOR');
 
 
@@ -59,7 +59,7 @@ INSERT INTO category (title, description, created_at, updated_at, created_by, up
 INSERT INTO category (title, description, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Programming', 'Programming related tutorials', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO category (title, description, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Languages', 'Language learning tutorials', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 
-INSERT INTO course (title, description, price, rating, owner_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Algebra Basics', 'Learn the fundamentals of algebra.', 49.99, 4.5, 15, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO course (title, description, price, rating, owner_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Algebra Basics', 'Learn the fundamentals of algebra.', 49.99, 4.5, 14, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO course (title, description, price, rating, owner_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Introduction to Physics', 'Explore the basic concepts of physics.', 59.99, 4.7, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO course (title, description, price, rating, owner_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Java Programming', 'Start your journey into Java programming.', 69.99, 4.8, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO course (title, description, price, rating, owner_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Spanish for Beginners', 'Learn basic Spanish phrases and grammar.', 39.99, 4.6, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);

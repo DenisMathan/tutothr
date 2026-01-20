@@ -3,12 +3,14 @@ package tutothr.chapter.interfaces;
 import java.util.List;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import tutothr.chapter.Chapter;
 import tutothr.chapter.ChapterDTO;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface ChapterMapperI {
+    @Mapping(target = "formFields", ignore = true)
     ChapterDTO toDTO(Chapter chapter);
 
     Chapter toEntity(ChapterDTO dto);

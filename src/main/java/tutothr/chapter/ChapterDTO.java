@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import tutothr.common.BaseDTO;
 
 import tutothr.common.models.Field;
+import org.springframework.web.multipart.MultipartFile;
 
 public class ChapterDTO extends BaseDTO {
     @NotBlank(message = "Title cannot be empty.")
@@ -17,6 +18,8 @@ public class ChapterDTO extends BaseDTO {
     private int position;
     private boolean paywalled;
     private Long courseId;
+    private List<MultipartFile> files;
+    private List<String> attachmentUrls;
 
     @Override
     public void initFields() {
@@ -24,6 +27,7 @@ public class ChapterDTO extends BaseDTO {
             new Field("courseId", "Kurs ID", "hidden"),
             new Field("title", "Titel", "text"),
             new Field("description", "Beschreibung", "textarea"),
+            new Field("files", "Dateien (PDF)", "file"),
             new Field("paywalled", "Paywalled", "checkbox")
         ); 
     }
@@ -60,5 +64,17 @@ public class ChapterDTO extends BaseDTO {
     }
     public void setCourseId(Long courseId) {
         this.courseId = courseId;
+    }
+    public List<MultipartFile> getFiles() {
+        return files;
+    }
+    public void setFiles(List<MultipartFile> files) {
+        this.files = files;
+    }
+    public List<String> getAttachmentUrls() {
+        return attachmentUrls;
+    }
+    public void setAttachmentUrls(List<String> attachmentUrls) {
+        this.attachmentUrls = attachmentUrls;
     }
 }

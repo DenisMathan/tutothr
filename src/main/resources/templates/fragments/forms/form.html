@@ -4,7 +4,11 @@
   - "object": das zu bearbeitende Objekt
 -->
 
-<form th:fragment="form(object,action)" th:action="@{${action}}" th:object="${object}" method="post">
+<form th:fragment="form(object,action)" 
+      th:action="@{${action}}" 
+      th:object="${object}" 
+      method="post" 
+      enctype="multipart/form-data">
 
     <input type="hidden" name="_method" th:if="*{id != null}" value="put" />
     <input type="hidden" name="id" th:if="*{id != null}" th:value="*{id}" />
@@ -32,6 +36,15 @@
                    th:value="*{__${field.name}__}"
                    th:readonly="${field.readonly}"
                    th:classappend="${field.readonly} ? ' bg-light text-muted' : ''" />
+
+            <!-- File Input -->
+            <input th:if="${field.type == 'file'}" 
+                   class="form-control" 
+                   type="file" 
+                   multiple 
+                   th:id="${field.name}" 
+                   th:name="${field.name}" 
+                   accept=".pdf" />
 
             <!-- Textarea using .form-textarea from style.css -->
             <textarea th:if="${field.type == 'textarea'}" 

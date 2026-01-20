@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
+import tutothr.auth.config.AppPrincipal;
 import tutothr.auth.config.MyUserDetails;
 import tutothr.booking.BookingService;
 import tutothr.category.Category;
@@ -194,7 +195,7 @@ public class CourseController {
 	}
 
 	private Long getCurrentUserId() {
-		return ((MyUserDetails) SecurityContextHolder.getContext()
+		return ((AppPrincipal) SecurityContextHolder.getContext()
 				.getAuthentication()
 				.getPrincipal())
 				.getId();
