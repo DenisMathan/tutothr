@@ -115,21 +115,24 @@ public class AuthService extends BaseService<RegisterUserDTO, User> implements U
         }
         
         Object principal = authentication.getPrincipal();
+        Long userId = null;
 
         if (principal instanceof AppPrincipal) {
-            return ((AppPrincipal) principal).getDbUser();
-        }
-        
-        // Fallback for OAuth2User if it doesn't implement AppPrincipal
-        if (principal instanceof org.springframework.security.oauth2.core.user.OAuth2User) {
+            userId = ((AppPrincipal) principal).getId();
+        } else if (principal instanceof org.springframework.security.oauth2.core.user.OAuth2User) {
              String email = ((org.springframework.security.oauth2.core.user.OAuth2User) principal).getAttribute("email");
              if (email != null) {
                  return ((UserRepositoryI) repository).findByEmailIgnoreCase(email).orElse(null);
              }
         }
-
-        String email = authentication.getName();
-        return ((UserRepositoryI) repository).findByEmailIgnoreCase(email).orElse(null);
+        
+        // If we have an ID, fetch fresh user from repository to ensure we have latest state
+        if (userId != null) {
+            return ((UserRepositoryI) repository).findById(userId).orElse(null);
+        }
+        
+        return null;
+    
     }
     
 }

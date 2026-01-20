@@ -46,6 +46,7 @@
             <!-- Group of Checkboxes (Tags Style) -->
             <div th:if="${field.type == 'group'}" class="d-flex flex-wrap gap-2 mt-2">
                  <div th:each="subField : ${field.subFields}">
+                     <input type="hidden" th:name="'_'+${subField.name}" value="on"/>
                      <input type="checkbox" 
                             class="btn-check" 
                             th:id="${subField.name}" 
@@ -81,6 +82,7 @@
 
             <!-- Single Checkbox -->
             <div th:if="${field.type == 'checkbox'}" class="form-check mt-2">
+                <input type="hidden" th:name="'_'+${field.name}" value="on"/>
                 <input class="form-check-input" 
                        type="checkbox" 
                        th:id="${field.name}" 
