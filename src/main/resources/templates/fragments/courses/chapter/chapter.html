@@ -2,25 +2,24 @@
 
     <!-- Wrapper mit neuer Klasse -->
     <div class="" th:classappend="${chapter.paywalled} ? 'paywalled' : ''">
-        
+
         <!-- Hidden Checkbox für reines CSS-Accordion -->
-        <input type="checkbox"
-               class="chapter-toggle"
-               th:id="'chapter-' + ${chapter.id}"
-               style="display: none;">
+        <input type="checkbox" class="chapter-toggle" th:id="'chapter-' + ${chapter.id}" style="display: none;">
 
         <!-- Header / Label -->
         <label class="chapter-header" th:for="'chapter-' + ${chapter.id}">
-            
+
             <div class="chapter-title-group">
                 <!-- Premium Badge -->
-                <div th:if="${chapter.paywalled}" class="badge-premium" title="Premium Inhalt (Kostenpflichtig)" data-bs-toggle="tooltip">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <div th:if="${chapter.paywalled}" class="badge-premium" title="Premium Inhalt (Kostenpflichtig)"
+                    data-bs-toggle="tooltip">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
                 </div>
-                
+
                 <!-- Titel -->
                 <span class="chapter-title" th:text="${chapter.title}">Kapitel Titel</span>
             </div>
@@ -29,12 +28,11 @@
             <div class="chapter-actions">
 
                 <!-- User Actions (Nicht-Owner) -->
-                <button type="button"
-                        class="btn-icon-action"
-                        th:if="${!isOwner}"
-                        th:onclick="'event.preventDefault(); openReportModal(\'CHAPTER\', ' + ${chapter.id} + ')'"
-                        title="Inhalt melden">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <button type="button" class="btn-icon-action" th:if="${!isOwner}"
+                    th:onclick="'event.preventDefault(); openReportModal(\'CHAPTER\', ' + ${chapter.id} + ')'"
+                    title="Inhalt melden">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
                         <line x1="4" y1="22" x2="4" y2="15"></line>
                     </svg>
@@ -42,24 +40,25 @@
 
                 <!-- Owner Actions -->
                 <th:block th:if="${isOwner}">
-                    <button class="btn-icon-action"
-                            th:onclick="|event.preventDefault(); toggleEdit(${chapter.id})|"
-                            title="Bearbeiten">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <button class="btn-icon-action" th:onclick="|event.preventDefault(); toggleEdit(${chapter.id})|"
+                        title="Bearbeiten">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                         </svg>
                     </button>
 
                     <!-- Löschen Button Integration -->
-                    <div style="display:inline-block;" 
-                         th:replace="~{fragments/buttons/deleteButton :: deleteButton(@{/tutor/chapters/delete/{id}(id=${chapter.id})})}">
+                    <div style="display:inline-block;"
+                        th:replace="~{fragments/buttons/deleteButton :: deleteButton(@{/tutor/chapters/delete/{id}(id=${chapter.id})})}">
                     </div>
                 </th:block>
 
                 <!-- Accordion Pfeil -->
                 <div class="accordion-arrow">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </div>
@@ -69,19 +68,53 @@
         <!-- Content Bereich -->
         <div class="chapter-content">
             <div th:text="${chapter.description}">Inhalt...</div>
+
+            <div th:if="${!#lists.isEmpty(chapter.attachmentUrls)}" class="mt-3">
+                <div th:each="url, iterStat : ${chapter.attachmentUrls}" class="mb-2 flex gap-2" style="display:flex">
+                    <div>
+                        <a th:href="@{${url}}" target="_blank" class="btn-secondary btn-sm">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" class="me-1">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            <span th:text="${#strings.substringAfter(url, '_')}">PDF öffnen</span>
+                        </a>
+                    </div>
+                    <div>
+                        <form th:if="${isOwner}"
+                            th:action="@{/tutor/chapters/deleteAttachment/{chapterId}/{attachmentIndex}(chapterId=${chapter.id}, attachmentIndex=${iterStat.index})}"
+                            method="post" style="display:inline;">
+                            <input type="hidden" name="_method" value="delete" />
+                            <button type="submit" class="btn-icon-action btn-sm text-danger" title="Anhang löschen"
+                                style="vertical-align: middle;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Edit Form Container (für Tutors) -->
-    <div th:if="${isOwner}" 
-         class="chapter-edit-container mb-2"
-         th:classappend="${#maps.isEmpty(chapter.validationErrors)} ? 'd-none' : 'scrollError'"
-         th:id="'edit-chapter-' + ${chapter.id}">
-         
+    <div th:if="${isOwner}" class="chapter-edit-container mb-2"
+        th:classappend="${#maps.isEmpty(chapter.validationErrors)} ? 'd-none' : 'scrollError'"
+        th:id="'edit-chapter-' + ${chapter.id}">
+
         <h5 class="mb-3">Kapitel bearbeiten</h5>
-        <div th:replace="~{fragments/forms/form :: form(object=${chapter}, action=@{/tutor/chapters/save/{id}(id=${chapter.id})})}"></div>
+        <div
+            th:replace="~{fragments/forms/form :: form(object=${chapter}, action=@{/tutor/chapters/save/{id}(id=${chapter.id})})}">
+        </div>
     </div>
-    
+
     <!-- Report Modal nur einmalig einbinden, nicht pro Chapter mehrfach (idealerweise im Parent Template) -->
     <!-- Aber falls es hier nötig ist für Standalone-Nutzung: -->
     <div th:replace="~{fragments/report-modal :: reportModal}"></div>
@@ -89,7 +122,7 @@
     <script th:inline="javascript" type="text/javascript">
         function toggleEdit(chapterId) {
             const chapterForm = document.getElementById('edit-chapter-' + chapterId);
-            if (chapterForm.classList.contains('d-none')){
+            if (chapterForm.classList.contains('d-none')) {
                 chapterForm.classList.remove('d-none');
             } else {
                 chapterForm.classList.add('d-none');

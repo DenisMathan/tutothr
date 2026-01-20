@@ -166,12 +166,12 @@
                                 document.getElementById('add-chapter').classList.toggle('hidden');
                             }
                         </script>
-                        <div th:replace="fragments/buttons/roundButton :: roundButton('https://img.icons8.com/?size=100&id=1501&format=png&color=7c3aed', 'toggleAdd()')"></div>
+                        <div th:replace="~{fragments/buttons/roundButton :: roundButton('https://img.icons8.com/?size=100&id=1501&format=png&color=7c3aed', 'toggleAdd()')}"></div>
                         <div id="add-chapter" 
                              th:class="${#maps.isEmpty(course.addChapter.validationErrors)} ? 'hidden' : ''" 
                              style="margin-top: 1rem;">
                             <div style="background: var(--bg-input); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color);">
-                                <div th:replace="fragments/forms/form :: form(object=${course.addChapter}, action=@{/tutor/chapters/save})"></div>
+                                <div th:replace="~{fragments/forms/form :: form(object=${course.addChapter}, action=@{/tutor/chapters/save})}"></div>
                             </div>
                         </div>
                     </div>

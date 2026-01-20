@@ -71,4 +71,11 @@ public class ChapterController {
         chapterService.update(chapterDTO);
         return "redirect:/courses/" + _chapter.getCourse().getId();
     }
+
+    @DeleteMapping("/tutor/chapters/deleteAttachment/{chapterId}/{attachmentIndex}")
+    public String deleteAttachment(HttpServletRequest request, @PathVariable Long chapterId, @PathVariable int attachmentIndex) {
+        chapterService.deleteAttachment(chapterId, attachmentIndex);
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/tutor/courses");
+    }
 }

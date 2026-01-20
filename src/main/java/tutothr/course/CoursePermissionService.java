@@ -25,23 +25,33 @@ public class CoursePermissionService {
         return userId.equals(courseOwnerId);
     }
     
-    public boolean isOwnerOrAdmin(Long courseId) {
+    public boolean isTutorAndOwnerOrAdmin(Long courseId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+            System.out.println("DEBUG: User is anonymous");
             return false;
         }
-       System.out.println("Checking permissions for user: " + authentication.getDetails()); 
-        // Check for ADMIN role
+
+        // 1. ADMIN check
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            System.out.println("DEBUG: User is ADMIN -> ALLOW");
             return true;
         }
+        
+        // 2. TUTOR check
+        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_TUTOR"))) {
+            System.out.println("DEBUG: User is NOT TUTOR -> DENY");
+            return false;
+        }
 
-        // Check ownership
+        // 3. OWNER check
         Course course = courseRepository.findById(courseId).orElse(null);
         if (course == null) {
-            return false; // Or throw EntityNotFoundException, but boolean is safer for PreAuthorize
+            System.out.println("DEBUG: Course " + courseId + " not found -> DENY");
+            return false; 
         }
+        boolean isOwner = isCurrentUserOwner(course.getOwnerId());
         
-        return isCurrentUserOwner(course.getOwnerId());
+        return isOwner;
     }
 }

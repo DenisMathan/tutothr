@@ -1,9 +1,10 @@
 package tutothr.chapter;
-import java.util.List;
-
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.util.ArrayList;
+import java.util.List;
 import tutothr.common.BaseEntity;
 import tutothr.course.Course;
 import tutothr.common.models.Field;
@@ -15,6 +16,9 @@ public class Chapter extends BaseEntity {
     private String description;
     private int position;
     private boolean paywalled;
+    
+    @ElementCollection
+    private List<String> attachmentUrls = new ArrayList<>();
 
     public Chapter() {
        super();
@@ -24,7 +28,8 @@ public class Chapter extends BaseEntity {
     public void init() {
        formFields = List.of(
             new Field("title", "Titel", "text"),
-            new Field("description", "Beschreibung", "textarea")
+            new Field("description", "Beschreibung", "textarea"),
+            new Field("files", "PDF Material", "file")
         ); 
     }
 
@@ -63,6 +68,12 @@ public class Chapter extends BaseEntity {
     }
     public void setPaywalled(boolean paywalled) {
         this.paywalled = paywalled;
+    }
+    public List<String> getAttachmentUrls() {
+        return attachmentUrls;
+    }
+    public void setAttachmentUrls(List<String> attachmentUrls) {
+        this.attachmentUrls = attachmentUrls;
     }
     public Long getOwnerId() {
         return this.course.getOwnerId();
