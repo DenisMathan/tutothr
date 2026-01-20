@@ -31,7 +31,7 @@ public class SecurityConfig {
     public static final String[] PUBLIC_ENDPOINTS = {
             "/verify/**", "/resources/**", "/css/**", "/api/**", "/api/workshops/**", "/webjars/**", "/h2-console/**",
             "/login",
-            "/register", "/logout", "/404"
+            "/register", "/logout", "/404", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
     };
     @Autowired
     private CustomOidcUserService customOidcUserService;
