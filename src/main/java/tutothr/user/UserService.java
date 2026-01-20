@@ -50,9 +50,14 @@ public class UserService extends BaseService<UserDTO, User> implements UserServi
 			pageUsers = userRepository.findAll(pageable);
 		} else {
 			pageUsers = userRepository.findByUsernameContainingIgnoreCase(name, pageable);
-
 		}
 		return pageUsers;
+	}
+
+	@Override
+	public Page<UserDTO> getAllUsersDTO(String name, Pageable pageable) {
+		Page<User> pageUsers = getAllUsers(name, pageable);
+		return pageUsers.map(userMapper::toUserDTO);
 	}
 
 	@Override

@@ -1,10 +1,13 @@
 package tutothr.user;
 
 import java.util.List;
+import java.util.Set;
+import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import tutothr.common.BaseDTO;
+import tutothr.common.utils.enums.RolesEnum;
 
 public class UserDTO extends BaseDTO {
 
@@ -18,6 +21,11 @@ public class UserDTO extends BaseDTO {
     private Integer strikes;
     private Boolean verified;
     private Boolean accountNonLocked;
+    
+    // Fields for list view
+    private boolean active;
+    private LocalDateTime createdAt;
+    private Set<RolesEnum> roles;
 
     @Override
     public void initFields() {
@@ -122,5 +130,29 @@ public class UserDTO extends BaseDTO {
 
     public void setAccountNonLocked(Boolean accountNonLocked) {
         this.accountNonLocked = accountNonLocked;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Set<RolesEnum> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RolesEnum> roles) {
+        this.roles = roles;
     }
 }

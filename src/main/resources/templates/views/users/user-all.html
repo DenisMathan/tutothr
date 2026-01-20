@@ -76,6 +76,9 @@
                 </tbody>
             </table>
         </div>
+
+        <div th:replace="~{fragments/pagination :: render(${currentPage}, ${totalPages})}"></div>
+
     </div>
 </section>
 </html>

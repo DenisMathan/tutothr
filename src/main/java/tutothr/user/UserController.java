@@ -1,7 +1,8 @@
 package tutothr.user;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import tutothr.auth.AuthService;
-import tutothr.user.interfaces.UserRepositoryI;
 
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -25,11 +25,9 @@ public class UserController {
 
     private final UserService userService;
     private final AuthService authService;
-    private UserRepositoryI userRepository;
 
-    public UserController(UserRepositoryI userRepository, UserService userService, AuthService authService) {
+    public UserController(UserService userService, AuthService authService) {
         super();
-        this.userRepository = userRepository;
         this.userService = userService;
         this.authService = authService;
     }
@@ -151,16 +149,25 @@ public class UserController {
     @GetMapping(value = { "", "/admin/all" })
     public String showUserList(Model model,
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "5") int size) {
         try {
-            List<User> users = userRepository.findAll();
-            model.addAttribute("keyword", keyword);
-            model.addAttribute("users", users);
-            // no pagination in this simple view
+            Pageable pageable = PageRequest.of(page, size);
+            // Treat empty strings as null to trigger findAll in service
+            String search = (keyword != null && !keyword.isEmpty()) ? keyword : null;
+            
+            Page<UserDTO> pageUsers = userService.getAllUsersDTO(search, pageable);
+            
+            if (search != null) {
+                model.addAttribute("keyword", search);
+            }
+
+            model.addAttribute("users", pageUsers.getContent());
+            model.addAttribute("currentPage", pageUsers.getNumber());
+            model.addAttribute("totalItems", pageUsers.getTotalElements());
+            model.addAttribute("totalPages", pageUsers.getTotalPages());
+            model.addAttribute("pageSize", size);
             model.addAttribute("entitytype", "user");
-            model.addAttribute("totalItems", users.size());
-            model.addAttribute("pageSize", users.size());
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());
         }
