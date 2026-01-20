@@ -3,6 +3,8 @@ package tutothr.booking;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import tutothr.booking.timeslot.TimeSlot;
@@ -97,11 +99,43 @@ public class BookingService {
 		TimeSlot ts = booking.getTimeSlot();
 		String display = ts.getDate() + ", " + ts.getStartTime() + "-" + ts.getEndTime();
 		dto.setTimeSlotDisplay(display);
-
+		
+		// E-Mail-Felder befuellen
+	    dto.setStudentEmail(booking.getStudent().getEmail());
+	    dto.setTutorName(ts.getTutor().getUsername());
+	    dto.setTutorEmail(ts.getTutor().getEmail());
+		
 		return dto;
 	}
 
 	public boolean hasUserBookedCourse(Long userId, Long courseId) {
 		return bookingRepository.existsByStudentIdAndCourseId(userId, courseId);
+	}
+	
+	public void cancelAndCleanup(Long bookingId) {
+	    Booking booking = bookingRepository.findById(bookingId).orElse(null);
+	    if (booking == null) {
+	        return;
+	    }
+	    
+	    // TimeSlot wieder freigeben
+	    TimeSlot timeSlot = booking.getTimeSlot();
+	    if (timeSlot != null) {
+	        timeSlot.setAvailable(true);
+	        timeSlotRepository.save(timeSlot);
+	    }
+	    
+	    // Buchung loeschen
+	    bookingRepository.delete(booking);
+	}
+	
+	public Page<BookingDTO> findByStudentPaged(User student, Pageable pageable) {
+	    return bookingRepository.findByStudent(student, pageable)
+	            .map(this::toDTO);
+	}
+
+	public Page<BookingDTO> findByTutorPaged(User tutor, Pageable pageable) {
+	    return bookingRepository.findByTimeSlotTutor(tutor, pageable)
+	            .map(this::toDTO);
 	}
 }

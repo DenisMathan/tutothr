@@ -45,7 +45,7 @@
           <td th:text="${#numbers.formatDecimal(booking.price, 1, 2) + ' €'}"></td>
           <td>
             <span th:if="${booking.status.name() == 'PENDING'}" class="badge status-pending">Ausstehend</span>
-            <span th:if="${booking.status.name() == 'CONFIRMED'}" class="badge status-confirmed">Bestätigt</span>
+            <span th:if="${booking.status.name() == 'CONFIRMED'}" class="badge status-confirmed">Bezahlung eingegangen</span>
             <span th:if="${booking.status.name() == 'COMPLETED'}" class="badge status-completed">Abgeschlossen</span>
             <span th:if="${booking.status.name() == 'CANCELLED'}" class="badge status-cancelled">Storniert</span>
           </td>
@@ -59,6 +59,9 @@
         </tr>
         </tbody>
       </table>
+    </div>
+    <div th:if="${totalPages > 1}" style="margin-top: 2rem;">
+      <div th:replace="~{fragments/pagination :: render(${currentPage}, ${totalPages})}"></div>
     </div>
   </div>
 </section>

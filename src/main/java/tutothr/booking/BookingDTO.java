@@ -15,6 +15,10 @@ public class BookingDTO extends BaseDTO {
 	private String courseName;
 	private String timeSlotDisplay;
 	
+	private String studentEmail;
+	private String tutorName;
+	private String tutorEmail;
+	
 	@Override
 	public void initFields() {
 		// Formular manuell erstellt
@@ -91,5 +95,29 @@ public class BookingDTO extends BaseDTO {
 
 	public void setInvoiceId(Long invoiceId) {
 	    this.invoiceId = invoiceId;
+	}
+	
+	public String getStudentEmail() {
+	    return studentEmail;
+	}
+
+	public void setStudentEmail(String studentEmail) {
+	    this.studentEmail = studentEmail;
+	}
+
+	public String getTutorName() {
+	    return tutorName;
+	}
+
+	public void setTutorName(String tutorName) {
+	    this.tutorName = tutorName;
+	}
+
+	public String getTutorEmail() {
+	    return tutorEmail;
+	}
+
+	public void setTutorEmail(String tutorEmail) {
+	    this.tutorEmail = tutorEmail;
 	}
 }

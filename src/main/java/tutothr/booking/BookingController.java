@@ -3,6 +3,9 @@ package tutothr.booking;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -24,6 +27,9 @@ import tutothr.user.UserService;
 
 @Controller
 public class BookingController {
+	private static final int DEFAULT_PAGE = 0;
+	private static final int DEFAULT_SIZE = 2;
+
 	private final BookingService bookingService;
 	private final TimeSlotService timeSlotService;
 	private final CourseService courseService;
@@ -68,36 +74,38 @@ public class BookingController {
 					"Buchung fehlgeschlagen. Der Termin ist nicht mehr verfügbar.");
 			return "redirect:/course/" + courseId + "/book";
 		}
-		return "redirect:/my-bookings";
+
+		// Direkt zur Zahlung weiterleiten
+		return "redirect:/booking/" + booking.getId() + "/pay";
 	}
 
 	// ===== STUDENT: Meine Buchungen =====
 
 	@GetMapping("/my-bookings")
-	public String myBookings(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
-		List<BookingDTO> bookings = bookingService.findByStudent(userDetails.getDbUser());
-		model.addAttribute("bookings", bookings);
+	public String myBookings(@AuthenticationPrincipal MyUserDetails userDetails,
+			@RequestParam(defaultValue = "0") int page, Model model) {
+		Page<BookingDTO> bookingPage = bookingService.findByStudentPaged(userDetails.getDbUser(),
+				PageRequest.of(page, DEFAULT_SIZE, Sort.by(Sort.Direction.DESC, "createdAt")));
+
+		model.addAttribute("bookings", bookingPage.getContent());
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", bookingPage.getTotalPages());
+		model.addAttribute("totalItems", bookingPage.getTotalElements());
+
 		return "views/booking/my-bookings";
 	}
 
 	// ===== Termin zu Google Calendar hinzufügen =====
 	@GetMapping("/booking/{id}/add-to-calendar")
-	public String addToCalendar(@PathVariable Long id, OAuth2AuthenticationToken auth, RedirectAttributes redirectAttributes) {
+	public String addToCalendar(@PathVariable Long id, OAuth2AuthenticationToken auth,
+			RedirectAttributes redirectAttributes) {
 		try {
 
 			BookingDTO booking = bookingService.findById(id);
 			TimeSlotDTO timeslot = timeSlotService.findById(booking.getTimeSlotId());
 
-
-
-			calendarService.addEventToGoogleCalendar(
-					auth,
-					"Kurs: " + booking.getCourseName(),
-					"Gebucht über Uni-App",
-					timeslot.getDate(),
-					timeslot.getStartTime(),
-					timeslot.getEndTime()
-			);
+			calendarService.addEventToGoogleCalendar(auth, "Kurs: " + booking.getCourseName(), "Gebucht über Uni-App",
+					timeslot.getDate(), timeslot.getStartTime(), timeslot.getEndTime());
 
 			redirectAttributes.addFlashAttribute("success", "Termin erfolgreich zu Google Calendar hinzugefügt!");
 		} catch (Exception e) {
@@ -110,9 +118,16 @@ public class BookingController {
 	// ===== TUTOR: Buchungen fuer meine TimeSlots =====
 
 	@GetMapping("/tutor/bookings")
-	public String tutorBookings(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
-		List<BookingDTO> bookings = bookingService.findByTutor(userDetails.getDbUser());
-		model.addAttribute("bookings", bookings);
+	public String tutorBookings(@AuthenticationPrincipal MyUserDetails userDetails,
+			@RequestParam(defaultValue = "0") int page, Model model) {
+		Page<BookingDTO> bookingPage = bookingService.findByTutorPaged(userDetails.getDbUser(),
+				PageRequest.of(page, DEFAULT_SIZE, Sort.by(Sort.Direction.DESC, "createdAt")));
+
+		model.addAttribute("bookings", bookingPage.getContent());
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", bookingPage.getTotalPages());
+		model.addAttribute("totalItems", bookingPage.getTotalElements());
+
 		return "views/booking/tutor-bookings";
 	}
 }

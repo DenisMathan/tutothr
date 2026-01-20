@@ -3,7 +3,9 @@ package tutothr.booking;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -23,6 +25,10 @@ public interface BookingRepositoryI extends MyBaseRepository<Booking, Long> {
 	
 	List<Booking> findByCourse(Course course);
 
+	Page<Booking> findByStudent(User student, Pageable pageable);
+
+	Page<Booking> findByTimeSlotTutor(User tutor, Pageable pageable);
+	
 	long countByStudent(User student);
 	long countByTimeSlotTutor(User tutor);
 
