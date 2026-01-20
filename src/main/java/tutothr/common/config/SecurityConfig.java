@@ -45,10 +45,6 @@ public class SecurityConfig {
     private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     @Autowired
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-    @Autowired
-    private org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Value("${app.security.remember-me.key}")
     private String rememberMeKey;
@@ -65,20 +61,21 @@ public class SecurityConfig {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
                 .securityMatcher("/api/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/courses").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
     @Bean
-    public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain getSecurityFilterChain(HttpSecurity http, org.springframework.security.core.userdetails.UserDetailsService userDetailsService) throws Exception {
         http.securityMatcher("/**");
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/h2-console/**", "/ws/**"));
         http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));

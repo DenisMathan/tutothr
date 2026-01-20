@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import tutothr.common.interfaces.DTOI;
 import tutothr.common.models.Field;
 
@@ -39,6 +41,7 @@ public class BaseDTO implements DTOI {
         return validationErrors.containsKey(field);
     }
 
+    @JsonIgnore
 	public List<Field> getFormFields() {
 		return formFields;
 	}

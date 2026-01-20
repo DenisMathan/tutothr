@@ -3,6 +3,7 @@ package tutothr.course;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import tutothr.category.CategoryDTO;
@@ -12,24 +13,42 @@ import tutothr.hashtag.HashtagDTO;
 import tutothr.rating.Rating;
 
 public class CourseDTO extends BaseDTO {
+    @Schema(example = "Introduction to Java", description = "The title of the course")
     @NotBlank(message = "Title cannot be empty.")
     @Size(min = 3, max = 50, message = "Title must be between 3 and 50 characters.")
     String title;
+
+    @Schema(example = "Learn the basics of Java programming in this comprehensive course.", description = "Detailed description of the course content")
     String description;
 
+    @Schema(example = "49.99", description = "Price of the course in EUR")
     float price;
+    
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "ID of the course owner")
     private Long ownerId;
+    
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Categories associated with the course")
     private List<CategoryDTO> categories;
+    
+    @Schema(example = "[1, 2]", description = "List of category IDs to assign to this course")
     private List<Long> categoryIds = new ArrayList<>();
     
+    @Schema(description = "Chapters of the course")
     private List<ChapterDTO> chapters;
 
+    @Schema(hidden = true)
     private boolean isOwner = false;
 
+    @Schema(hidden = true)
     private ChapterDTO addChapter;
 
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY, example = "4.5", description = "Current rating of the course")
     float rating;
+    
+    @Schema(hidden = true)
     private double avgRating;
+    
+    @Schema(hidden = true)
     private List<Rating> ratings = new ArrayList<>();
 
     private List<HashtagDTO> hashtags = new ArrayList<>();

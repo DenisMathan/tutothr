@@ -19,12 +19,12 @@ import tutothr.auth.jwt.TokenService;
 @RestController
 @RequestMapping("/api/auth")
 @Tag(name = "Authentication", description = "Endpoints for user authentication")
-public class ApiAuthController {
+public class AuthApi {
 
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
-    public ApiAuthController(AuthenticationManager authenticationManager, TokenService tokenService) {
+    public AuthApi(AuthenticationManager authenticationManager, TokenService tokenService) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
     }
