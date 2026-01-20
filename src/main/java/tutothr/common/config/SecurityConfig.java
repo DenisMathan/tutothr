@@ -24,6 +24,7 @@ import tutothr.auth.CustomAuthenticationFailureHandler;
 import tutothr.auth.CustomAuthenticationSuccessHandler;
 import tutothr.auth.CustomOAuth2SuccessHandler;
 import tutothr.auth.CustomOidcUserService;
+import tutothr.auth.jwt.JwtAuthenticationFilter;
 import tutothr.auth.twoFactorVerification.TwoFactorVerificationFilter;
 
 @Configuration
@@ -46,6 +47,8 @@ public class SecurityConfig {
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     @Autowired
     private org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Value("${app.security.remember-me.key}")
     private String rememberMeKey;
@@ -68,7 +71,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll());
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
