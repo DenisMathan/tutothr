@@ -9,11 +9,15 @@ import org.springframework.data.repository.query.Param;
 import tutothr.category.Category;
 import tutothr.common.MyBaseRepository;
 import tutothr.course.Course;
+import tutothr.user.User;
 
 public interface CourseRepositoryI extends MyBaseRepository<Course, Long> {
 
     // Zählt Kurse eines Tutors
     long countByOwner_Id(Long ownerId);
+
+    // Findet alle Kurse eines Tutors
+    List<Course> findByOwner(User owner);
 
     // Berechnet das Durchschnitts-Rating aller Kurse eines Tutors (Profi-Query!)
     @Query("SELECT AVG(r.stars) FROM Course c JOIN c.ratings r WHERE c.owner.id = :tutorId")
@@ -31,5 +35,4 @@ public interface CourseRepositoryI extends MyBaseRepository<Course, Long> {
     ORDER BY AVG(r.stars) DESC, COUNT(r.id) DESC
     """)
     List<Object[]> findBestRatedCourseByTutor(@Param("tutorId") Long tutorId, Pageable pageable);
-
 }

@@ -121,8 +121,6 @@ public class CourseController {
 			return "/error/404";
 		}
 		
-        // Manual check moved to @PreAuthorize
-        // if (!course.getIsOwner()) ...
 
 		course.updateCategoryField(categoryService.getAllDTOs());
 		model.addAttribute("course", course);
