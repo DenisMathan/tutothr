@@ -68,6 +68,7 @@
         const reportTitleCourse = /*[[#{report.course}]]*/ 'Kurs melden';
         const reportTitleChapter = /*[[#{report.chapter}]]*/ 'Kapitel melden';
         const reportTitleContent = /*[[#{report.content}]]*/ 'Inhalt melden';
+        const reportTitleHashtag = 'Hashtag melden';
         const reportSelectCategory = /*[[#{report.please.select.category}]]*/ 'Bitte wähle eine Kategorie aus';
         const reportError = /*[[#{common.error.occurred}]]*/ 'Ein Fehler ist aufgetreten';
 
@@ -81,6 +82,7 @@
             if (type === 'MESSAGE') titleElem.textContent = reportTitleMessage;
             else if (type === 'COURSE') titleElem.textContent = reportTitleCourse;
             else if (type === 'CHAPTER') titleElem.textContent = reportTitleChapter;
+            else if (type === 'HASHTAG') titleElem.textContent = reportTitleHashtag;
             else titleElem.textContent = reportTitleContent;
 
             document.getElementById('report-modal').style.display = 'flex';
@@ -107,6 +109,7 @@
             if (type === 'MESSAGE') url = `/messages/${id}/report`;
             else if (type === 'COURSE') url = `/courses/${id}/report`;
             else if (type === 'CHAPTER') url = `/chapters/${id}/report`;
+            else if (type === 'HASHTAG') url = `/hashtags/${id}/report`;
 
             const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
             const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;

@@ -1,6 +1,7 @@
 package tutothr.moderation;
 
 import jakarta.persistence.*;
+import tutothr.hashtag.Hashtag;
 import tutothr.message.Message;
 import tutothr.course.Course;
 import tutothr.chapter.Chapter;
@@ -31,6 +32,10 @@ public class Report {
     @JoinColumn(name = "chapter_id")
     private Chapter chapter;
 
+    @ManyToOne
+    @JoinColumn(name = "hashtag_id")
+    private Hashtag hashtag;
+
     private String reason;
     private LocalDateTime reportedAt = LocalDateTime.now();
 
@@ -60,6 +65,13 @@ public class Report {
         this.reason = reason;
     }
 
+    public Report(User reporter, Hashtag hashtag, String reason) {
+        this.reporter = reporter;
+        this.hashtag = hashtag;
+        this.type = ReportType.HASHTAG;
+        this.reason = reason;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public User getReporter() { return reporter; }
@@ -72,6 +84,12 @@ public class Report {
     public void setCourse(Course course) { this.course = course; }
     public Chapter getChapter() { return chapter; }
     public void setChapter(Chapter chapter) { this.chapter = chapter; }
+    public Hashtag getHashtag() {
+        return hashtag;
+    }
+    public void setHashtag(Hashtag hashtag) {
+        this.hashtag = hashtag;
+    }
     public String getReason() { return reason; }
     public void setReason(String reason) { this.reason = reason; }
     public LocalDateTime getReportedAt() { return reportedAt; }

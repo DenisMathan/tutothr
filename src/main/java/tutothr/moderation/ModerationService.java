@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tutothr.chapter.Chapter;
 import tutothr.chapter.ChapterService;
+import tutothr.hashtag.Hashtag;
+import tutothr.hashtag.HashtagRepositoryI;
 import tutothr.message.Message;
 import tutothr.message.interfaces.MessageRepositoryI;
 import tutothr.course.Course;
@@ -28,6 +30,9 @@ public class ModerationService {
 
     @Autowired
     private MessageRepositoryI messageRepositoryI;
+
+    @Autowired
+    private HashtagRepositoryI hashtagRepositoryI;
 
     @Autowired
     private CourseService courseService;
@@ -82,6 +87,20 @@ public class ModerationService {
         }
 
         reportRepository.save(new Report(reporter, chapter, reason));
+    }
+
+    public void reportHashtag(Long reporterId, Long hashtagId, String reason) {
+        User reporter = userRepository.findById(reporterId).orElseThrow();
+        Hashtag hashtag = hashtagRepositoryI.findById(hashtagId).orElseThrow();
+
+        if(hashtag.getCreator().getId().equals(reporterId)) {
+            throw new IllegalArgumentException("Eigene Nachricht kann nicht gemeldet werden");
+        }
+        if(reportRepository.existsByReporterAndHashtagAndStatus(reporter, hashtag, ReportStatus.PENDING)) {
+            throw new IllegalArgumentException("Bereits gemeldet");
+        }
+
+        reportRepository.save(new Report(reporter, hashtag, reason));
     }
 
 

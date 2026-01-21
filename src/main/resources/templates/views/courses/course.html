@@ -109,6 +109,17 @@
                       class="badge rounded-pill bg-secondary text-decoration-none">
                         #<span th:text="${tag.name}"></span>
                     </a>
+                      <button th:if="${#authorization.expression('isAuthenticated()')}"
+                              type="button"
+                              class="btn btn-link btn-sm p-0 ms-1"
+                              style="color: #9ca3af; line-height: 1;"
+                              th:onclick="'openReportModal(\'HASHTAG\', ' + ${tag.id} + ')'"
+                              th:title="#{course.details.report}">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                              <line x1="4" y1="22" x2="4" y2="15"></line>
+                          </svg>
+                      </button>
                     <form th:if="${course.isOwner or #authorization.expression('hasRole(''ADMIN'')')}" 
                       th:action="@{/courses/{courseId}/hashtags/{hashtagId}(courseId=${course.id}, hashtagId=${tag.id})}" 
                       method="post" 
