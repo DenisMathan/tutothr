@@ -149,7 +149,7 @@ public class BookingController {
 	public String tutorBookings(@AuthenticationPrincipal MyUserDetails userDetails,
 			@RequestParam(defaultValue = "0") int page, Model model) {
 		Page<BookingDTO> bookingPage = bookingService.findByTutorPaged(userDetails.getDbUser(),
-				PageRequest.of(page, DEFAULT_SIZE, Sort.by(Sort.Direction.DESC, "createdAt")));
+				PageRequest.of(page, DEFAULT_SIZE, Sort.by(Sort.Direction.DESC, "created_at")));
 
 		model.addAttribute("bookings", bookingPage.getContent());
 		model.addAttribute("currentPage", page);

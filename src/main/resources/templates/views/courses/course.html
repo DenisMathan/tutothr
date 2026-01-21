@@ -43,14 +43,17 @@
                 <!-- Kurs-Inhalt kaufen -->
                 <form th:action="@{/course/{id}/buy(id=${course.id})}" method="post" style="display: inline;"
                       th:data-price="${course.price}"
-                      onsubmit="return confirm('Möchtest du den gesamten Kursinhalt für ' + this.dataset.price + ' € kaufen?');">
-                    <button type="submit" class="btn-primary">
-                        Kurs kaufen (<span th:text="${#numbers.formatDecimal(course.price, 1, 2) + ' €'}"></span>)
+                      th:onsubmit="${hasBooked} ? 'return false;' : 'return confirm(\'Möchtest du den gesamten Kursinhalt für \' + this.dataset.price + \' € kaufen?\');'">
+                    <button type="submit" 
+                            th:class="${hasBooked} ? 'btn-secondary' : 'btn-primary'" 
+                            th:disabled="${hasBooked}"
+                            th:style="${hasBooked} ? 'opacity: 0.6; cursor: not-allowed;' : ''"
+                            th:text="${hasBooked} ? 'Bereits gekauft' : 'Kurs kaufen (' + ${#numbers.formatDecimal(course.price, 1, 2)} + ' €)'">
                     </button>
                 </form>
                 <!-- Tutorium buchen -->
-                <a th:href="@{/course/{id}/book(id=${course.id})}" class="btn-primary">
-                    Tutorium buchen (<span th:text="${#numbers.formatDecimal(hourlyRate, 1, 2) + ' €/h'}"></span>)
+                <a th:href="@{/course/{id}/book(id=${course.id})}" class="btn-primary"
+                   th:text="'Tutorium buchen (' + ${#numbers.formatDecimal(hourlyRate, 1, 2)} + ' €/h)'">
                 </a>
                 <a th:href="@{/courses/{id}/addRating(id=${course.id})}" th:if="${hasBooked}" class="btn-secondary">
                     Bewertung schreiben
