@@ -1,9 +1,9 @@
 package tutothr.user.interfaces;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import tutothr.common.MyBaseRepository;
 import tutothr.user.User;
 
@@ -13,4 +13,8 @@ public interface UserRepositoryI extends MyBaseRepository<User, Long> {
 	Page<User> findAll(Pageable pageable);
 
     Page<User> findByUsernameContainingIgnoreCase(String username, Pageable pageable);
+
+	List<User> findByAccountNonLockedFalse();  // Alle gesperrten User
+
+	List<User> findByStrikesGreaterThan(int strikes);  // User mit Strikes
 }

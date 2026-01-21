@@ -195,7 +195,7 @@
                     </svg>
                     Kurs bearbeiten
                 </a>
-                <form th:action="@{/courses/{id}(id=${course.id})}" method="post" style="display:inline;">
+                <form th:action="@{/tutor/courses/update/{id}(id=${course.id})}" method="post" style="display:inline;">
                     <input type="hidden" name="_method" value="delete" />
                     <button type="submit" class="btn-danger" onclick="return confirm('Kurs wirklich löschen?');">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
