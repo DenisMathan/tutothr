@@ -31,21 +31,27 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public String registerNewUser(@ModelAttribute("registrationForm") @Valid RegisterUserDTO form, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
+    public String registerNewUser(@ModelAttribute("registrationForm") @Valid RegisterUserDTO form,
+            BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
 
         if (!authService.confirmPasswords(form)) {
-            bindingResult.rejectValue("confirmPassword", "error.confirmPassword", "Die Passwörter stimmen nicht überein.");
+            bindingResult.rejectValue("confirmPassword", "error.confirmPassword",
+                    "Die Passwörter stimmen nicht überein.");
         }
 
         if (bindingResult.hasErrors()) {
             // Transfer errors to DTO so form.html can display them
-            bindingResult.getFieldErrors().forEach(error -> 
-                form.addValidationError(error.getField(), error.getDefaultMessage())
-            );
+            bindingResult.getFieldErrors()
+                    .forEach(error -> form.addValidationError(error.getField(), error.getDefaultMessage()));
             return "views/auth/register";
         }
 
         User user = authService.register(form);
+
+        if (user == null) {
+            form.getValidationErrors().forEach((field, msg) -> bindingResult.rejectValue(field, "error." + field, msg));
+            return "views/auth/register";
+        }
         return "redirect:/verify/" + user.getId();
     }
 
@@ -56,13 +62,13 @@ public class AuthenticationController {
             return "redirect:/home";
         }
         RegisterUserDTO form = new RegisterUserDTO();
-        //TODO remove test data
+        // TODO remove test data
         form.setEmail("thomi@web.de");
         form.setUsername("Thomi");
         form.setPassword("Password123");
         form.setConfirmPassword("Password123");
         model.addAttribute("registrationForm", form);
-        
+
         // nicht angemeldet -> Registrierungsseite zeigen
         return "views/auth/register";
     }
@@ -74,14 +80,14 @@ public class AuthenticationController {
             return "redirect:/home";
         }
         LoginUserDTO form = new LoginUserDTO();
-        //TODO remove test data
+        // TODO remove test data
         // form.setEmail("denis.mathan@gmail.com");
         form.setEmail("denis@email.com");
         form.setPassword("Password123");
         model.addAttribute("loginForm", form);
         return "views/auth/login";
     }
-    
+
     @GetMapping("/logout")
     public String postMethodName(Authentication auth) {
         if (!alreadyLoggedIn(auth))
