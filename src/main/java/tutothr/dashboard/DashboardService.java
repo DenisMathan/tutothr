@@ -28,46 +28,70 @@ public class DashboardService {
     public DashboardDTO getStatsForUser(User user) {
         DashboardDTO dto = new DashboardDTO();
 
+        // Nachrichten für alle User
         dto.setUnreadMessages(messageRepository.countByReceiverIdAndReadFalse(user.getId()));
 
         boolean isTutor = user.getRoles().contains(RolesEnum.TUTOR);
         boolean isStudent = user.getRoles().contains(RolesEnum.STUDENT);
 
+        // === TUTOR STATISTICS ===
         if (isTutor) {
+            // Anzahl aktiver Kurse
             dto.setActiveCourses(courseRepository.countByOwner_Id(user.getId()));
+
+            // Durchschnittsbewertung über alle Kurse
             Double avg = courseRepository.getAverageRatingByTutor(user.getId());
             dto.setAverageRating(avg != null ? avg : 0.0);
             
-            long bookingCount = bookingRepository.countByTutor(user);
-            System.out.println("Booking Count: " + bookingCount);
-            dto.setReceivedBookings(bookingCount);
+            // Anzahl erhaltener Buchungen
+            dto.setReceivedBookings(bookingRepository.countByTutor(user));
 
-//            Double revenue = bookingRepository.calculateTotalRevenue(user);
-//            System.out.println("Revenue Result: " + revenue);
+            // Gesamtumsatz (Total Revenue) - Fix: Separate Queries statt TYPE()/TREAT()
             Double courseRevenue = bookingRepository.calculateCourseRevenue(user.getId());
             Double chapterRevenue = bookingRepository.calculateChapterRevenue(user.getId());
             Double timeSlotRevenue = bookingRepository.calculateTimeSlotRevenue(user.getId());
             Double revenue = courseRevenue + chapterRevenue + timeSlotRevenue;
+            dto.setTotalRevenue(revenue != null ? revenue : 0.0);
 
-            dto.setTotalRevenue(revenue != null ? revenue : 0.00);
-
+            // Best Performing Course (höchster Umsatz)
             List<Object[]> bestCourse = bookingRepository.findBestPerformingCourse(user, PageRequest.of(0, 1));
             if (!bestCourse.isEmpty()) {
                 Object[] row = bestCourse.get(0);
                 dto.setBestCourseTitle((String) row[0]);
-                dto.setBestCourseRevenue((Double) row[1]);
+                dto.setBestCourseRevenue(row[1] != null ? ((Number) row[1]).doubleValue() : 0.0);
+            }
+
+            // Most Booked Course (meiste Buchungen)
+            List<Object[]> mostBooked = bookingRepository.findMostBookedCourse(user, PageRequest.of(0, 1));
+            if (!mostBooked.isEmpty()) {
+                Object[] row = mostBooked.get(0);
+                dto.setMostBookedCourseTitle((String) row[0]);
+                dto.setMostBookedCourseCount(row[1] != null ? ((Number) row[1]).longValue() : 0L);
+            }
+
+            // Best Rated Course (beste Bewertung)
+            List<Object[]> bestRated = courseRepository.findBestRatedCourseByTutor(user.getId(), PageRequest.of(0, 1));
+            if (!bestRated.isEmpty()) {
+                Object[] row = bestRated.get(0);
+                dto.setBestRatedCourseTitle((String) row[0]);
+                dto.setBestRatedCourseRating(row[1] != null ? ((Number) row[1]).doubleValue() : 0.0);
+                dto.setBestRatedCourseReviews(row[2] != null ? ((Number) row[2]).longValue() : 0L);
             }
         }
 
+        // === STUDENT STATISTICS ===
         if (isStudent) {
+            // Meine Buchungen
             dto.setMyBookings(bookingRepository.countByStudent(user));
 
+            // Gesamtausgaben
             Double totalSpent = bookingRepository.calculateTotalSpent(user);
-            dto.setTotalSpent(totalSpent != null ? totalSpent : 0.00);
+            dto.setTotalSpent(totalSpent != null ? totalSpent : 0.0);
 
+            // Ausgaben im letzten Monat
             LocalDateTime oneMonthAgo = LocalDateTime.now().minusDays(30);
             Double lastMonth = bookingRepository.calculateSpentSince(user, oneMonthAgo);
-            dto.setSpentLastMonth(lastMonth != null ? lastMonth : 0.00);
+            dto.setSpentLastMonth(lastMonth != null ? lastMonth : 0.0);
         }
 
         return dto;

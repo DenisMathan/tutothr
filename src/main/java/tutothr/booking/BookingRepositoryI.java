@@ -85,7 +85,6 @@ public interface BookingRepositoryI extends MyBaseRepository<Booking, Long> {
 
 	@Query("SELECT b.chapter.id FROM ChapterBooking b WHERE b.student.id = :studentId AND b.chapter.course.id = :courseId AND b.status = 'CONFIRMED'")
 	Set<Long> findPurchasedChapterIdsByUserAndCourse(@Param("studentId") Long studentId, @Param("courseId") Long courseId);
-	
 	@Query("SELECT COALESCE(SUM(b.price), 0) FROM CourseBooking b WHERE b.status = 'CONFIRMED' AND b.course.owner.id = :tutorId")
 	Double calculateCourseRevenue(@Param("tutorId") Long tutorId);
 
@@ -95,16 +94,6 @@ public interface BookingRepositoryI extends MyBaseRepository<Booking, Long> {
 	@Query("SELECT COALESCE(SUM(b.price), 0) FROM TimeSlotBooking b WHERE b.status = 'CONFIRMED' AND b.timeSlot.tutor.id = :tutorId")
 	Double calculateTimeSlotRevenue(@Param("tutorId") Long tutorId);
 	
-//	@Query(value = "SELECT b.* FROM booking b " +
-//		       "LEFT JOIN timeslot ts ON ts.id = b.timeslot_id " +
-//		       "LEFT JOIN course c ON c.id = b.course_id " +
-//		       "LEFT JOIN chapter ch ON ch.id = b.chapter_id " +
-//		       "LEFT JOIN course c2 ON c2.id = ch.course_id " +
-//		       "WHERE (b.booking_type = 'TIMESLOT' AND ts.tutor_id = :tutorId) " +
-//		       "OR (b.booking_type = 'COURSE' AND c.owner_id = :tutorId) " +
-//		       "OR (b.booking_type = 'CHAPTER' AND c2.owner_id = :tutorId)",
-//		       nativeQuery = true)
-//	List<Booking> findByTutorIdNative(@Param("tutorId") Long tutorId);
 	@Query(value = "SELECT b.* FROM booking b " +
 		       "LEFT JOIN timeslot ts ON ts.id = b.timeslot_id " +
 		       "LEFT JOIN course c ON c.id = b.course_id " +
@@ -123,4 +112,15 @@ public interface BookingRepositoryI extends MyBaseRepository<Booking, Long> {
 		       "OR (b.booking_type = 'CHAPTER' AND c2.owner_id = :tutorId)",
 		       nativeQuery = true)
 	Page<Booking> findByTutorIdNative(@Param("tutorId") Long tutorId, Pageable pageable);
+
+    //meistgebuchter Kurs
+	@Query("""
+    SELECT TREAT(b AS TimeSlotBooking).course.title, COUNT(b.id)
+    FROM Booking b
+    WHERE TYPE(b) = TimeSlotBooking
+    AND TREAT(b AS TimeSlotBooking).timeSlot.tutor = :tutor
+    GROUP BY TREAT(b AS TimeSlotBooking).course.title
+    ORDER BY COUNT(b.id) DESC
+    """)
+	List<Object[]> findMostBookedCourse(@Param("tutor") User tutor, PageRequest pageable);
 }
