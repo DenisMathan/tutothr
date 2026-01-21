@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
-import tutothr.auth.config.MyUserDetails;
+import tutothr.auth.config.AppPrincipal;
 import tutothr.booking.BookingService;
 import tutothr.booking.ContentAccessService;
 import tutothr.category.Category;
@@ -83,7 +83,7 @@ public class CourseController {
 	}
 
 	@GetMapping("/courses/{id}")
-	public String getCourseDetails(Model model, @PathVariable Long id, @AuthenticationPrincipal MyUserDetails userDetails) {
+	public String getCourseDetails(Model model, @PathVariable Long id, @AuthenticationPrincipal AppPrincipal userDetails) {
 		Course course = courseService.findById(id);
 		if (course == null) {
 			model.addAttribute("errorMessage", "Course not found");
@@ -131,7 +131,7 @@ public class CourseController {
 	@PostMapping("/tutor/courses/save")
     @PreAuthorize("hasRole('TUTOR')")
 	public String processCourseForm(Model model, @ModelAttribute @Valid CourseDTO course, BindingResult result, 
-			@AuthenticationPrincipal MyUserDetails userDetails) {
+			@AuthenticationPrincipal AppPrincipal userDetails) {
 		if (result.hasErrors()) {
 			course.updateCategoryField(categoryService.getAllDTOs());
 			course = courseService.handleValidationErrors(course, result.getFieldErrors());
@@ -198,7 +198,7 @@ public class CourseController {
 	@PostMapping("/courses/{id}/hashtags")
     @PreAuthorize("@coursePermissionService.isTutorAndOwnerOrAdmin(#id)")
 	public String addHashtags(@PathVariable Long id, @RequestParam String hashtags,
-			@AuthenticationPrincipal MyUserDetails userDetails) {
+			@AuthenticationPrincipal AppPrincipal userDetails) {
 		hashtagService.addHashtagsToCourse(id, hashtags, userDetails.getDbUser());
 		return "redirect:/courses/" + id;
 	}
@@ -209,7 +209,7 @@ public class CourseController {
 	@DeleteMapping("/courses/{id}/hashtags/{hashtagId}")
     @PreAuthorize("@coursePermissionService.isTutorAndOwnerOrAdmin(#id)")
 	public String removeHashtag(@PathVariable Long id, @PathVariable Long hashtagId,
-			@AuthenticationPrincipal MyUserDetails userDetails) {
+			@AuthenticationPrincipal AppPrincipal userDetails) {
 		boolean isAdmin = userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 		hashtagService.removeHashtagFromCourse(id, hashtagId, userDetails.getId(), isAdmin);
 		return "redirect:/courses/" + id;
