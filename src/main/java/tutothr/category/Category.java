@@ -14,15 +14,7 @@ public class Category extends BaseEntity {
 
     public Category() {
         super();
-        // init();
-    }
-    
-    // public void init() {
-    //     formFields = List.of(
-    //         new tutothr.common.models.Field("title", "Titel", "text"),
-    //         new tutothr.common.models.Field("description", "Beschreibung", "textarea")
-    //     );
-    // }
+    } 
 
     @ManyToMany(mappedBy = "categories")
     private List<Course> courses;
