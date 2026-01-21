@@ -4,18 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import tutothr.category.Category;
 import tutothr.chapter.Chapter;
 import tutothr.common.BaseEntity;
 import tutothr.hashtag.Hashtag;
 import tutothr.rating.Rating;
+import tutothr.user.User;
 
 @Entity
 public class Course extends BaseEntity {
@@ -24,8 +25,9 @@ public class Course extends BaseEntity {
     float price;
     float rating;
 
-    @Column(nullable = false)
-    Long ownerId;
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "course_categories", joinColumns = @JoinColumn(name = "id_course"), inverseJoinColumns = @JoinColumn(name = "id_category"))
@@ -52,12 +54,17 @@ public class Course extends BaseEntity {
         this.chapters = chapters;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public User getOwner() {
+        return owner;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    // Convenience-Methode fuer Rueckwaertskompatibilitaet
+    public Long getOwnerId() {
+        return owner != null ? owner.getId() : null;
     }
 
     public String getTitle() {

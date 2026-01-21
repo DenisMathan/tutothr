@@ -6,18 +6,22 @@ public class BookingDTO extends BaseDTO {
 	private Long studentId;
 	private Long timeSlotId;
 	private Long courseId;
+	private Long chapterId;
 	private BookingStatus status;
 	private float price;
 	private Long invoiceId;
 	
+	// Buchungstyp
+    private String bookingType;
+	
 	// Fuer die Anzeige in Views
 	private String studentName;
-	private String courseName;
-	private String timeSlotDisplay;
-	
 	private String studentEmail;
-	private String tutorName;
-	private String tutorEmail;
+	private String bookingDescription;
+		
+	// Fuer Tutor-Benachrichtigungen
+    private String tutorName;
+    private String tutorEmail;
 	
 	@Override
 	public void initFields() {
@@ -49,6 +53,14 @@ public class BookingDTO extends BaseDTO {
 		this.courseId = courseId;
 	}
 
+	public Long getChapterId() {
+        return chapterId;
+    }
+
+    public void setChapterId(Long chapterId) {
+        this.chapterId = chapterId;
+    }
+	
 	public BookingStatus getStatus() {
 		return status;
 	}
@@ -65,6 +77,14 @@ public class BookingDTO extends BaseDTO {
 		this.price = price;
 	}
 
+	public String getBookingType() {
+	    return bookingType;
+	}
+
+	public void setBookingType(String bookingType) {
+	    this.bookingType = bookingType;
+	}
+	
 	public String getStudentName() {
 		return studentName;
 	}
@@ -73,21 +93,21 @@ public class BookingDTO extends BaseDTO {
 		this.studentName = studentName;
 	}
 
-	public String getCourseName() {
-		return courseName;
+	public String getStudentEmail() {
+	    return studentEmail;
 	}
 
-	public void setCourseName(String courseName) {
-		this.courseName = courseName;
+	public void setStudentEmail(String studentEmail) {
+	    this.studentEmail = studentEmail;
 	}
+	
+	public String getBookingDescription() {
+        return bookingDescription;
+    }
 
-	public String getTimeSlotDisplay() {
-		return timeSlotDisplay;
-	}
-
-	public void setTimeSlotDisplay(String timeSlotDisplay) {
-		this.timeSlotDisplay = timeSlotDisplay;
-	}
+    public void setBookingDescription(String bookingDescription) {
+        this.bookingDescription = bookingDescription;
+    }
 	
 	public Long getInvoiceId() {
 	    return invoiceId;
@@ -97,14 +117,6 @@ public class BookingDTO extends BaseDTO {
 	    this.invoiceId = invoiceId;
 	}
 	
-	public String getStudentEmail() {
-	    return studentEmail;
-	}
-
-	public void setStudentEmail(String studentEmail) {
-	    this.studentEmail = studentEmail;
-	}
-
 	public String getTutorName() {
 	    return tutorName;
 	}

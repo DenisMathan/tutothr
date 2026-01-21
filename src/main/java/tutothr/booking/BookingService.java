@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import tutothr.booking.timeslot.TimeSlot;
 import tutothr.booking.timeslot.TimeSlotRepositoryI;
+import tutothr.chapter.Chapter;
+import tutothr.chapter.interfaces.ChapterRepositoryI;
 import tutothr.course.Course;
 import tutothr.course.interfaces.CourseRepositoryI;
 import tutothr.user.User;
@@ -16,16 +18,19 @@ import tutothr.user.User;
 @Service
 public class BookingService {
 	private final BookingRepositoryI bookingRepository;
-	private final BookingMapperI mapper;
 	private final TimeSlotRepositoryI timeSlotRepository;
 	private final CourseRepositoryI courseRepository;
+	private final ChapterRepositoryI chapterRepository;
+	private final List<BookingDTOMapper> mappers;
 
-	public BookingService(BookingRepositoryI bookingRepository, BookingMapperI mapper,
-			TimeSlotRepositoryI timeSlotRepository, CourseRepositoryI courseRepository) {
+	public BookingService(BookingRepositoryI bookingRepository, TimeSlotRepositoryI timeSlotRepository,
+			CourseRepositoryI courseRepository, ChapterRepositoryI chapterRepository,
+			List<BookingDTOMapper> mappers) {
 		this.bookingRepository = bookingRepository;
-		this.mapper = mapper;
 		this.timeSlotRepository = timeSlotRepository;
 		this.courseRepository = courseRepository;
+		this.chapterRepository = chapterRepository;
+        this.mappers = mappers;
 	}
 
 	public BookingDTO findById(Long id) {
@@ -41,24 +46,27 @@ public class BookingService {
 				.collect(Collectors.toList());
 	}
 
+	public Page<BookingDTO> findByStudentPaged(User student, Pageable pageable) {
+		return bookingRepository.findByStudent(student, pageable)
+				.map(this::toDTO);
+	}
+
 	public List<BookingDTO> findByTutor(User tutor) {
-		return bookingRepository.findByTimeSlotTutor(tutor)
+		return bookingRepository.findByTutor(tutor)
 				.stream()
 				.map(this::toDTO)
 				.collect(Collectors.toList());
 	}
-
-	public List<BookingDTO> findByCourse(Course course) {
-		return bookingRepository.findByCourse(course)
-				.stream()
-				.map(this::toDTO)
-				.collect(Collectors.toList());
+	
+	public Page<BookingDTO> findByTutorPaged(User tutor, Pageable pageable) {
+		return bookingRepository.findByTutor(tutor, pageable)
+				.map(this::toDTO);
 	}
 
 	public void deleteById(Long id) {
 		bookingRepository.deleteById(id);
 	}
-	
+
 	public void updateStatus(Long id, BookingStatus status) {
 		Booking booking = bookingRepository.findById(id).orElse(null);
 		if (booking != null) {
@@ -67,75 +75,112 @@ public class BookingService {
 		}
 	}
 
-	public BookingDTO createBooking(User student, Long timeSlotId, Long courseId) {
-		// TimeSlot laden
-		TimeSlot timeSlot = timeSlotRepository.findById(timeSlotId).orElse(null);
-		if (timeSlot == null || !timeSlot.isAvailable()) {
-			return null; // Spaeter Exception werfen
-		}
-		
-		// Course laden
-		Course course = courseRepository.findById(courseId).orElse(null);
-		if (course == null) {
-			return null; // Spaeter Exception werfen
-		}
-		
-		// Booking erstellen
-		Booking booking = new Booking(student, timeSlot, course, course.getPrice());
-		
-		// TimeSlot als nicht mehr verfuegbar markieren
-		timeSlot.setAvailable(false);
-		timeSlotRepository.save(timeSlot);
-		
-		// Booking speichern und zurueckgeben
-		Booking saved = bookingRepository.save(booking);
-		return toDTO(saved);
-	}
+	// === Methoden fuer verschiedene Buchungstypen ===
 
-	private BookingDTO toDTO(Booking booking) {
-		BookingDTO dto = mapper.toDTO(booking);
+    public BookingDTO createChapterBooking(User student, Long chapterId) {
+        Chapter chapter = chapterRepository.findById(chapterId).orElse(null);
+        if (chapter == null || chapter.getPrice() == null) {
+            return null;
+        }
+        
+        // Bereits gekauft? (Kapitel oder ganzer Kurs)
+        if (bookingRepository.existsByStudentIdAndChapterId(student.getId(), chapterId)
+                || bookingRepository.existsByStudentIdAndCourseId(student.getId(), chapter.getCourse().getId())) {
+            return null;
+        }
+        
+        ChapterBooking booking = new ChapterBooking(student, chapter, chapter.getPrice());
+        Booking saved = bookingRepository.save(booking);
+        return toDTO(saved);
+    }
 
-		// timeSlotDisplay manuell befuellen
-		TimeSlot ts = booking.getTimeSlot();
-		String display = ts.getDate() + ", " + ts.getStartTime() + "-" + ts.getEndTime();
-		dto.setTimeSlotDisplay(display);
-		
-		// E-Mail-Felder befuellen
-	    dto.setStudentEmail(booking.getStudent().getEmail());
-	    dto.setTutorName(ts.getTutor().getUsername());
-	    dto.setTutorEmail(ts.getTutor().getEmail());
-		
-		return dto;
-	}
+    public BookingDTO createCourseBooking(User student, Long courseId) {
+        Course course = courseRepository.findById(courseId).orElse(null);
+        if (course == null) {
+            return null;
+        }
+        
+        // Bereits gekauft?
+        if (bookingRepository.existsByStudentIdAndCourseId(student.getId(), courseId)) {
+            return null;
+        }
+        
+        CourseBooking booking = new CourseBooking(student, course, course.getPrice());
+        Booking saved = bookingRepository.save(booking);
+        return toDTO(saved);
+    }
 
-	public boolean hasUserBookedCourse(Long userId, Long courseId) {
-		return bookingRepository.existsByStudentIdAndCourseId(userId, courseId);
-	}
+    public BookingDTO createTimeSlotBooking(User student, Long courseId, Long timeSlotId) {
+        Course course = courseRepository.findById(courseId).orElse(null);
+        TimeSlot timeSlot = timeSlotRepository.findById(timeSlotId).orElse(null);
+        
+        if (course == null || timeSlot == null || !timeSlot.isAvailable()) {
+            return null;
+        }
+        
+        // Preis vom Tutor (hourlyRate)
+        User tutor = timeSlot.getTutor();
+        float price = tutor.getHourlyRate() != null ? tutor.getHourlyRate() : 0f;
+        
+        TimeSlotBooking booking = new TimeSlotBooking(student, course, timeSlot, price);
+        
+        // TimeSlot als nicht mehr verfuegbar markieren
+        timeSlot.setAvailable(false);
+        timeSlotRepository.save(timeSlot);
+        
+        Booking saved = bookingRepository.save(booking);
+        return toDTO(saved);
+    }
 	
 	public void cancelAndCleanup(Long bookingId) {
-	    Booking booking = bookingRepository.findById(bookingId).orElse(null);
-	    if (booking == null) {
-	        return;
-	    }
-	    
-	    // TimeSlot wieder freigeben
-	    TimeSlot timeSlot = booking.getTimeSlot();
-	    if (timeSlot != null) {
-	        timeSlot.setAvailable(true);
-	        timeSlotRepository.save(timeSlot);
-	    }
-	    
-	    // Buchung loeschen
-	    bookingRepository.delete(booking);
+		Booking booking = bookingRepository.findById(bookingId).orElse(null);
+		if (booking == null) {
+			return;
+		}
+
+		TimeSlot timeSlotToSave = booking.cleanup();
+        if (timeSlotToSave != null) {
+            timeSlotRepository.save(timeSlotToSave);
+        }
+        
+        bookingRepository.delete(booking);
 	}
 	
-	public Page<BookingDTO> findByStudentPaged(User student, Pageable pageable) {
-	    return bookingRepository.findByStudent(student, pageable)
-	            .map(this::toDTO);
-	}
+	// === Hilfsmethoden ===
 
-	public Page<BookingDTO> findByTutorPaged(User tutor, Pageable pageable) {
-	    return bookingRepository.findByTimeSlotTutor(tutor, pageable)
-	            .map(this::toDTO);
+    private BookingDTO toDTO(Booking booking) {
+        BookingDTO dto = new BookingDTO();
+        
+        // Gemeinsame Felder
+        dto.setId(booking.getId());
+        dto.setStudentId(booking.getStudent().getId());
+        dto.setStudentName(booking.getStudent().getUsername());
+        dto.setStudentEmail(booking.getStudent().getEmail());
+        dto.setStatus(booking.getStatus());
+        dto.setPrice(booking.getPrice());
+        dto.setBookingDescription(booking.getBookingDescription());
+        
+        // Tutor-Felder (gemeinsam fuer alle Typen)
+        User tutor = booking.getTutor();
+        dto.setTutorName(tutor.getUsername());
+        dto.setTutorEmail(tutor.getEmail());
+        
+        if (booking.getInvoice() != null) {
+            dto.setInvoiceId(booking.getInvoice().getId());
+        }
+        
+        // Typ-spezifische Felder via Mapper
+        for (BookingDTOMapper mapper : mappers) {
+            if (mapper.supports(booking)) {
+                mapper.fillDTO(booking, dto);
+                break;
+            }
+        }
+        
+        return dto;
+    }
+	
+	public boolean hasUserBookedCourse(Long userId, Long courseId) {
+		return bookingRepository.existsByStudentIdAndCourseId(userId, courseId);
 	}
 }

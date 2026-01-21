@@ -56,6 +56,7 @@ public class User extends BaseEntity implements Serializable {
 	private int strikes = 0;
 	private boolean accountNonLocked = true;
 
+	private Float hourlyRate;
 
 	public Set<RolesEnum> getRoles() {
 		return roles;
@@ -132,5 +133,13 @@ public class User extends BaseEntity implements Serializable {
 	}
 	public void setAccountNonLocked(boolean accountNonLocked) {
 		this.accountNonLocked = accountNonLocked;
+	}
+	
+	public Float getHourlyRate() {
+	    return hourlyRate;
+	}
+
+	public void setHourlyRate(Float hourlyRate) {
+	    this.hourlyRate = hourlyRate;
 	}
 }

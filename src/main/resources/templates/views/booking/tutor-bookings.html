@@ -23,8 +23,7 @@
         <thead>
         <tr>
           <th>Student</th>
-          <th>Kurs</th>
-          <th>Termin</th>
+          <th>Buchung</th>
           <th>Preis</th>
           <th>Status</th>
           <th class="text-end">Beleg</th>
@@ -40,8 +39,7 @@
               <span th:text="${booking.studentName}">Student</span>
             </div>
           </td>
-          <td style="font-weight: 600;" th:text="${booking.courseName}"></td>
-          <td class="text-muted" th:text="${booking.timeSlotDisplay}"></td>
+          <td style="font-weight: 600;" th:text="${booking.bookingDescription}"></td>
           <td th:text="${#numbers.formatDecimal(booking.price, 1, 2) + ' €'}"></td>
           <td>
             <span th:if="${booking.status.name() == 'PENDING'}" class="badge status-pending">Ausstehend</span>

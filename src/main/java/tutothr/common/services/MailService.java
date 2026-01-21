@@ -85,11 +85,10 @@ public class MailService {
     }
 
     public void sendBookingConfirmationToStudent(BookingDTO booking, InvoiceDTO invoice) {
-        String text = "Hallo " + booking.getStudentName() + ",\n\n" +
+    	String text = "Hallo " + booking.getStudentName() + ",\n\n" +
                 "deine Buchung wurde erfolgreich abgeschlossen!\n\n" +
                 "Details:\n" +
-                "- Kurs: " + booking.getCourseName() + "\n" +
-                "- Termin: " + booking.getTimeSlotDisplay() + "\n" +
+                "- " + booking.getBookingDescription() + "\n" +
                 "- Preis: " + String.format("%.2f", booking.getPrice()) + " EUR\n" +
                 "- Rechnungsnummer: " + invoice.getInvoiceNumber() + "\n\n" +
                 "Viel Erfolg beim Lernen!\n" +
@@ -97,26 +96,25 @@ public class MailService {
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(booking.getStudentEmail());
-        message.setSubject("Buchungsbestaetigung - " + booking.getCourseName());
+        message.setSubject("Buchungsbestaetigung - TutOTHr");
         message.setText(text);
 
         mailSender.send(message);
     }
 
     public void sendBookingConfirmationToTutor(BookingDTO booking) {
-        String text = "Hallo " + booking.getTutorName() + ",\n\n" +
+    	String text = "Hallo " + booking.getTutorName() + ",\n\n" +
                 "du hast eine neue Buchung erhalten!\n\n" +
                 "Details:\n" +
-                "- Kurs: " + booking.getCourseName() + "\n" +
+                "- " + booking.getBookingDescription() + "\n" +
                 "- Student: " + booking.getStudentName() + "\n" +
-                "- Termin: " + booking.getTimeSlotDisplay() + "\n" +
                 "- Einnahme: " + String.format("%.2f", booking.getPrice()) + " EUR\n\n" +
                 "Viele Gruesse\n" +
                 "Dein TutOTHr-Team";
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(booking.getTutorEmail());
-        message.setSubject("Neue Buchung - " + booking.getCourseName());
+        message.setSubject("Neue Buchung - TutOTHr");
         message.setText(text);
 
         mailSender.send(message);

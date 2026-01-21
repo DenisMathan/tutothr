@@ -16,6 +16,7 @@ public class Chapter extends BaseEntity {
     private String description;
     private int position;
     private boolean paywalled;
+    private Float price;
     
     @ElementCollection
     private List<String> attachmentUrls = new ArrayList<>();
@@ -75,6 +76,15 @@ public class Chapter extends BaseEntity {
     public void setAttachmentUrls(List<String> attachmentUrls) {
         this.attachmentUrls = attachmentUrls;
     }
+    
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+    
     public Long getOwnerId() {
         return this.course.getOwnerId();
     }

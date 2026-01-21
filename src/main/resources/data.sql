@@ -109,3 +109,23 @@ INSERT INTO chapter (title, description, position, course_id, paywalled, created
 INSERT INTO chapter (title, description, position, course_id, paywalled, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Energie und Arbeit', 'Energieformen, Energieerhaltung, Arbeit und Leistung in physikalischen Systemen.', 3, 2, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO chapter (title, description, position, course_id, paywalled, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Wellen und Schwingungen', 'Eigenschaften von Wellen, Schwingungen, Schall und Licht.', 4, 2, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO chapter (title, description, position, course_id, paywalled, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) VALUES ('Elektrizität und Magnetismus', 'Grundlagen der Elektrizitätslehre und des Magnetismus.', 5, 2, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+
+-- Chapter Preise (fuer paywalled Chapters)
+UPDATE chapter SET price = 5.00, paywalled = true WHERE id = 1;
+UPDATE chapter SET price = 7.50, paywalled = true WHERE id = 3;
+UPDATE chapter SET price = 3.00, paywalled = true WHERE id = 5;
+
+-- ========================================================================================================================
+-- FUER Booking-Refactoring (21.01.2026)
+-- Hourly Rates fuer Tutoren
+UPDATE user SET hourly_rate = 25.00 WHERE id = 3;
+UPDATE user SET hourly_rate = 30.00 WHERE id = 4;
+UPDATE user SET hourly_rate = 20.00 WHERE id = 5;
+
+-- TimeSlots fuer Tutor (id=5, User "Tutor")
+INSERT INTO timeslot (date, start_time, end_time, available, tutor_id, created_at, updated_at) 
+VALUES ('2026-01-25', '14:00:00', '15:00:00', true, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO timeslot (date, start_time, end_time, available, tutor_id, created_at, updated_at) 
+VALUES ('2026-01-26', '10:00:00', '11:00:00', true, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO timeslot (date, start_time, end_time, available, tutor_id, created_at, updated_at) 
+VALUES ('2026-01-27', '16:00:00', '17:00:00', true, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

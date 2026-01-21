@@ -20,6 +20,8 @@ public class ChapterDTO extends BaseDTO {
     private Long courseId;
     private List<MultipartFile> files;
     private List<String> attachmentUrls;
+    
+    private Float price;
 
     @Override
     public void initFields() {
@@ -76,5 +78,13 @@ public class ChapterDTO extends BaseDTO {
     }
     public void setAttachmentUrls(List<String> attachmentUrls) {
         this.attachmentUrls = attachmentUrls;
+    }
+    
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
     }
 }

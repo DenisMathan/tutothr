@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import tutothr.booking.BookingDTO;
 import tutothr.booking.BookingService;
@@ -44,7 +45,8 @@ public class PaymentController {
 	}
 
 	@GetMapping("/payment/success")
-	public String paymentSuccess(@RequestParam String token, @RequestParam Long bookingId) {
+	public String paymentSuccess(@RequestParam String token, @RequestParam Long bookingId, 
+			RedirectAttributes redirectAttributes) {
 		boolean success = payPalService.capturePayment(token);
 
 		if (success) {
@@ -56,9 +58,11 @@ public class PaymentController {
 	        mailService.sendBookingConfirmationToStudent(booking, invoice);
 	        mailService.sendBookingConfirmationToTutor(booking);
 			
-			return "redirect:/my-bookings?success=payment";
+	        redirectAttributes.addFlashAttribute("success", "Zahlung erfolgreich!");
+	        return "redirect:/my-bookings";
 		} else {
-			return "redirect:/my-bookings?error=capture";
+			redirectAttributes.addFlashAttribute("error", "Zahlung fehlgeschlagen.");
+			return "redirect:/my-bookings";
 		}
 	}
 

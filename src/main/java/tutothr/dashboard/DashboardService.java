@@ -34,12 +34,12 @@ public class DashboardService {
         boolean isStudent = user.getRoles().contains(RolesEnum.STUDENT);
 
         if (isTutor) {
-            dto.setActiveCourses(courseRepository.countByOwnerId(user.getId()));
+            dto.setActiveCourses(courseRepository.countByOwner_Id(user.getId()));
 
             Double avg = courseRepository.getAverageRatingByTutor(user.getId());
             dto.setAverageRating(avg != null ? avg : 0.0);
 
-            dto.setReceivedBookings(bookingRepository.countByTimeSlotTutor(user));
+            dto.setReceivedBookings(bookingRepository.countByTutor(user));
 
             Double revenue = bookingRepository.calculateTotalRevenue(user);
             dto.setTotalRevenue(revenue != null ? revenue : 0.00);

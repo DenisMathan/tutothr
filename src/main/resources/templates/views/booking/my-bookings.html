@@ -13,10 +13,10 @@
 
     <h1 class="text-main" style="margin-bottom: 2rem; font-weight: 700;">Meine Buchungen</h1>
 
-    <div th:if="${param.success}" class="alert-info" style="border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.1); margin-bottom: 1.5rem;">
+    <div th:if="${success}" class="alert-info" style="border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.1); margin-bottom: 1.5rem;">
       Zahlung erfolgreich!
     </div>
-    <div th:if="${param.error}" class="alert-info" style="border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.1); margin-bottom: 1.5rem;">
+    <div th:if="${error}" class="alert-info" style="border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.1); margin-bottom: 1.5rem;">
       Zahlung fehlgeschlagen.
     </div>
 
@@ -30,8 +30,7 @@
       <table class="styled-table">
         <thead>
         <tr>
-          <th>Kurs</th>
-          <th>Termin</th>
+          <th>Buchung</th>
           <th>Preis</th>
           <th>Status</th>
           <th>Aktion</th>
@@ -40,8 +39,7 @@
         </thead>
         <tbody>
         <tr th:each="booking : ${bookings}">
-          <td style="font-weight: 600;" th:text="${booking.courseName}"></td>
-          <td class="text-muted" th:text="${booking.timeSlotDisplay}"></td>
+          <td style="font-weight: 600;" th:text="${booking.bookingDescription}"></td>
           <td th:text="${#numbers.formatDecimal(booking.price, 1, 2) + ' €'}"></td>
           <td>
             <span th:if="${booking.status.name() == 'PENDING'}" class="badge status-pending">Ausstehend</span>
@@ -54,6 +52,13 @@
                th:href="@{/booking/{id}/pay(id=${booking.id})}"
                class="btn-primary btn-sm">
               Jetzt bezahlen
+            </a>
+            <a th:if="${booking.status.name() == 'PENDING'}"
+               th:href="@{/booking/{id}/cancel(id=${booking.id})}"
+               class="btn-secondary btn-sm"
+               style="margin-left: 5px;"
+               onclick="return confirm('Buchung wirklich stornieren?');">
+              Stornieren
             </a>
             <a th:if="${booking.status.name() == 'CONFIRMED'}"
                th:href="@{/booking/{id}/add-to-calendar(id=${booking.id})}"

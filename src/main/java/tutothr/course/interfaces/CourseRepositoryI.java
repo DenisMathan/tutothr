@@ -12,10 +12,10 @@ import tutothr.course.Course;
 public interface CourseRepositoryI extends MyBaseRepository<Course, Long> {
 
     // Zählt Kurse eines Tutors
-    long countByOwnerId(Long ownerId);
+    long countByOwner_Id(Long ownerId);
 
     // Berechnet das Durchschnitts-Rating aller Kurse eines Tutors (Profi-Query!)
-    @Query("SELECT AVG(r.stars) FROM Course c JOIN c.ratings r WHERE c.ownerId = :tutorId")
+    @Query("SELECT AVG(r.stars) FROM Course c JOIN c.ratings r WHERE c.owner.id = :tutorId")
     Double getAverageRatingByTutor(@Param("tutorId") Long tutorId);
     List<Course> findByCategoriesContaining(Category category);
     

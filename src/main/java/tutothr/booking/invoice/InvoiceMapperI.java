@@ -8,7 +8,4 @@ import org.mapstruct.ReportingPolicy;
 public interface InvoiceMapperI {
 	@Mapping(source = "booking.id", target = "bookingId")
 	InvoiceDTO toDTO(Invoice entity);
-	
-	@Mapping(source = "bookingId", target = "booking.id")
-	Invoice toEntity(InvoiceDTO dto);
 }

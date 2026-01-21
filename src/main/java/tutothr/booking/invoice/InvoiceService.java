@@ -57,8 +57,8 @@ public class InvoiceService {
 
 		// Bill mit Snapshot-Daten erstellen
 		Invoice invoice = new Invoice(generateInvoiceNumber(), booking, booking.getStudent().getUsername(),
-				booking.getTimeSlot().getTutor().getUsername(), booking.getCourse().getTitle(), booking.getPrice(),
-				LocalDateTime.now());
+		        booking.getTutor().getUsername(), booking.getBookingDescription(), booking.getPrice(),
+		        LocalDateTime.now());
 
 		booking.setInvoice(invoice);
 		Invoice saved = invoiceRepository.save(invoice);

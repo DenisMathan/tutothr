@@ -1,6 +1,8 @@
 package tutothr.course;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,9 +23,12 @@ import jakarta.validation.Valid;
 import tutothr.auth.config.AppPrincipal;
 import tutothr.auth.config.MyUserDetails;
 import tutothr.booking.BookingService;
+import tutothr.booking.ContentAccessService;
 import tutothr.category.Category;
 import tutothr.category.CategoryDTO;
 import tutothr.category.CategoryService;
+import tutothr.chapter.ChapterDTO;
+import tutothr.chapter.ChapterViewModel;
 import tutothr.hashtag.HashtagService;
 import tutothr.rating.Rating;
 
@@ -34,12 +39,14 @@ public class CourseController {
 	private HashtagService hashtagService;
 	@Autowired
 	private BookingService bookingService;
+	private ContentAccessService contentAccessService;
 
 	public CourseController(CourseService courseService, CoursePermissionService coursePermissionService,
-			CategoryService categoryService, HashtagService hashtagService) {
+			CategoryService categoryService, HashtagService hashtagService, ContentAccessService contentAccessService) {
 		this.courseService = courseService;
 		this.categoryService = categoryService;
 		this.hashtagService = hashtagService;
+		this.contentAccessService = contentAccessService;
 	}
 
 //    @GetMapping("/courses")
@@ -68,28 +75,36 @@ public class CourseController {
 
 	@GetMapping("/courses/{id}")
 	public String addCourse(Model model, @PathVariable(required = true) Long id) {
-		Course course = courseService.findById(id);
-		if (course == null) {
-			model.addAttribute("errorMessage", "Course not found");
-			return "/error/404";
-		}
-		CourseDTO courseDTO = courseService.mapToDTO(course);
-		double avgRating = course.getRatings().stream().mapToInt(Rating::getStars).average().orElse(0.0);
-		model.addAttribute("avgRating", avgRating);
-		model.addAttribute("course", courseDTO);
+	    Course course = courseService.findById(id);
+	    if (course == null) {
+	        model.addAttribute("errorMessage", "Course not found");
+	        return "/error/404";
+	    }
+	    CourseDTO courseDTO = courseService.mapToDTO(course);
+	    double avgRating = course.getRatings().stream().mapToInt(Rating::getStars).average().orElse(0.0);
+	    model.addAttribute("avgRating", avgRating);
+	    model.addAttribute("course", courseDTO);
 
-		boolean hasBooked = false;
-		hasBooked = bookingService.hasUserBookedCourse(getCurrentUserId(), id);
-		model.addAttribute("hasBooked", hasBooked);
-		return "/views/courses/course";
-	}
-
-	@GetMapping({ "/tutor/courses/add" })
-	public String getCreatePage(Model model, @PathVariable(required = false) Long id) {
-		CourseDTO course = new CourseDTO();
-		course.updateCategoryField(categoryService.getAllDTOs());
-		model.addAttribute("course", course);
-		return "/views/courses/course-edit";
+	    Long userId = getCurrentUserId();
+	    boolean hasBooked = bookingService.hasUserBookedCourse(userId, id);
+	    model.addAttribute("hasBooked", hasBooked);
+	    model.addAttribute("hourlyRate", course.getOwner().getHourlyRate());
+	    
+	    // ChapterViewModels erstellen
+	    boolean isOwner = courseDTO.getIsOwner();
+	    Set<Long> accessibleChapterIds = contentAccessService.getAccessibleChapterIds(userId, id);
+	    boolean hasCourseAccess = (accessibleChapterIds == null); // null = ganzer Kurs gekauft
+	    
+	    List<ChapterViewModel> chapterViews = new ArrayList<>();
+	    for (ChapterDTO chapter : courseDTO.getChapters()) {
+	        boolean accessible = isOwner || !chapter.isPaywalled() || hasCourseAccess 
+	                || (accessibleChapterIds != null && accessibleChapterIds.contains(chapter.getId()));
+	        boolean purchasable = !isOwner && chapter.isPaywalled() && !accessible;
+	        chapterViews.add(new ChapterViewModel(chapter, accessible, purchasable));
+	    }
+	    model.addAttribute("chapterViews", chapterViews);
+	    
+	    return "/views/courses/course";
 	}
 
 	@GetMapping({ "/tutor/courses/update/{id}" })
@@ -128,8 +143,8 @@ public class CourseController {
 		}
 		courseEntity.setCategories(categories);
 
-		courseEntity.setOwnerId(((tutothr.auth.config.MyUserDetails) SecurityContextHolder.getContext()
-				.getAuthentication().getPrincipal()).getId());
+		courseEntity.setOwner(((tutothr.auth.config.MyUserDetails) SecurityContextHolder.getContext()
+		        .getAuthentication().getPrincipal()).getDbUser());
 		// Creating a new course
 		courseService.save(courseEntity);
 		return "redirect:/courses";
@@ -146,23 +161,23 @@ public class CourseController {
 			model.addAttribute("course", course);
 			return "/views/courses/course-edit";
 		}
-		
+
 		Course existingCourse = courseService.findById(id);
 		if (existingCourse == null) {
 			return "redirect:/courses"; // handle error better ideally
 		}
-		
+
 		// Update fields from DTO
 		existingCourse.setTitle(course.getTitle());
 		existingCourse.setDescription(course.getDescription());
 		existingCourse.setPrice(course.getPrice());
-		
+
 		List<Category> categories = new java.util.ArrayList<>();
 		if (course.getCategoryIds() != null) {
 			categories = categoryService.findAllEntitiesByIds(course.getCategoryIds());
 		}
 		existingCourse.setCategories(categories);
-		
+
 		courseService.save(existingCourse);
 		return "redirect:/courses";
 	}
@@ -195,9 +210,6 @@ public class CourseController {
 	}
 
 	private Long getCurrentUserId() {
-		return ((AppPrincipal) SecurityContextHolder.getContext()
-				.getAuthentication()
-				.getPrincipal())
-				.getId();
+		return ((AppPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
 	}
 }

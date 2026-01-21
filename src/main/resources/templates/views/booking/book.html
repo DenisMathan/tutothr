@@ -44,8 +44,8 @@
 
       <div class="form-group" style="background: var(--bg-hover); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span class="text-muted">Preis pro Einheit:</span>
-          <span style="font-weight: 700; font-size: 1.2rem; color: var(--text-main);" th:text="${#numbers.formatDecimal(course.price, 1, 2) + ' €'}"></span>
+          <span class="text-muted">Preis pro Stunde:</span>
+          <span style="font-weight: 700; font-size: 1.2rem; color: var(--text-main);" th:text="${#numbers.formatDecimal(hourlyRate, 1, 2) + ' €'}"></span>
         </div>
       </div>
 

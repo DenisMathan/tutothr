@@ -40,8 +40,17 @@
             </div>
 
             <div class="course-actions-row" th:if="${!course.isOwner}">
+                <!-- Kurs-Inhalt kaufen -->
+                <form th:action="@{/course/{id}/buy(id=${course.id})}" method="post" style="display: inline;"
+                      th:data-price="${course.price}"
+                      onsubmit="return confirm('Möchtest du den gesamten Kursinhalt für ' + this.dataset.price + ' € kaufen?');">
+                    <button type="submit" class="btn-primary">
+                        Kurs kaufen (<span th:text="${#numbers.formatDecimal(course.price, 1, 2) + ' €'}"></span>)
+                    </button>
+                </form>
+                <!-- Tutorium buchen -->
                 <a th:href="@{/course/{id}/book(id=${course.id})}" class="btn-primary">
-                    Buchen
+                    Tutorium buchen (<span th:text="${#numbers.formatDecimal(hourlyRate, 1, 2) + ' €/h'}"></span>)
                 </a>
                 <a th:href="@{/courses/{id}/addRating(id=${course.id})}" th:if="${hasBooked}" class="btn-secondary">
                     Bewertung schreiben
@@ -156,8 +165,8 @@
                     Kursinhalte
                 </h2>
                 <div class="chapter-list">
-                    <div th:each="chapter : ${course.chapters}" class="chapter-item">
-                        <button th:replace="~{fragments/courses/chapter/chapter :: chapter(${chapter}, ${course.isOwner})}"></button>
+                    <div th:each="chapter : ${chapterViews}" class="chapter-item">
+                        <button th:replace="~{fragments/courses/chapter/chapter :: chapter(${chapter}, ${course.isOwner}, ${chapter.accessible}, ${chapter.purchasable})}"></button>
                     </div>
                     <div th:if="${course.isOwner}" style="margin-top: 1rem;">
                         <script>

@@ -28,8 +28,8 @@ import java.util.List;
 public class CourseService extends BaseService<CourseDTO, Course> {
 	private static final int DEFAULT_PAGE = 0;
 	private static final int DEFAULT_SIZE = 5;
-	private static final CourseSortFieldEnum DEFAULT_SORT_BY = CourseSortFieldEnum.CREATED_AT;
-	private static final SortDirectionEnum DEFAULT_SORT_DIRECTION = SortDirectionEnum.DESC;
+	private static final CourseSortFieldEnum DEFAULT_SORT_BY = CourseSortFieldEnum.TITLE;
+	private static final SortDirectionEnum DEFAULT_SORT_DIRECTION = SortDirectionEnum.ASC;
 
 	private CoursePermissionService coursePermissionService;
 	private final CategoryService categoryService;
@@ -138,8 +138,6 @@ public class CourseService extends BaseService<CourseDTO, Course> {
 		Page<Course> results = repository.findAll(spec, pageable);
 		return results.map(this::mapToDTO);
 	}
-
-	
 
 	/**
 	 * Baut die Specification aus den Suchparametern. Nur nicht-null Parameter
