@@ -2,17 +2,27 @@
     <nav class="navbar404" role="navigation">
         <div class="navbar404-container">
             <a class="navbar404-brand" th:href="@{/}">
-                <span class="navbar404-title">TUTOTHR</span>
+                <span class="navbar404-title" th:text="#{nav.brand}">TUTOTHR</span>
             </a>
 
             <ul class="navbar404-links" sec:authorize="isAuthenticated()">
-                <li><a th:href="@{/courses}">Kurse</a></li>
-                <li><a th:href="@{/messages/inbox}">Nachrichten</a></li>
-                <li sec:authorize="hasRole('TUTOR')"><a th:href="@{/tutor/timeslots}">Zeitslots</a></li>
+                <li><a th:href="@{/courses}" th:text="#{nav.courses}">Kurse</a></li>
+                <li><a th:href="@{/messages/inbox}" th:text="#{nav.messages}">Nachrichten</a></li>
+                <li sec:authorize="hasRole('TUTOR')"><a th:href="@{/tutor/timeslots}" th:text="#{nav.timeslots}">Zeitslots</a></li>
             </ul>
 
             <div class="navbar404-actions" sec:authorize="isAuthenticated()">
-                <button class="navbar404-icon-btn" onclick="toggleTheme()" aria-label="Design wechseln">
+                <!-- Language Switcher -->
+                <div class="navbar404-lang" style="display: flex; gap: 4px; margin-right: 8px;">
+                    <a th:href="@{''(lang='de')}" class="lang-btn" 
+                       th:classappend="${#locale.language == 'de'} ? 'active' : ''"
+                       style="padding: 4px 8px; border-radius: 4px; font-size: 12px; text-decoration: none; color: var(--text-muted); border: 1px solid var(--border-color);">DE</a>
+                    <a th:href="@{''(lang='en')}" class="lang-btn" 
+                       th:classappend="${#locale.language == 'en'} ? 'active' : ''"
+                       style="padding: 4px 8px; border-radius: 4px; font-size: 12px; text-decoration: none; color: var(--text-muted); border: 1px solid var(--border-color);">EN</a>
+                </div>
+
+                <button class="navbar404-icon-btn" onclick="toggleTheme()" th:aria-label="#{nav.theme.toggle}">
                     <svg id="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
                         <circle cx="12" cy="12" r="5"></circle>
                         <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -49,11 +59,11 @@
                         </svg>
                     </button>
                     <ul class="navbar404-profile-menu">
-                        <li><a th:href="@{/users/profil}">Mein Profil</a></li>
-                        <li><a th:href="@{/account}">Account</a></li>
+                        <li><a th:href="@{/users/profil}" th:text="#{nav.profile}">Mein Profil</a></li>
+                        <li><a th:href="@{/account}" th:text="#{nav.account}">Account</a></li>
                         <li>
                             <form th:action="@{/logout}" method="post" style="margin:0">
-                                <button type="submit" class="navbar404-logout-btn">Logout</button>
+                                <button type="submit" class="navbar404-logout-btn" th:text="#{nav.logout}">Logout</button>
                             </form>
                         </li>
                     </ul>

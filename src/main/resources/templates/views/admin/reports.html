@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
-<head><title>Moderation</title></head>
+<head><title th:text="#{moderation.title}">Moderation</title></head>
 <section layout:fragment="mybody">
     <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 2rem 1rem;">
 
@@ -11,9 +11,9 @@
                     <line x1="12" y1="9" x2="12" y2="13"/>
                     <line x1="12" y1="17" x2="12.01" y2="17"/>
                 </svg>
-                Moderation
+                <span th:text="#{moderation.title}">Moderation</span>
             </h2>
-            <p class="form-subtitle">
+            <p class="form-subtitle" th:text="#{moderation.subtitle}">
                 Überprüfe gemeldete Inhalte und verwalte User-Strikes
             </p>
         </div>
@@ -39,7 +39,7 @@
             <div style="display: flex; align-items: center; gap: 1rem;">
                 <div th:if="${pendingCount > 0}" style="flex: 1;">
                     <div style="font-size: 2rem; font-weight: 700; color: var(--accent);" th:text="${pendingCount}">0</div>
-                    <div style="color: var(--text-muted); font-size: 0.875rem;">Offene Meldung(en)</div>
+                    <div style="color: var(--text-muted); font-size: 0.875rem;" th:text="#{moderation.open.reports}">Offene Meldung(en)</div>
                 </div>
                 <div th:if="${pendingCount == 0}" style="flex: 1; display: flex; align-items: center; gap: 0.75rem;">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
@@ -47,8 +47,8 @@
                         <polyline points="22 4 12 14.01 9 11.01"/>
                     </svg>
                     <div>
-                        <div style="font-weight: 600; color: #10b981;">Alles erledigt!</div>
-                        <div style="color: var(--text-muted); font-size: 0.875rem;">Keine offenen Meldungen</div>
+                        <div style="font-weight: 600; color: #10b981;" th:text="#{moderation.all.done}">Alles erledigt!</div>
+                        <div style="color: var(--text-muted); font-size: 0.875rem;" th:text="#{moderation.no.open}">Keine offenen Meldungen</div>
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                 <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
                     <div>
                         <div style="color: var(--text-main); font-weight: 600;">
-                            Meldung von <span th:text="${report.reporterUsername}" style="color: var(--accent);">User</span>
+                            <span th:text="#{moderation.report.from}">Meldung von</span> <span th:text="${report.reporterUsername}" style="color: var(--accent);">User</span>
                         </div>
                         <div style="color: var(--text-muted); font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem;">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -72,16 +72,16 @@
                     </div>
 
                     <div th:switch="${report.type}">
-                        <span th:case="'MESSAGE'" class="badge status-confirmed">💬 Nachricht</span>
-                        <span th:case="'COURSE'" class="badge status-active">📚 Kurs</span>
-                        <span th:case="'CHAPTER'" class="badge status-pending">📖 Kapitel</span>
+                        <span th:case="'MESSAGE'" class="badge status-confirmed">💬 <span th:text="#{moderation.type.message}">Nachricht</span></span>
+                        <span th:case="'COURSE'" class="badge status-active">📚 <span th:text="#{moderation.type.course}">Kurs</span></span>
+                        <span th:case="'CHAPTER'" class="badge status-pending">📖 <span th:text="#{moderation.type.chapter}">Kapitel</span></span>
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1.5rem;">
 
                     <div class="report-section-box">
-                        <div class="report-label">Beschuldigter User</div>
+                        <div class="report-label" th:text="#{moderation.offender}">Beschuldigter User</div>
                         <div style="display: flex; align-items: center; gap: 0.75rem;">
                             <div style="background: var(--bg-hover); border-radius: 50%; padding: 0.5rem; color: var(--accent);">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -112,7 +112,7 @@
                             <a th:href="@{/courses/{id}(id=${report.targetId})}"
                                target="_blank"
                                style="color: var(--accent); font-size: 0.875rem; text-decoration: none; display: flex; align-items: center; gap: 0.25rem;">
-                                Zum Kurs →
+                                <span th:text="#{moderation.to.course}">Zum Kurs</span> →
                             </a>
                         </div>
                     </div>
@@ -125,13 +125,13 @@
                         <line x1="12" y1="17" x2="12.01" y2="17"/>
                     </svg>
                     <div>
-                        <div style="font-weight: 600;">⚠️ ACHTUNG: USER WIRD GESPERRT!</div>
-                        <div style="font-size: 0.875rem;">Dieser Strike wird den User automatisch sperren (3/3 Strikes erreicht)</div>
+                        <div style="font-weight: 600;" th:text="#{moderation.warning.ban}">⚠️ ACHTUNG: USER WIRD GESPERRT!</div>
+                        <div style="font-size: 0.875rem;" th:text="#{moderation.warning.ban.info}">Dieser Strike wird den User automatisch sperren (3/3 Strikes erreicht)</div>
                     </div>
                 </div>
 
                 <div class="report-section-box" style="margin-bottom: 1rem;">
-                    <div class="report-label">Grund der Meldung</div>
+                    <div class="report-label" th:text="#{moderation.reason}">Grund der Meldung</div>
                     <div style="color: var(--text-main);" th:text="${report.reason}">Grund...</div>
                 </div>
 
@@ -144,22 +144,21 @@
                                 <line x1="15" y1="9" x2="9" y2="15"/>
                                 <line x1="9" y1="9" x2="15" y2="15"/>
                             </svg>
-                            Ignorieren
+                            <span th:text="#{moderation.ignore}">Ignorieren</span>
                         </button>
                     </form>
 
                     <form th:action="@{/admin/reports/{id}/resolve(id=${report.id})}" method="post">
                         <input type="hidden" name="strike" value="true">
                         <button type="submit" class="btn-danger"
-                                th:title="${report.offenderStrikes >= 2} ? '⚠️ USER WIRD GESPERRT!' : 'Strike vergeben'">
+                                th:title="${report.offenderStrikes >= 2} ? #{moderation.warning.ban} : #{moderation.give.strike}">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
                                 <line x1="12" y1="9" x2="12" y2="13"/>
                                 <line x1="12" y1="17" x2="12.01" y2="17"/>
                             </svg>
-                            <span th:text="${report.offenderStrikes >= 2} ? 'Strike & SPERREN' : 'Strike vergeben'">
-                                Strike vergeben
-                            </span>
+                            <span th:if="${report.offenderStrikes >= 2}" th:text="#{moderation.strike.and.ban}">Strike & SPERREN</span>
+                            <span th:if="${report.offenderStrikes < 2}" th:text="#{moderation.give.strike}">Strike vergeben</span>
                         </button>
                     </form>
                 </div>
@@ -172,8 +171,8 @@
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                 <polyline points="22 4 12 14.01 9 11.01"/>
             </svg>
-            <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Keine offenen Meldungen</h3>
-            <p style="color: var(--text-muted); margin: 0;">Alle Reports wurden bearbeitet. Die Community ist sauber! 🎉</p>
+            <h3 style="margin-bottom: 0.5rem; color: var(--text-main);" th:text="#{moderation.no.open}">Keine offenen Meldungen</h3>
+            <p style="color: var(--text-muted); margin: 0;" th:text="#{moderation.community.clean}">Alle Reports wurden bearbeitet. Die Community ist sauber! 🎉</p>
         </div>
 
     </div>

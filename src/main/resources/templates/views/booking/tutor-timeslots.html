@@ -4,36 +4,36 @@
       layout:decorate="~{layout}">
 
 <head>
-  <title>Meine Verfügbarkeiten</title>
+  <title th:text="#{timeslots.title}">Meine Verfügbarkeiten</title>
 </head>
 
 <body>
 <section layout:fragment="mybody">
   <div class="container" style="max-width: 1000px; margin: 2rem auto; padding: 0 1rem;">
 
-    <h1 class="text-main" style="margin-bottom: 2rem; font-weight: 700;">Meine Verfügbarkeiten</h1>
+    <h1 class="text-main" style="margin-bottom: 2rem; font-weight: 700;" th:text="#{timeslots.title}">Meine Verfügbarkeiten</h1>
 
     <div class="card-base" style="padding: 2rem; margin-bottom: 2rem;">
-      <h3 class="text-main" style="margin: 0 0 1.5rem 0; font-size: 1.25rem;">Neue Verfügbarkeit anlegen</h3>
+      <h3 class="text-main" style="margin: 0 0 1.5rem 0; font-size: 1.25rem;" th:text="#{timeslots.create}">Neue Verfügbarkeit anlegen</h3>
 
       <form th:object="${newTimeslot}" th:action="@{/tutor/timeslots/create}" method="post">
         <div class="form-row">
           <div>
-            <label class="form-label">Datum</label>
+            <label class="form-label" th:text="#{timeslots.date}">Datum</label>
             <input type="date" th:field="*{date}" class="form-input" required>
           </div>
           <div>
-            <label class="form-label">Von</label>
+            <label class="form-label" th:text="#{timeslots.start}">Von</label>
             <input type="time" th:field="*{startTime}" class="form-input" required>
           </div>
           <div>
-            <label class="form-label">Bis</label>
+            <label class="form-label" th:text="#{timeslots.end}">Bis</label>
             <input type="time" th:field="*{endTime}" class="form-input" required>
           </div>
           <div>
             <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-              Anlegen
+              <span th:text="#{common.save}">Anlegen</span>
             </button>
           </div>
         </div>
@@ -44,11 +44,11 @@
       <table class="styled-table" th:if="${!timeslots.isEmpty()}">
         <thead>
         <tr>
-          <th>Datum</th>
-          <th>Von</th>
-          <th>Bis</th>
-          <th>Status</th>
-          <th class="text-end">Aktionen</th>
+          <th th:text="#{timeslots.date}">Datum</th>
+          <th th:text="#{timeslots.start}">Von</th>
+          <th th:text="#{timeslots.end}">Bis</th>
+          <th th:text="#{common.status}">Status</th>
+          <th class="text-end" th:text="#{common.actions}">Aktionen</th>
         </tr>
         </thead>
         <tbody>
@@ -57,12 +57,12 @@
           <td th:text="${slot.startTime}"></td>
           <td th:text="${slot.endTime}"></td>
           <td>
-            <span th:if="${slot.available}" class="badge status-active">Verfügbar</span>
-            <span th:unless="${slot.available}" class="badge status-inactive">Gebucht</span>
+            <span th:if="${slot.available}" class="badge status-active" th:text="#{timeslots.available}">Verfügbar</span>
+            <span th:unless="${slot.available}" class="badge status-inactive" th:text="#{timeslots.booked}">Gebucht</span>
           </td>
           <td class="text-end">
             <form th:action="@{/tutor/timeslots/delete/{id}(id=${slot.id})}" method="post" style="display: inline;">
-              <button type="submit" class="btn-action delete" title="Löschen" onclick="return confirm('Wirklich löschen?');">
+              <button type="submit" class="btn-action delete" th:title="#{common.delete}" th:onclick="'return confirm(\'' + #{timeslots.delete.confirm} + '\');'">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                 </svg>
@@ -72,7 +72,7 @@
         </tr>
         </tbody>
       </table>
-      <div th:if="${timeslots.isEmpty()}" style="padding: 2rem; text-align: center;" class="text-muted">
+      <div th:if="${timeslots.isEmpty()}" style="padding: 2rem; text-align: center;" class="text-muted" th:text="#{timeslots.empty}">
         Noch keine Verfügbarkeiten angelegt.
       </div>
     </div>

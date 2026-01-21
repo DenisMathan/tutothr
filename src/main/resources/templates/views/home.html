@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html layout:decorate="~{layout}">
+<html layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org">
 <head><meta charset="UTF-8" /></head>
 
 <body>
 <section class="layout-content" layout:fragment="mybody">
 
 	<div class="container">
-		<h1>Willkommen bei TutOTHr</h1>
-		<p>Deine Tutoring-Plattform</p>
+		<h1 th:text="#{home.welcome}">Willkommen bei TutOTHr</h1>
+		<p th:text="#{home.subtitle}">Deine Tutoring-Plattform</p>
 	</div>
 
 </section>

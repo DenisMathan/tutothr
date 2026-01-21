@@ -8,7 +8,8 @@
       th:action="@{${action}}" 
       th:object="${object}" 
       method="post" 
-      enctype="multipart/form-data">
+      enctype="multipart/form-data"
+      xmlns:th="http://www.thymeleaf.org">
 
     <input type="hidden" name="_method" th:if="*{id != null}" value="put" />
     <input type="hidden" name="id" th:if="*{id != null}" th:value="*{id}" />
@@ -122,7 +123,7 @@
     <button type="submit" 
             class="btn-primary w-100" 
             style="justify-content: center; margin-top: 1rem; height: 48px; font-size: 1rem;" 
-            th:text="${object.submitLabel}">
+            th:text="${object.submitLabel} ?: #{common.save}">
         Speichern
     </button>
 </form>

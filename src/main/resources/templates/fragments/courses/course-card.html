@@ -1,4 +1,4 @@
-<div th:fragment="course-card (course)">
+<div th:fragment="course-card (course)" xmlns:th="http://www.thymeleaf.org">
     <div class="course-grid-card" th:onclick="|window.location.href='/courses/${course.id}'|">
 
         <div class="course-content-left">
@@ -12,8 +12,9 @@
                 <svg th:if="${course.rating > 0}" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                 </svg>
-                <span th:text="${course.rating > 0 ? course.rating + ' Sterne' : 'Neu'}">4.5</span>
-                <span th:if="${course.rating > 0}" style="opacity: 0.5; font-weight: 400; margin-left: 4px;">Bewertung</span>
+                <span th:if="${course.rating > 0}" th:text="${course.rating} + ' ' + #{courses.stars}">4.5 Sterne</span>
+                <span th:if="${course.rating == 0}" th:text="#{courses.new}">Neu</span>
+                <span th:if="${course.rating > 0}" style="opacity: 0.5; font-weight: 400; margin-left: 4px;" th:text="#{courses.rating}">Bewertung</span>
             </div>
         </div>
 
@@ -25,13 +26,14 @@
 
             <div class="course-list-actions">
                 <button class="btn-assign"
-                        th:onclick="|assignCourse(event, ${course.id})|">
+                        th:onclick="|assignCourse(event, ${course.id})|"
+                        th:text="#{courses.assign}">
                     Assign
                 </button>
 
                 <th:block th:if="${course.isOwner}">
                     <button class="btn-icon-action"
-                            title="Bearbeiten"
+                            th:title="#{common.edit}"
                             th:onclick="|event.stopPropagation(); window.location.href='/tutor/courses/update/${course.id}'|">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -43,8 +45,8 @@
                         <input type="hidden" name="_method" value="delete" />
                         <button type="submit"
                                 class="btn-icon-action delete"
-                                title="Löschen"
-                                onclick="event.stopPropagation(); return confirm('Kurs wirklich löschen?');">
+                                th:title="#{common.delete}"
+                                th:onclick="'event.stopPropagation(); return confirm(\'' + #{courses.delete.confirm} + '\');'">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                             </svg>

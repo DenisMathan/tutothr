@@ -1,4 +1,4 @@
-<section th:fragment="chapter (chapter, isOwner, accessible, purchasable)">
+<section th:fragment="chapter (chapter, isOwner, accessible, purchasable)" xmlns:th="http://www.thymeleaf.org">
 
     <!-- Wrapper mit neuer Klasse -->
     <div class="" th:classappend="${chapter.paywalled} ? 'paywalled' : ''">
@@ -12,7 +12,7 @@
             <div class="chapter-title-group">
                 <!-- Premium Badge -->
                 <!-- Geschlossenes Schloss: paywalled und kein Zugriff -->
-                <div th:if="${chapter.paywalled and !accessible}" class="badge-premium" title="Premium Inhalt (Kostenpflichtig)"
+                <div th:if="${chapter.paywalled and !accessible}" class="badge-premium" th:title="#{chapter.premium.locked}"
                     data-bs-toggle="tooltip">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -21,7 +21,7 @@
                     </svg>
                 </div>
                 <!-- Offenes Schloss: paywalled aber Zugriff vorhanden -->
-                <div th:if="${chapter.paywalled and accessible}" class="badge-premium" title="Freigeschaltet" 
+                <div th:if="${chapter.paywalled and accessible}" class="badge-premium" th:title="#{chapter.unlocked}" 
                     style="color: #10b981;" data-bs-toggle="tooltip">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -44,10 +44,11 @@
                       style="display: inline;"
                       onclick="event.stopPropagation();"
                       th:data-price="${chapter.price}"
-                      onsubmit="return confirm('Möchtest du dieses Kapitel für ' + this.dataset.price + ' € kaufen?');">
+                      th:data-confirm-msg="#{chapter.buy.confirm}"
+                      onsubmit="return confirm(this.dataset.confirmMsg + ' ' + this.dataset.price + ' €?');">
                     <button type="submit" 
                             class="btn-icon-action" 
-                            th:title="'Kapitel kaufen (' + ${#numbers.formatDecimal(chapter.price, 1, 2)} + ' €)'"
+                            th:title="#{chapter.buy} + ' (' + ${#numbers.formatDecimal(chapter.price, 1, 2)} + ' €)'"
                             style="color: var(--accent); display: flex; align-items: center; gap: 4px; width: auto; height: auto; padding: 4px 8px;">
                         <span th:text="${#numbers.formatDecimal(chapter.price, 1, 2)} + ' €'" style="font-size: 12px;"></span>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -61,7 +62,7 @@
                         class="btn-icon-action"
                         th:if="${!isOwner}"
                         th:onclick="'event.preventDefault(); openReportModal(\'CHAPTER\', ' + ${chapter.id} + ')'"
-                        title="Inhalt melden">
+                        th:title="#{report.content}">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
                         <line x1="4" y1="22" x2="4" y2="15"></line>
@@ -71,7 +72,7 @@
                 <!-- Owner Actions -->
                 <th:block th:if="${isOwner}">
                     <button class="btn-icon-action" th:onclick="|event.preventDefault(); toggleEdit(${chapter.id})|"
-                        title="Bearbeiten">
+                        th:title="#{common.edit}">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -119,7 +120,7 @@
                             th:action="@{/tutor/chapters/deleteAttachment/{chapterId}/{attachmentIndex}(chapterId=${chapter.id}, attachmentIndex=${iterStat.index})}"
                             method="post" style="display:inline;">
                             <input type="hidden" name="_method" value="delete" />
-                            <button type="submit" class="btn-icon-action btn-sm text-danger" title="Anhang löschen"
+                            <button type="submit" class="btn-icon-action btn-sm text-danger" th:title="#{chapter.delete.attachment}"
                                 style="vertical-align: middle;">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -139,14 +140,13 @@
         th:classappend="${#maps.isEmpty(chapter.validationErrors)} ? 'd-none' : 'scrollError'"
         th:id="'edit-chapter-' + ${chapter.id}">
 
-        <h5 class="mb-3">Kapitel bearbeiten</h5>
+        <h5 class="mb-3" th:text="#{chapter.edit}">Kapitel bearbeiten</h5>
         <div
             th:replace="~{fragments/forms/form :: form(object=${chapter.chapter}, action=@{/tutor/chapters/save/{id}(id=${chapter.id})})}">
         </div>
     </div>
 
     <!-- Report Modal nur einmalig einbinden, nicht pro Chapter mehrfach (idealerweise im Parent Template) -->
-    <!-- Aber falls es hier nötig ist für Standalone-Nutzung: -->
     <div th:replace="~{fragments/report-modal :: reportModal}"></div>
 
     <script th:inline="javascript" type="text/javascript">
