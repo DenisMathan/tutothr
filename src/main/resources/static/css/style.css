@@ -1510,3 +1510,153 @@ select.form-input option {
     gap: 0.5rem;
     font-weight: 500;
 }
+
+/* ========================================
+   DASHBOARD STYLES
+   Füge diese Styles zu deiner style.css hinzu
+   ======================================== */
+
+/* Dashboard Container */
+.dashboard-page {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Welcome Section */
+.dashboard-welcome {
+    margin-bottom: 2rem;
+}
+
+.dashboard-welcome h1 {
+    margin: 0 0 0.5rem 0;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.dashboard-subtitle {
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+/* Stat Card */
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: all 0.2s;
+}
+
+.stat-card.clickable {
+    cursor: pointer;
+}
+
+.stat-card.clickable:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+}
+
+/* Icon Background */
+.icon-bg {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.icon-bg.purple {
+    background: rgba(124, 58, 237, 0.1);
+    color: var(--accent);
+}
+
+.icon-bg.blue {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.icon-bg.yellow {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.icon-bg.green {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.icon-bg.red {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+/* Stat Content */
+.stat-content {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 0.25rem 0;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.stat-sublabel {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+/* Dashboard Sections */
+.dashboard-section {
+    margin-top: 3rem;
+}
+
+.dashboard-section-title {
+    margin: 0 0 1.5rem 0;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard-page {
+        padding: 1rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+}
