@@ -37,7 +37,6 @@ public class SecurityConfig {
     		"/verify/**", "/resources/**", "/css/**", "/api/**", "/api/workshops/**", "/webjars/**", "/h2-console/**",
             "/login/**", "/error",
             "/register", "/logout", "/404", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
-            "/ws/**"
     };
     @Autowired
     private CustomOidcUserService customOidcUserService;

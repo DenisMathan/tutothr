@@ -27,6 +27,13 @@ public class CustomOidcUserService extends OidcUserService {
         User _user = userRepository.findByEmailIgnoreCase(email).orElseGet(() -> {
             User user = new User();
             user.setEmail(email);
+            // Set default username from email or name if available
+            String name = oidcUser.getAttribute("name");
+            if (name == null || name.isBlank()) {
+                name = email.split("@")[0];
+            }
+            user.setUsername(name);
+            
             user.setActive(true);
             user.setAuthProvider(AuthProvider.GOOGLE); 
             user.setVerified(true);
