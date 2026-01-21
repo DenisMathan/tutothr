@@ -21,6 +21,7 @@ public class UserDTO extends BaseDTO {
     private Integer strikes;
     private Boolean verified;
     private Boolean accountNonLocked;
+    private Boolean twoFactorEnabled;
     
     // Fields for list view
     private boolean active;
@@ -43,7 +44,8 @@ public class UserDTO extends BaseDTO {
                         new tutothr.common.models.Field("student", "Student", "checkbox"))),
                 new tutothr.common.models.Field("strikes", "Strikes", "number"),
                 new tutothr.common.models.Field("verified", "Verifiziert", "checkbox"),
-                new tutothr.common.models.Field("accountNonLocked", "Nicht gesperrt", "checkbox"));
+                new tutothr.common.models.Field("accountNonLocked", "Nicht gesperrt", "checkbox"),
+                new tutothr.common.models.Field("twoFactorEnabled", "Zwei-Faktor-Authentifizierung aktiviert", "checkbox"));
     }
 
     public void setUserFields() {
@@ -55,7 +57,8 @@ public class UserDTO extends BaseDTO {
                 new tutothr.common.models.Field("student", "Student", "checkbox", true)
             )),
             new tutothr.common.models.Field("strikes", "Verwarnungen", "number", true),
-            new tutothr.common.models.Field("verified", "Verifiziert", "checkbox", true)
+            new tutothr.common.models.Field("verified", "Verifiziert", "checkbox", true),
+            new tutothr.common.models.Field("twoFactorEnabled", "Zwei-Faktor-Authentifizierung aktiviert", "checkbox")
         );
     }
 
@@ -154,5 +157,12 @@ public class UserDTO extends BaseDTO {
 
     public void setRoles(Set<RolesEnum> roles) {
         this.roles = roles;
+    }
+
+    public Boolean getTwoFactorEnabled() {
+        return twoFactorEnabled;
+    }
+    public void setTwoFactorEnabled(Boolean twoFactorEnabled) {
+        this.twoFactorEnabled = twoFactorEnabled;
     }
 }

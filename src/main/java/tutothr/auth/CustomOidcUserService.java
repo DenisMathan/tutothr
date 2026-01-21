@@ -1,6 +1,7 @@
 package tutothr.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -32,7 +33,9 @@ public class CustomOidcUserService extends OidcUserService {
             user.getRoles().add(RolesEnum.STUDENT);
             return userRepository.save(user);
         });
-
+        if(!_user.isAccountNonLocked()) {
+            throw new LockedException("User account is locked");
+        }
         return new CustomOidcUser(oidcUser, _user);
     }
 }

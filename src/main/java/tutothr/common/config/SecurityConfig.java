@@ -34,8 +34,9 @@ public class SecurityConfig {
         //TODO: adjust public endpoints as needed
     public static final String[] PUBLIC_ENDPOINTS = {
             "/verify/**", "/resources/**", "/css/**", "/uploads/**", "/api/**", "/api/workshops/**", "/webjars/**", "/h2-console/**",
-            "/login", "/error",
-            "/register", "/logout", "/404", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
+            "/login/**", "/error",
+            "/register", "/logout", "/404", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
+            "/ws/**"
     };
     @Autowired
     private CustomOidcUserService customOidcUserService;
@@ -106,12 +107,9 @@ public class SecurityConfig {
         // OAuth2 Login (Google)
         http.oauth2Login(oauth2 -> oauth2
                 .loginPage("/login")
-                .userInfoEndpoint(userInfo -> userInfo
-                        .oidcUserService(customOidcUserService))
+                .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOidcUserService))
                 .successHandler(customOAuth2SuccessHandler)
-                .failureHandler((request, response, exception) -> {
-                    response.sendRedirect("/login?error");
-                }));
+                .failureHandler(customAuthenticationFailureHandler));
         // Logout Konfiguration
         http.logout(logout -> logout
                 .logoutUrl("/logout") // default

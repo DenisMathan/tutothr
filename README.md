@@ -2,9 +2,10 @@
 
 ## Start Project
 - cp .env.dummy .env
-- refill variables
-- export $(grep -v '^#' .env | xargs)
-- click play in your IDE
+- cp application-local.properties.dummy ./src/main/resources/application-local.properties
+- refill "your Variable"
+- ./mvnw compile
+- ./mvnw spring-boot:run
 
 ## Environment Variables
 ### MailService
