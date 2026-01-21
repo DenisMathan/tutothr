@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import tutothr.auth.config.AppPrincipal;
 import tutothr.auth.config.MyUserDetails;
 import tutothr.booking.timeslot.TimeSlotDTO;
 import tutothr.booking.timeslot.TimeSlotService;
@@ -47,7 +48,7 @@ public class BookingController {
 
 	@PostMapping("/chapter/{chapterId}/buy")
 	public String buyChapter(@PathVariable Long chapterId,
-	        @AuthenticationPrincipal MyUserDetails userDetails, RedirectAttributes redirectAttributes) {
+	        @AuthenticationPrincipal /*MyUserDetails*/ AppPrincipal userDetails, RedirectAttributes redirectAttributes) {
 	    BookingDTO booking = bookingService.createChapterBooking(userDetails.getDbUser(), chapterId);
 
 	    if (booking == null) {
@@ -62,7 +63,7 @@ public class BookingController {
 
 	@PostMapping("/course/{courseId}/buy")
 	public String buyCourse(@PathVariable Long courseId,
-	        @AuthenticationPrincipal MyUserDetails userDetails, RedirectAttributes redirectAttributes) {
+	        @AuthenticationPrincipal /*MyUserDetails*/ AppPrincipal userDetails, RedirectAttributes redirectAttributes) {
 	    BookingDTO booking = bookingService.createCourseBooking(userDetails.getDbUser(), courseId);
 
 	    if (booking == null) {
@@ -94,7 +95,7 @@ public class BookingController {
 
 	@PostMapping("/course/{courseId}/book")
 	public String createBooking(@PathVariable Long courseId, @RequestParam Long timeSlotId,
-			@AuthenticationPrincipal MyUserDetails userDetails, RedirectAttributes redirectAttributes) {
+			@AuthenticationPrincipal /*MyUserDetails*/ AppPrincipal userDetails, RedirectAttributes redirectAttributes) {
 		BookingDTO booking = bookingService.createTimeSlotBooking(userDetails.getDbUser(), courseId, timeSlotId);
 
 		if (booking == null) {
@@ -110,7 +111,7 @@ public class BookingController {
 	// ===== STUDENT: Meine Buchungen =====
 
 	@GetMapping("/my-bookings")
-	public String myBookings(@AuthenticationPrincipal MyUserDetails userDetails,
+	public String myBookings(@AuthenticationPrincipal /*MyUserDetails*/ AppPrincipal userDetails,
 			@RequestParam(defaultValue = "0") int page, Model model) {
 		Page<BookingDTO> bookingPage = bookingService.findByStudentPaged(userDetails.getDbUser(),
 				PageRequest.of(page, DEFAULT_SIZE, Sort.by(Sort.Direction.DESC, "createdAt")));
@@ -146,7 +147,7 @@ public class BookingController {
 	// ===== TUTOR: Buchungen fuer meine TimeSlots =====
 
 	@GetMapping("/tutor/bookings")
-	public String tutorBookings(@AuthenticationPrincipal MyUserDetails userDetails,
+	public String tutorBookings(@AuthenticationPrincipal /*MyUserDetails*/ AppPrincipal userDetails,
 			@RequestParam(defaultValue = "0") int page, Model model) {
 		Page<BookingDTO> bookingPage = bookingService.findByTutorPaged(userDetails.getDbUser(),
 				PageRequest.of(page, DEFAULT_SIZE, Sort.by(Sort.Direction.DESC, "created_at")));
@@ -163,7 +164,7 @@ public class BookingController {
 
 	@GetMapping("/booking/{id}/cancel")
 	public String cancelBooking(@PathVariable Long id,
-	        @AuthenticationPrincipal MyUserDetails userDetails,
+	        @AuthenticationPrincipal /*MyUserDetails*/ AppPrincipal userDetails,
 	        RedirectAttributes redirectAttributes) {
 	    BookingDTO booking = bookingService.findById(id);
 	    
