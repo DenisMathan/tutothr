@@ -4,27 +4,27 @@ public class DashboardDTO {
 
     private long unreadMessages;
 
-    // Tutor Stats
+    // ====Tutor Statistik====
     private Long activeCourses;
     private Double averageRating;
     private Long receivedBookings;
     private Double totalRevenue;
 
-    // Best performing course (by revenue)
+    // best-performender Kurs (nach Umsatz)
     private String bestCourseTitle;
     private Double bestCourseRevenue;
     private Long bestCourseBookings;
 
-    // Most booked course
+    // meist gebuchter Kurs
     private String mostBookedCourseTitle;
     private Long mostBookedCourseCount;
 
-    // Best rated course
+    // best-bewertester Kurs
     private String bestRatedCourseTitle;
     private Double bestRatedCourseRating;
     private Long bestRatedCourseReviews;
 
-    // Student Stats
+    // ====Student Statistik====
     private Long myBookings;
     private Double totalSpent;
     private Double spentLastMonth;

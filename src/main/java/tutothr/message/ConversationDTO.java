@@ -24,7 +24,6 @@ public class ConversationDTO {
         this.lastMessageFromMe = lastMessageFromMe;
     }
 
-    // Getters and Setters
     public Long getOtherUserId() {
         return otherUserId;
     }

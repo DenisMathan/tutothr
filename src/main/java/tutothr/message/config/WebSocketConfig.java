@@ -32,7 +32,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
                         Principal principal = request.getPrincipal();
 
-                        // LOGGING: Das erscheint in der Konsole und verrät uns die Wahrheit
+                        // logging
                         if (principal == null) {
                             System.err.println("!!! WEBSOCKET HANDSHAKE: User ist NULL (Anonymous) !!!");
                         } else {

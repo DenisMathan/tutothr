@@ -28,13 +28,13 @@ public class DashboardService {
     public DashboardDTO getStatsForUser(User user) {
         DashboardDTO dto = new DashboardDTO();
 
-        // Nachrichten für alle User
+        // ungelesene Nachrichten (bei allen)
         dto.setUnreadMessages(messageRepository.countByReceiverIdAndReadFalse(user.getId()));
 
         boolean isTutor = user.getRoles().contains(RolesEnum.TUTOR);
         boolean isStudent = user.getRoles().contains(RolesEnum.STUDENT);
 
-        // === TUTOR STATISTICS ===
+        // ====TUTOR STATISTIK====
         if (isTutor) {
             // Anzahl aktiver Kurse
             dto.setActiveCourses(courseRepository.countByOwner_Id(user.getId()));
@@ -46,14 +46,14 @@ public class DashboardService {
             // Anzahl erhaltener Buchungen
             dto.setReceivedBookings(bookingRepository.countByTutor(user));
 
-            // Gesamtumsatz (Total Revenue) - Fix: Separate Queries statt TYPE()/TREAT()
+            // Gesamtumsatz
             Double courseRevenue = bookingRepository.calculateCourseRevenue(user.getId());
             Double chapterRevenue = bookingRepository.calculateChapterRevenue(user.getId());
             Double timeSlotRevenue = bookingRepository.calculateTimeSlotRevenue(user.getId());
             Double revenue = courseRevenue + chapterRevenue + timeSlotRevenue;
             dto.setTotalRevenue(revenue != null ? revenue : 0.0);
 
-            // Best Performing Course (höchster Umsatz)
+            // best-performender Kurs (höchster Umsatz)
             List<Object[]> bestCourse = bookingRepository.findBestPerformingCourse(user, PageRequest.of(0, 1));
             if (!bestCourse.isEmpty()) {
                 Object[] row = bestCourse.get(0);
@@ -61,7 +61,7 @@ public class DashboardService {
                 dto.setBestCourseRevenue(row[1] != null ? ((Number) row[1]).doubleValue() : 0.0);
             }
 
-            // Most Booked Course (meiste Buchungen)
+            // Kurs mit den meisten Buchungen
             List<Object[]> mostBooked = bookingRepository.findMostBookedCourse(user, PageRequest.of(0, 1));
             if (!mostBooked.isEmpty()) {
                 Object[] row = mostBooked.get(0);
@@ -69,7 +69,7 @@ public class DashboardService {
                 dto.setMostBookedCourseCount(row[1] != null ? ((Number) row[1]).longValue() : 0L);
             }
 
-            // Best Rated Course (beste Bewertung)
+            // best-bewerteter Kurs
             List<Object[]> bestRated = courseRepository.findBestRatedCourseByTutor(user.getId(), PageRequest.of(0, 1));
             if (!bestRated.isEmpty()) {
                 Object[] row = bestRated.get(0);
@@ -79,7 +79,7 @@ public class DashboardService {
             }
         }
 
-        // === STUDENT STATISTICS ===
+        // ====STUDENT STATISTIK====
         if (isStudent) {
             // Meine Buchungen
             dto.setMyBookings(bookingRepository.countByStudent(user));
