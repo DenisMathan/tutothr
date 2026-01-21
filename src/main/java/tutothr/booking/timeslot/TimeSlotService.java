@@ -45,4 +45,12 @@ public class TimeSlotService {
 	public void deleteById(Long id) {
 		repository.deleteById(id);
 	}
+
+	public void deleteIfOwner(Long id, Long tutorId) {
+		repository.findById(id).ifPresent(timeSlot -> {
+			if (timeSlot.getTutor().getId().equals(tutorId)) {
+				repository.delete(timeSlot);
+			}
+		});
+	}
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import tutothr.auth.config.MyUserDetails;
+import tutothr.auth.config.AppPrincipal;
 import tutothr.user.User;
 import tutothr.user.UserService;
 
@@ -25,7 +25,7 @@ public class TimeSlotController {
 	}
 
 	@GetMapping
-	public String listMyTimeSlots(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
+	public String listMyTimeSlots(@AuthenticationPrincipal AppPrincipal userDetails, Model model) {
 		User tutor = userService.getUserById(userDetails.getId());
 		model.addAttribute("timeslots", timeSlotService.findByTutor(tutor));
 		model.addAttribute("newTimeslot", new TimeSlotDTO());
@@ -33,15 +33,15 @@ public class TimeSlotController {
 	}
 
 	@PostMapping("/create")
-	public String createTimeSlot(@AuthenticationPrincipal MyUserDetails userDetails, @ModelAttribute TimeSlotDTO dto) {
+	public String createTimeSlot(@AuthenticationPrincipal AppPrincipal userDetails, @ModelAttribute TimeSlotDTO dto) {
 		dto.setTutorId(userDetails.getId());
 		timeSlotService.save(dto);
 		return "redirect:/tutor/timeslots";
 	}
 	
 	@PostMapping("/delete/{id}")
-	public String deleteTimeSlot(@PathVariable Long id) {
-		timeSlotService.deleteById(id);
+	public String deleteTimeSlot(@PathVariable Long id, @AuthenticationPrincipal AppPrincipal userDetails) {
+		timeSlotService.deleteIfOwner(id, userDetails.getId());
 		return "redirect:/tutor/timeslots";
 	}
 }
