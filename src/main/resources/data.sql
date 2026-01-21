@@ -4,11 +4,11 @@ VALUES ('Lilly', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi8
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
 VALUES ('Paul', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'paul@email', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
-VALUES ('Denis', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'denis@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, false, 0);
+VALUES ('Denis', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'denis@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
+-- INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
+-- VALUES ('Denis', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'denis.mathan@gmail.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
-VALUES ('Denis', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'denis.mathan@gmail.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, true, true, 0);
-INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
-VALUES ('Tutor', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'tutor@email', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
+VALUES ('Tutor', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'thomi@web.de', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
 VALUES ('Student', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'student@email', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
@@ -45,7 +45,9 @@ INSERT INTO user_roles(user_id, role) VALUES (1, 'ADMIN');
 INSERT INTO user_roles(user_id, role) VALUES (2, 'ADMIN');
 INSERT INTO user_roles(user_id, role) VALUES (3, 'ADMIN');
 INSERT INTO user_roles(user_id, role) VALUES (3, 'TUTOR');
-INSERT INTO user_roles(user_id, role) VALUES (5, 'TUTOR');
+INSERT INTO user_roles(user_id, role) VALUES (4, 'ADMIN');
+INSERT INTO user_roles(user_id, role) VALUES (4, 'TUTOR');
+INSERT INTO user_roles(user_id, role) VALUES (5, 'STUDENT');
 INSERT INTO user_roles(user_id, role) VALUES (6, 'STUDENT');
 INSERT INTO user_roles(user_id, role) VALUES (14, 'STUDENT');
 INSERT INTO user_roles(user_id, role) VALUES (15, 'ADMIN');
@@ -70,7 +72,7 @@ INSERT INTO course (title, description, price, rating, owner_id, created_at, upd
 -- ========================================================================================================================
 -- Paul - Fuer Tests
 INSERT INTO course (title, description, price, rating, owner_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('Tutor-Testkurs', 'Ein Testkurs', 29.99, 4.0, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+VALUES ('Tutor-Testkurs', 'Ein Testkurs', 29.99, 4.0, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 
 -- Hashtags (mit creator_id)
 INSERT INTO hashtag (name, creator_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
@@ -117,15 +119,19 @@ UPDATE chapter SET price = 3.00, paywalled = true WHERE id = 5;
 
 -- ========================================================================================================================
 -- FUER Booking-Refactoring (21.01.2026)
--- Hourly Rates fuer Tutoren
-UPDATE user SET hourly_rate = 25.00 WHERE id = 3;
+-- Hourly Rates fuer ALLE Kurs-Owner
+UPDATE user SET hourly_rate = 25.00 WHERE id = 1;  -- Lilly
+UPDATE user SET hourly_rate = 30.00 WHERE id = 2;  -- Paul
+UPDATE user SET hourly_rate = 25.00 WHERE id = 3;  -- Denis
 UPDATE user SET hourly_rate = 30.00 WHERE id = 4;
-UPDATE user SET hourly_rate = 20.00 WHERE id = 5;
+UPDATE user SET hourly_rate = 20.00 WHERE id = 5;  -- Tutor
+UPDATE user SET hourly_rate = 20.00 WHERE id = 14; -- markus
+UPDATE user SET hourly_rate = 25.00 WHERE id = 15; -- test
 
--- TimeSlots fuer Tutor (id=5, User "Tutor")
+-- TimeSlots fuer Tutor (id=4, User "Tutor" / thomi@web.de)
 INSERT INTO timeslot (date, start_time, end_time, available, tutor_id, created_at, updated_at) 
-VALUES ('2026-01-25', '14:00:00', '15:00:00', true, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+VALUES ('2026-01-25', '14:00:00', '15:00:00', true, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 INSERT INTO timeslot (date, start_time, end_time, available, tutor_id, created_at, updated_at) 
-VALUES ('2026-01-26', '10:00:00', '11:00:00', true, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+VALUES ('2026-01-26', '10:00:00', '11:00:00', true, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 INSERT INTO timeslot (date, start_time, end_time, available, tutor_id, created_at, updated_at) 
-VALUES ('2026-01-27', '16:00:00', '17:00:00', true, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+VALUES ('2026-01-27', '16:00:00', '17:00:00', true, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
