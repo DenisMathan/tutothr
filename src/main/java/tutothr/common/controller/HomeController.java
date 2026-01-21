@@ -39,7 +39,7 @@ public class HomeController {
 			model.addAttribute("pendingReportsCount", 0);
 		}
 
-		return "/views/dashboard";
+		return "views/dashboard";
 	}
 
 	private User getCurrentUserById() {
