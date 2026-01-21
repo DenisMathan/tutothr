@@ -126,4 +126,32 @@
             th:text="${object.submitLabel} ?: #{common.save}">
         Speichern
     </button>
+    
+    <!-- Frontend-Validierung: Preis erforderlich wenn paywalled -->
+    <script>
+        (function() {
+            const form = document.currentScript.closest('form');
+            if (!form) return;
+            
+            const paywalledCheckbox = form.querySelector('input[name="paywalled"]');
+            const priceInput = form.querySelector('input[name="price"]');
+            
+            if (paywalledCheckbox && priceInput) {
+                function updatePriceRequired() {
+                    if (paywalledCheckbox.checked) {
+                        priceInput.setAttribute('required', 'required');
+                        priceInput.setAttribute('min', '0.01');
+                        priceInput.placeholder = 'Preis eingeben (Pflichtfeld)';
+                    } else {
+                        priceInput.removeAttribute('required');
+                        priceInput.removeAttribute('min');
+                        priceInput.placeholder = '';
+                    }
+                }
+                
+                updatePriceRequired();
+                paywalledCheckbox.addEventListener('change', updatePriceRequired);
+            }
+        })();
+    </script>
 </form>

@@ -103,7 +103,25 @@
             <div th:if="${!#lists.isEmpty(chapter.attachmentUrls)}" class="mt-3">
                 <div th:each="url, iterStat : ${chapter.attachmentUrls}" class="mb-2 flex gap-2" style="display:flex">
                     <div>
-                        <a th:href="@{${url}}" target="_blank" class="btn-secondary btn-sm">
+                        <!-- Link für Berechtigte (Owner oder Zugriff) -->
+                        <a th:if="${accessible or isOwner}"
+                           th:href="@{/chapter/{chapterId}/file/{filename}(chapterId=${chapter.id}, filename=${url.substring(url.lastIndexOf('/') + 1)})}" 
+                           target="_blank" class="btn-secondary btn-sm">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" class="me-1">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            <span th:text="${#strings.substringAfter(url, '_')}">PDF öffnen</span>
+                        </a>
+                        <!-- Link für Nicht-Berechtigte - zeigt Alert -->
+                        <a th:if="${!accessible and !isOwner}"
+                           href="#" 
+                           th:onclick="'alert(\'' + #{chapter.access.denied} + '\'); return false;'"
+                           class="btn-secondary btn-sm">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" class="me-1">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
