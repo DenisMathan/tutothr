@@ -44,6 +44,15 @@ public class AuthService extends BaseService<RegisterUserDTO, User> implements U
     public boolean confirmPasswords(RegisterUserDTO form) {
         return form.getPassword() != null && form.getPassword().equals(form.getConfirmPassword());
     }
+
+    public boolean isValidEmail(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            return false;
+        }
+        // Gängiges Regex für Email-Validierung
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		Optional<User> oUser= ((UserRepositoryI) repository).findByEmailIgnoreCase(email);
@@ -52,12 +61,16 @@ public class AuthService extends BaseService<RegisterUserDTO, User> implements U
         if (user.getAuthProvider() == AuthProvider.GOOGLE) {
             throw new UsernameNotFoundException("Please use Google Login for this account.");
         }
-
+// 
 		return new MyUserDetails(user);
 	}
 
     public User register(RegisterUserDTO form){
 
+        if(!isValidEmail(form.getEmail())) {
+            form.addValidationError("email", "Die E-Mail-Adresse ist ungültig.");
+            return null;
+        }
         // username unique prüfen
         if (((UserRepositoryI) repository).findByEmailIgnoreCase(form.getEmail()).isPresent()) {
             form.addValidationError("email", "Eine Registrierung mit dieser E-Mail-Adresse ist bereits vorhanden.");
@@ -115,24 +128,21 @@ public class AuthService extends BaseService<RegisterUserDTO, User> implements U
         }
         
         Object principal = authentication.getPrincipal();
-        Long userId = null;
 
         if (principal instanceof AppPrincipal) {
-            userId = ((AppPrincipal) principal).getId();
-        } else if (principal instanceof org.springframework.security.oauth2.core.user.OAuth2User) {
+            return ((AppPrincipal) principal).getDbUser();
+        }
+        
+        // Fallback for OAuth2User if it doesn't implement AppPrincipal
+        if (principal instanceof org.springframework.security.oauth2.core.user.OAuth2User) {
              String email = ((org.springframework.security.oauth2.core.user.OAuth2User) principal).getAttribute("email");
              if (email != null) {
                  return ((UserRepositoryI) repository).findByEmailIgnoreCase(email).orElse(null);
              }
         }
-        
-        // If we have an ID, fetch fresh user from repository to ensure we have latest state
-        if (userId != null) {
-            return ((UserRepositoryI) repository).findById(userId).orElse(null);
-        }
-        
-        return null;
-    
+
+        String email = authentication.getName();
+        return ((UserRepositoryI) repository).findByEmailIgnoreCase(email).orElse(null);
     }
     
 }

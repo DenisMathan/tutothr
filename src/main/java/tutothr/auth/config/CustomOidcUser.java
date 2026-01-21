@@ -1,21 +1,38 @@
 package tutothr.auth.config;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import tutothr.user.User;
+import tutothr.common.utils.enums.RolesEnum;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class CustomOidcUser implements OidcUser, AppPrincipal {
     private final OidcUser delegate;
     private final User dbUser;
+    private final Set<GrantedAuthority> authorities;
 
     public CustomOidcUser(OidcUser delegate, User dbUser) {
         this.delegate = delegate;
         this.dbUser = dbUser;
+        this.authorities = new HashSet<>();
+        
+        // OAuth2 Authorities (Scopes etc.)
+        this.authorities.addAll(delegate.getAuthorities());
+        
+        // DB Roles
+        for (RolesEnum role : dbUser.getRoles()) {
+            if (role != null) {
+                this.authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
+            }
+        }
     }
 
     @Override
@@ -50,8 +67,7 @@ public class CustomOidcUser implements OidcUser, AppPrincipal {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Hier könnten wir später auch DB-Rollen mit OAuth-Rollen mergen
-        return delegate.getAuthorities();
+        return authorities;
     }
 
     @Override

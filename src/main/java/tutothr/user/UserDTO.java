@@ -24,7 +24,7 @@ public class UserDTO extends BaseDTO {
     private Boolean twoFactorEnabled;
     
     // Fields for list view
-    private boolean active;
+    private Boolean active;
     private LocalDateTime createdAt;
     private Set<RolesEnum> roles;
 
@@ -135,11 +135,11 @@ public class UserDTO extends BaseDTO {
         this.accountNonLocked = accountNonLocked;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
