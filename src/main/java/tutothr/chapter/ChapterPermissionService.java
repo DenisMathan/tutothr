@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import tutothr.auth.config.AppPrincipal;
 import tutothr.chapter.interfaces.ChapterRepositoryI;
-import tutothr.course.Course;
 import tutothr.course.interfaces.CourseRepositoryI;
 
 @Service("chapterPermissionService") // Explicit name for SpEL
