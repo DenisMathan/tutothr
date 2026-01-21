@@ -1172,3 +1172,341 @@ select.form-input option {
     color: var(--text-main);
     font-size: 0.95rem;
 }
+
+/* ========================================
+   ADMIN & MODERATION STYLES
+   ======================================== */
+
+/* 1. ALERTS (Success/Error Messages) */
+.alert-box {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border: 1px solid transparent;
+    font-size: 0.95rem;
+}
+.alert-success {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #10b981;
+}
+.alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}
+
+/* 2. FILTER TABS (User Liste) */
+.filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.filter-tab {
+    padding: 0.75rem 1.5rem;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.filter-tab:hover {
+    color: var(--text-main);
+    border-bottom-color: var(--border-hover);
+    background: var(--bg-hover); /* Optional: leichter Hover-Hintergrund */
+    border-radius: 8px 8px 0 0;
+}
+.filter-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+/* 3. CUSTOM ACTIONS DROPDOWN */
+.custom-dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 0.5rem;
+
+    background: var(--bg-card); /* Theme-Variable! */
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    min-width: 200px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+.dropdown-item {
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+.dropdown-item:hover { background: var(--bg-hover); }
+.text-green { color: #10b981; }
+.text-red { color: #ef4444; }
+
+/* 4. REPORT CARDS (Moderation) */
+.report-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: transform 0.2s, border-color 0.2s;
+}
+.report-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.report-section-box {
+    background: var(--bg-input); /* Passt sich an Light/Dark an */
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.report-label {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.report-content-text {
+    color: var(--text-main);
+    font-style: italic;
+    line-height: 1.6;
+    max-height: 80px;
+    overflow-y: auto;
+}
+
+/* Info Box (oben) */
+.info-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* ========================================
+   USER PROFILE & ADMIN ACTIONS
+   ======================================== */
+
+/* Profile Container */
+.profile-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Admin Actions Section */
+.admin-actions {
+    background: var(--bg-hover);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.admin-actions-title {
+    margin: 0 0 1rem 0;
+    color: var(--text-main);
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-actions-grid {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.admin-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1.25rem;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    font-weight: 500;
+    width: 100%;
+    text-align: left;
+    color: var(--text-main);
+}
+
+.admin-action-btn:hover {
+    background: var(--bg-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.admin-action-btn svg {
+    flex-shrink: 0;
+}
+
+.admin-action-btn.action-green {
+    color: #059669;
+    border-color: #059669;
+}
+
+.admin-action-btn.action-green:hover {
+    background: rgba(5, 150, 105, 0.1);
+}
+
+.admin-action-btn.action-red {
+    color: #dc2626;
+    border-color: #dc2626;
+}
+
+.admin-action-btn.action-red:hover {
+    background: rgba(220, 38, 38, 0.1);
+}
+
+.admin-action-btn.action-warning {
+    color: #d97706;
+    border-color: #d97706;
+}
+
+.admin-action-btn.action-warning:hover {
+    background: rgba(217, 119, 6, 0.1);
+}
+
+.admin-action-description {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.admin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: var(--accent);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Profile Header */
+.profile-header {
+    background: var(--bg-hover);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-username {
+    margin: 0;
+    color: var(--text-main);
+}
+
+.profile-badges {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.profile-badge {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+
+.profile-actions {
+    margin-left: auto;
+}
+
+.profile-body {
+    padding: 2rem;
+}
+
+/* User Table Styles */
+.user-table-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.user-table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.user-table-title {
+    margin: 0;
+    font-weight: 700;
+}
+
+.user-count {
+    margin: 0.5rem 0 0 0;
+}
+
+.user-avatar-circle {
+    background: var(--bg-hover);
+    padding: 4px;
+    border-radius: 50%;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-info-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
