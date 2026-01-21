@@ -43,7 +43,7 @@ VALUES ('Denice', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgR
 
 INSERT INTO user_roles(user_id, role) VALUES (1, 'ADMIN');
 INSERT INTO user_roles(user_id, role) VALUES (2, 'ADMIN');
-INSERT INTO user_roles(user_id, role) VALUES (3, 'ADMIN');
+-- INSERT INTO user_roles(user_id, role) VALUES (3, 'ADMIN');
 INSERT INTO user_roles(user_id, role) VALUES (3, 'TUTOR');
 INSERT INTO user_roles(user_id, role) VALUES (4, 'ADMIN');
 INSERT INTO user_roles(user_id, role) VALUES (4, 'TUTOR');
