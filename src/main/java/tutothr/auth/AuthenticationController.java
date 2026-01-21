@@ -62,11 +62,6 @@ public class AuthenticationController {
             return "redirect:/home";
         }
         RegisterUserDTO form = new RegisterUserDTO();
-        // TODO remove test data
-        form.setEmail("thomi@web.de");
-        form.setUsername("Thomi");
-        form.setPassword("Password123");
-        form.setConfirmPassword("Password123");
         model.addAttribute("registrationForm", form);
 
         // nicht angemeldet -> Registrierungsseite zeigen
@@ -80,10 +75,6 @@ public class AuthenticationController {
             return "redirect:/home";
         }
         LoginUserDTO form = new LoginUserDTO();
-        // TODO remove test data
-        // form.setEmail("denis.mathan@gmail.com");
-        form.setEmail("denis@email.com");
-        form.setPassword("Password123");
         model.addAttribute("loginForm", form);
         return "views/auth/login";
     }
