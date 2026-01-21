@@ -2,13 +2,13 @@ package tutothr.chapter;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
 import tutothr.common.BaseDTO;
-
 import tutothr.common.models.Field;
-import org.springframework.web.multipart.MultipartFile;
 
 public class ChapterDTO extends BaseDTO {
     @NotBlank(message = "Title cannot be empty.")
@@ -23,6 +23,14 @@ public class ChapterDTO extends BaseDTO {
     
     private Float price;
 
+    @AssertTrue(message = "Paywalled chapters must have a price greater than 0.")
+    public boolean isPriceValid() {
+        if (!paywalled) {
+            return true;
+        }
+        return price != null && price > 0;
+    }
+    
     @Override
     public void initFields() {
        formFields = List.of(
@@ -30,7 +38,8 @@ public class ChapterDTO extends BaseDTO {
             new Field("title", "Titel", "text"),
             new Field("description", "Beschreibung", "textarea"),
             new Field("files", "Dateien (PDF)", "file"),
-            new Field("paywalled", "Paywalled", "checkbox")
+            new Field("paywalled", "Paywalled", "checkbox"),
+            new Field("price", "Preis (€)", "number")
         ); 
     }
 

@@ -25,12 +25,6 @@
             </div>
 
             <div class="course-list-actions">
-                <button class="btn-assign"
-                        th:onclick="|assignCourse(event, ${course.id})|"
-                        th:text="#{courses.assign}">
-                    Assign
-                </button>
-
                 <th:block th:if="${course.isOwner}">
                     <button class="btn-icon-action"
                             th:title="#{common.edit}"
