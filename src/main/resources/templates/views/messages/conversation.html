@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 <head>
-    <title>Konversation</title>
+    <title th:text="#{messages.conversation}">Konversation</title>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 </head>
@@ -14,7 +14,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M19 12H5M12 19l-7-7 7-7"/>
                 </svg>
-                Zurück
+                <span th:text="#{common.back}">Zurück</span>
             </a>
 
             <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
@@ -26,7 +26,7 @@
                 </div>
                 <div>
                     <div style="font-weight: 600; color: var(--text-main);" th:text="${otherUser.username}">User</div>
-                    <div id="typing-indicator" style="display: none; font-size: 0.8rem; color: var(--accent); font-style: italic;">
+                    <div id="typing-indicator" style="display: none; font-size: 0.8rem; color: var(--accent); font-style: italic;" th:text="#{messages.typing}">
                         tippt gerade...
                     </div>
                 </div>
@@ -37,7 +37,7 @@
 
             <div id="messages-container" class="chat-messages">
 
-                <div th:if="${#lists.isEmpty(messages)}" id="no-messages" style="text-align: center; padding: 2rem;" class="text-muted">
+                <div th:if="${#lists.isEmpty(messages)}" id="no-messages" style="text-align: center; padding: 2rem;" class="text-muted" th:text="#{messages.empty}">
                     Noch keine Nachrichten in dieser Konversation
                 </div>
 
@@ -52,12 +52,12 @@
                         <button th:onclick="'openReportModal(\'MESSAGE\', ' + ${message.id} + ')'"
                                 type="button"
                                 class="btn-chat-report"
-                                title="Melden">
+                                th:title="#{report.submit}">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
                                 <line x1="4" y1="22" x2="4" y2="15"></line>
                             </svg>
-                            Melden
+                            <span th:text="#{report.submit}">Melden</span>
                         </button>
                         <span class="msg-meta" th:text="${#temporals.format(message.sentAt, 'HH:mm')}">12:00</span>
                     </div>
@@ -82,11 +82,11 @@
 
                   <textarea id="message-input"
                   class="chat-textarea"
-                  placeholder="Schreibe eine Nachricht..."
+                  th:placeholder="#{messages.write.placeholder}"
                   rows="1"
                   required></textarea>
 
-                    <button type="submit" class="btn-send" title="Senden">
+                    <button type="submit" class="btn-send" th:title="#{common.send}">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: -2px;">
                             <path d="M22 2L11 13"></path>
                             <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
@@ -103,6 +103,8 @@
     <script th:inline="javascript">
         const otherUserId = /*[[${otherUser.id}]]*/ 0;
         const currentUserId = /*[[${currentUserId}]]*/ 0;
+        const msgReport = /*[[#{report.submit}]]*/ 'Melden';
+        const msgConnectionLost = /*[[#{messages.connection.lost}]]*/ 'Verbindung verloren...';
         let stompClient = null;
         let typingTimeout = null;
 
@@ -116,7 +118,6 @@
         function onConnected() {
             stompClient.subscribe('/user/queue/messages', onMessageReceived);
             stompClient.subscribe('/user/queue/typing', onTypingReceived);
-            // Read Notification Logik hier...
         }
 
         function onError(error) { setTimeout(connect, 5000); }
@@ -132,7 +133,7 @@
                 stompClient.send("/app/chat", {}, JSON.stringify(msg));
                 input.value = '';
             } else {
-                alert('Verbindung verloren...');
+                alert(msgConnectionLost);
             }
         }
 
@@ -145,7 +146,7 @@
 
                 const div = document.createElement('div');
                 div.innerHTML = createMessageBubble(message);
-                container.appendChild(div.firstElementChild); // Einfach anhängen
+                container.appendChild(div.firstElementChild);
                 container.scrollTop = container.scrollHeight;
             }
         }
@@ -166,7 +167,6 @@
             const msgId = message.id || ('temp-' + Date.now());
 
             if (isFromMe) {
-                // Design für MICH (Rechts, Lila, ohne Name)
                 return `
             <div class="message-row sent" data-message-id="${msgId}" style="animation: slideIn 0.3s;">
                 <div class="msg-content">
@@ -178,7 +178,6 @@
             </div>
         `;
             } else {
-                // Design für ANDERE (Links, Grau, mit Name & Report)
                 return `
             <div class="message-row received" data-message-id="${msgId}" style="animation: slideIn 0.3s;">
                 <div class="msg-content">
@@ -186,12 +185,12 @@
                     <p style="margin: 0; line-height: 1.4;">${safeContent}</p>
                     <div class="msg-footer">
                         <button onclick="openReportModal('MESSAGE', ${message.id})"
-                                class="btn-chat-report" title="Melden">
+                                class="btn-chat-report" title="${msgReport}">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
                                 <line x1="4" y1="22" x2="4" y2="15"></line>
                             </svg>
-                            Melden
+                            ${msgReport}
                         </button>
                         <span class="msg-meta">${time}</span>
                     </div>
@@ -209,7 +208,6 @@
 
         document.getElementById('message-form').addEventListener('submit', sendMessage);
 
-        // Typing Listener
         const msgInput = document.getElementById('message-input');
         let lastType = 0;
         msgInput.addEventListener('input', () => {
@@ -231,7 +229,6 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* Scrollbars für Message Container */
         #messages-container::-webkit-scrollbar { width: 6px; }
         #messages-container::-webkit-scrollbar-track { background: var(--scroll-track); }
         #messages-container::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }

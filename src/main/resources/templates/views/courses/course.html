@@ -12,7 +12,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M19 12H5M12 19l-7-7 7-7" />
                 </svg>
-                Zurück zur Übersicht
+                <span th:text="#{common.back}">Zurück zur Übersicht</span>
             </a>
         </div>
 
@@ -29,12 +29,12 @@
                             </svg>
                         </div>
                         <span class="rating-value" th:text="${#numbers.formatDecimal(avgRating, 1, 1)}">4.5</span>
-                        <span class="rating-count" th:text="'(' + ${#lists.size(course.ratings)} + ' Bewertungen)'">(12)</span>
+                        <span class="rating-count" th:text="'(' + ${#lists.size(course.ratings)} + ' ' + #{dashboard.reviews} + ')'">(12)</span>
                     </div>
                 </div>
 
                 <div class="course-price">
-                    <span class="price-label">Preis</span>
+                    <span class="price-label" th:text="#{common.price}">Preis</span>
                     <span class="price-value" th:text="${#numbers.formatDecimal(course.price, 1, 2)} + ' €'">49.99 €</span>
                 </div>
             </div>
@@ -43,29 +43,30 @@
                 <!-- Kurs-Inhalt kaufen -->
                 <form th:action="@{/course/{id}/buy(id=${course.id})}" method="post" style="display: inline;"
                       th:data-price="${course.price}"
-                      th:onsubmit="${hasBooked} ? 'return false;' : 'return confirm(\'Möchtest du den gesamten Kursinhalt für \' + this.dataset.price + \' € kaufen?\');'">
+                      th:onsubmit="${hasBooked} ? 'return false;' : 'return confirm(\'' + #{courses.buy.confirm} + ' ' + this.dataset.price + ' €?\');'">
                     <button type="submit" 
                             th:class="${hasBooked} ? 'btn-secondary' : 'btn-primary'" 
                             th:disabled="${hasBooked}"
                             th:style="${hasBooked} ? 'opacity: 0.6; cursor: not-allowed;' : ''"
-                            th:text="${hasBooked} ? 'Bereits gekauft' : 'Kurs kaufen (' + ${#numbers.formatDecimal(course.price, 1, 2)} + ' €)'">
+                            th:text="${hasBooked} ? #{courses.already.bought} : #{courses.buy} + ' (' + ${#numbers.formatDecimal(course.price, 1, 2)} + ' €)'">
                     </button>
                 </form>
                 <!-- Tutorium buchen -->
                 <a th:href="@{/course/{id}/book(id=${course.id})}" class="btn-primary"
-                   th:text="'Tutorium buchen (' + ${#numbers.formatDecimal(hourlyRate, 1, 2)} + ' €/h)'">
+                   th:text="#{courses.book} + ' (' + ${#numbers.formatDecimal(hourlyRate, 1, 2)} + ' €/h)'">
                 </a>
-                <a th:href="@{/courses/{id}/addRating(id=${course.id})}" th:if="${hasBooked}" class="btn-secondary">
+                <a th:href="@{/courses/{id}/addRating(id=${course.id})}" th:if="${hasBooked}" class="btn-secondary" th:text="#{course.details.add.rating}">
                     Bewertung schreiben
                 </a>
-                <a th:href="@{/messages/new(recipientId=${course.ownerId},courseId=${course.id})}" class="btn-secondary">
+                <a th:href="@{/messages/new(recipientId=${course.ownerId},courseId=${course.id})}" class="btn-secondary" th:text="#{course.details.contact.tutor}">
                     Kontaktieren
                 </a>
                 <button th:onclick="'openReportModal(\'COURSE\', ' + ${course.id} + ')'"
                         type="button"
                         class="report-button"
                         style="background: none; border: none; color: #ef4444; cursor: pointer"
-                        title="Melden">
+                        th:title="#{course.details.report}"
+                        th:text="#{course.details.report}">
                     Melden
                 </button>
             </div>
@@ -75,7 +76,7 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
-                    Beschreibung
+                    <span th:text="#{course.details.description}">Beschreibung</span>
                 </h2>
                 <p class="course-description" th:text="${course.description}"></p>
             </div>
@@ -86,7 +87,7 @@
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                         <polyline points="22 4 12 14.01 9 11.01" />
                     </svg>
-                    Kategorien
+                    <span th:text="#{categories.title}">Kategorien</span>
                 </h2>
                 <div class="category-tags">
                     <span th:each="category : ${course.categories}" class="category-tag" th:text="${category.title}"></span>
@@ -97,24 +98,17 @@
             <div class="course-section" 
               th:if="${!#lists.isEmpty(course.hashtags)} or ${#authorization.expression('isAuthenticated()')}">
                 <h2 class="section-title">
-                  <svg width="20" 
-                    height="20" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    stroke-width="2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/>
                   </svg>
                   Hashtags
                 </h2>
                 <div class="d-flex flex-wrap align-items-center gap-1">
-                  <!-- Bestehende Hashtags -->
                   <div th:each="tag : ${course.hashtags}" class="d-inline-flex align-items-center me-1">
                     <a th:href="@{/courses(hashtag=${tag.name})}" 
                       class="badge rounded-pill bg-secondary text-decoration-none">
                         #<span th:text="${tag.name}"></span>
                     </a>
-                    <!-- Entfernen-Button (nur für Berechtigte) -->
                     <form th:if="${course.isOwner or #authorization.expression('hasRole(''ADMIN'')')}" 
                       th:action="@{/courses/{courseId}/hashtags/{hashtagId}(courseId=${course.id}, hashtagId=${tag.id})}" 
                       method="post" 
@@ -123,25 +117,23 @@
                         <button type="submit" 
                           class="btn btn-link btn-sm p-0 text-danger" 
                           style="font-size: 0.8rem; line-height: 1;"
-                          title="Hashtag entfernen"
-                          onclick="return confirm('Hashtag entfernen?');">
+                          th:title="#{common.delete}"
+                          th:onclick="'return confirm(\'' + #{common.delete} + '?\');'">
                             ×
                         </button>
                     </form>
                   </div>
 
-                  <!-- Hinzufuegen-Button (für eingeloggte User) -->
                   <div th:if="${#authorization.expression('isAuthenticated()')}">
                     <button type="button" 
                       class="badge rounded-pill bg-primary text-decoration-none border-0"
                       onclick="document.getElementById('hashtag-input').classList.toggle('d-none');"
-                      title="Hashtag hinzufügen">
+                      th:title="#{common.add}">
                         +
                     </button>
                   </div>
                 </div>
 
-                <!-- Inline-Eingabefeld (versteckt) -->
                 <div id="hashtag-input" class="d-none mt-2">
                   <form th:action="@{/courses/{id}/hashtags(id=${course.id})}" method="post" class="d-flex gap-2">
                     <input type="text" 
@@ -149,14 +141,14 @@
                       class="form-control form-control-sm" 
                       placeholder="Statistik, Mathe, Klausur"
                       style="max-width: 300px;"/>
-                    <button type="submit" class="btn btn-sm btn-primary">Hinzufügen</button>
+                    <button type="submit" class="btn btn-sm btn-primary" th:text="#{common.add}">Hinzufügen</button>
                     <button type="button" 
                       class="btn btn-sm btn-secondary"
-                      onclick="document.getElementById('hashtag-input').classList.add('d-none');">
+                      onclick="document.getElementById('hashtag-input').classList.add('d-none');"
+                      th:text="#{common.cancel}">
                         Abbrechen
                     </button>
                   </form>
-                  <small class="text-muted">Mehrere Hashtags mit Komma trennen</small>
                 </div>
             </div>
 
@@ -165,7 +157,7 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
-                    Kursinhalte
+                    <span th:text="#{course.details.chapters}">Kursinhalte</span>
                 </h2>
                 <div class="chapter-list">
                     <div th:each="chapter : ${chapterViews}" class="chapter-item">
@@ -174,7 +166,6 @@
                     <div th:if="${course.isOwner}" style="margin-top: 1rem;">
                         <script>
                             function toggleAdd() {
-                                console.log("Toggling add chapter form");
                                 document.getElementById('add-chapter').classList.toggle('hidden');
                             }
                         </script>
@@ -196,15 +187,15 @@
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                     </svg>
-                    Kurs bearbeiten
+                    <span th:text="#{courses.edit}">Kurs bearbeiten</span>
                 </a>
                 <form th:action="@{/tutor/courses/update/{id}(id=${course.id})}" method="post" style="display:inline;">
                     <input type="hidden" name="_method" value="delete" />
-                    <button type="submit" class="btn-danger" onclick="return confirm('Kurs wirklich löschen?');">
+                    <button type="submit" class="btn-danger" th:onclick="'return confirm(\'' + #{courses.delete.confirm} + '\');'">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                         </svg>
-                        Kurs löschen
+                        <span th:text="#{courses.delete}">Kurs löschen</span>
                     </button>
                 </form>
             </div>
@@ -215,7 +206,7 @@
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                 </svg>
-                Bewertungen
+                <span th:text="#{course.details.ratings}">Bewertungen</span>
             </h2>
             <div class="ratings-list">
                 <div th:each="rating : ${course.ratings}" class="rating-card">

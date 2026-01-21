@@ -2,15 +2,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 
 <head>
-    <title th:if="${category.id != null}">Update ${category.title}</title>
-    <title th:if="${category.id == null}">New Category</title>
+    <title th:if="${category.id != null}" th:text="#{categories.update} + ' ' + ${category.title}">Update Category</title>
+    <title th:if="${category.id == null}" th:text="#{categories.new}">New Category</title>
 </head>
 
 <section layout:fragment="mybody">
     <div class="form-container">
         <div class="form-header">
             <h2 class="form-title" th:if="${category.id != null}" th:text="${category.title}"></h2>
-            <h2 class="form-title" th:if="${category.id == null}">Neue Kategorie</h2>
+            <h2 class="form-title" th:if="${category.id == null}" th:text="#{categories.new}">Neue Kategorie</h2>
         </div>
 
         <div th:if="${category.id == null}">

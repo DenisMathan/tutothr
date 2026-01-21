@@ -7,7 +7,7 @@
   model.addAttribute("object", myObject);
 -->
 
-<form th:fragment="form(object,action,fields)" th:action="@{${action}}" th:object="${object}" method="post">
+<form th:fragment="form(object,action,fields)" th:action="@{${action}}" th:object="${object}" method="post" xmlns:th="http://www.thymeleaf.org">
     <input type="hidden" name="_method" th:if="*{id != null}" value="put" />
     <input type="hidden" name="id" th:if="*{id != null}" th:value="*{id}" />
     <div th:each="field : ${fields}">
@@ -19,5 +19,5 @@
             <span th:if="${object.hasValidationError != null and object.hasValidationError(field.name)}" th:text="${object.getValidationError(field.name)}" class="form-error"></span>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary">Speichern</button>
+    <button type="submit" class="btn btn-primary" th:text="#{common.save}">Speichern</button>
 </form>

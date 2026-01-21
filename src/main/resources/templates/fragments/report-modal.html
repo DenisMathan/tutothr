@@ -18,43 +18,43 @@
                             <line x1="4" y1="22" x2="4" y2="15"></line>
                         </svg>
                     </div>
-                    <h3 id="report-modal-title" class="modal-title">Inhalt melden</h3>
+                    <h3 id="report-modal-title" class="modal-title" th:text="#{report.content}">Inhalt melden</h3>
                 </div>
-                <p class="modal-subtitle">
+                <p class="modal-subtitle" th:text="#{report.help.community}">
                     Hilf uns, die Community sicher zu halten
                 </p>
             </div>
 
             <div class="modal-body">
                 <div style="margin-bottom: 1.5rem;">
-                    <label class="modal-label" for="report-category">Was ist das Problem?</label>
+                    <label class="modal-label" for="report-category" th:text="#{report.what.problem}">Was ist das Problem?</label>
                     <select id="report-category" class="form-input" style="cursor: pointer;">
-                        <option value="">Kategorie wählen...</option>
-                        <option value="Spam">Spam</option>
-                        <option value="Beleidigung">Beleidigung / Hassrede</option>
-                        <option value="Unangemessener Inhalt">Unangemessener Inhalt</option>
-                        <option value="Betrug">Betrug / Scam</option>
-                        <option value="Urheberrecht">Urheberrechtsverletzung</option>
-                        <option value="Sonstiges">Sonstiges</option>
+                        <option value="" th:text="#{report.select.category}">Kategorie wählen...</option>
+                        <option value="Spam" th:text="#{report.category.spam}">Spam</option>
+                        <option value="Beleidigung" th:text="#{report.category.hate}">Beleidigung / Hassrede</option>
+                        <option value="Unangemessener Inhalt" th:text="#{report.category.inappropriate}">Unangemessener Inhalt</option>
+                        <option value="Betrug" th:text="#{report.category.scam}">Betrug / Scam</option>
+                        <option value="Urheberrecht" th:text="#{report.category.copyright}">Urheberrechtsverletzung</option>
+                        <option value="Sonstiges" th:text="#{report.category.other}">Sonstiges</option>
                     </select>
                 </div>
 
                 <div>
                     <label class="modal-label" for="report-details">
-                        Details <span class="text-muted" style="font-weight: 400;">(optional)</span>
+                        <span th:text="#{report.details}">Details</span> <span class="text-muted" style="font-weight: 400;" th:text="'(' + #{common.optional} + ')'"></span>
                     </label>
                     <textarea id="report-details"
                               class="form-textarea"
                               rows="4"
-                              placeholder="Beschreibe das Problem genauer..."></textarea>
+                              th:placeholder="#{report.details.placeholder}"></textarea>
                 </div>
             </div>
 
             <div class="modal-footer">
-                <button onclick="closeReportModal()" class="btn-secondary">
+                <button onclick="closeReportModal()" class="btn-secondary" th:text="#{common.cancel}">
                     Abbrechen
                 </button>
-                <button onclick="submitReport()" class="btn-danger" style="background: #ef4444; color: white; border: none;">
+                <button onclick="submitReport()" class="btn-danger" style="background: #ef4444; color: white; border: none;" th:text="#{report.send}">
                     Meldung absenden
                 </button>
             </div>
@@ -64,7 +64,13 @@
     <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 0.5rem;"></div>
 
     <script th:inline="javascript">
-        // --- MODAL FUNKTIONEN ---
+        const reportTitleMessage = /*[[#{report.message}]]*/ 'Nachricht melden';
+        const reportTitleCourse = /*[[#{report.course}]]*/ 'Kurs melden';
+        const reportTitleChapter = /*[[#{report.chapter}]]*/ 'Kapitel melden';
+        const reportTitleContent = /*[[#{report.content}]]*/ 'Inhalt melden';
+        const reportSelectCategory = /*[[#{report.please.select.category}]]*/ 'Bitte wähle eine Kategorie aus';
+        const reportError = /*[[#{common.error.occurred}]]*/ 'Ein Fehler ist aufgetreten';
+
         function openReportModal(type, id) {
             document.getElementById('report-target-type').value = type;
             document.getElementById('report-target-id').value = id;
@@ -72,10 +78,10 @@
             document.getElementById('report-details').value = '';
 
             const titleElem = document.getElementById('report-modal-title');
-            if (type === 'MESSAGE') titleElem.textContent = 'Nachricht melden';
-            else if (type === 'COURSE') titleElem.textContent = 'Kurs melden';
-            else if (type === 'CHAPTER') titleElem.textContent = 'Kapitel melden';
-            else titleElem.textContent = 'Inhalt melden';
+            if (type === 'MESSAGE') titleElem.textContent = reportTitleMessage;
+            else if (type === 'COURSE') titleElem.textContent = reportTitleCourse;
+            else if (type === 'CHAPTER') titleElem.textContent = reportTitleChapter;
+            else titleElem.textContent = reportTitleContent;
 
             document.getElementById('report-modal').style.display = 'flex';
         }
@@ -91,7 +97,7 @@
             const details = document.getElementById('report-details').value;
 
             if (!category) {
-                showToast('Bitte wähle eine Kategorie aus', 'error');
+                showToast(reportSelectCategory, 'error');
                 return;
             }
 
@@ -117,12 +123,12 @@
                 .then(data => {
                     closeReportModal();
                     if (data.status === 'success') showToast(data.message, 'success');
-                    else showToast(data.message || 'Fehler', 'error');
+                    else showToast(data.message || reportError, 'error');
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     closeReportModal();
-                    showToast('Ein Fehler ist aufgetreten', 'error');
+                    showToast(reportError, 'error');
                 });
         }
 
@@ -142,7 +148,6 @@
             }, 3000);
         }
 
-        // Close on ESC or Click Outside
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeReportModal();
         });

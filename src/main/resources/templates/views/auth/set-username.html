@@ -2,18 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 
 <head>
-    <title>Benutzernamen wählen</title>
+    <title th:text="#{setusername.title}">Benutzernamen wählen</title>
 </head>
 
 <section layout:fragment="mybody" class="d-flex align-items-center justify-content-center" style="min-height: 80vh;">
     <div class="container" style="max-width: 500px;">
-        <!-- Card im consistenten Design -->
         <div class="course-card" style="padding: 0; overflow: hidden; border: 1px solid var(--border-color); background: var(--bg-card); border-radius: 16px;">
             
             <!-- Header -->
             <div style="background: var(--bg-hover); padding: 2rem; text-align: center; border-bottom: 1px solid var(--border-color);">
-                <h2 style="margin: 0; color: var(--text-main); font-weight: 700;">Fast geschafft!</h2>
-                <p style="margin: 0.5rem 0 0; color: var(--text-muted);">Bitte wähle einen Benutzernamen, um fortzufahren.</p>
+                <h2 style="margin: 0; color: var(--text-main); font-weight: 700;" th:text="#{setusername.title}">Fast geschafft!</h2>
+                <p style="margin: 0.5rem 0 0; color: var(--text-muted);" th:text="#{setusername.subtitle}">Bitte wähle einen Benutzernamen.</p>
             </div>
 
             <!-- Body -->
@@ -25,7 +24,7 @@
                     <input type="hidden" th:field="*{id}" />
 
                     <div class="mb-4">
-                        <label for="username" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; font-weight: 500;">Benutzername</label>
+                        <label for="username" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; font-weight: 500;" th:text="#{profile.username}">Benutzername</label>
                         <input type="text" 
                                id="username"
                                th:field="*{username}" 
@@ -34,12 +33,9 @@
                                required 
                                autofocus
                                style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.75rem 1rem; border-radius: 8px; width: 100%; transition: all 0.2s;" />
-                        <div class="form-text mt-2" style="color: var(--text-muted); font-size: 0.85rem;">
-                            Dieser Name wird öffentlich auf deinem Profil angezeigt.
-                        </div>
                     </div>
 
-                    <button id="submit-username" type="submit" class="btn-primary w-100" style="justify-content: center; height: 48px; font-size: 1rem; font-weight: 600;">
+                    <button id="submit-username" type="submit" class="btn-primary w-100" style="justify-content: center; height: 48px; font-size: 1rem; font-weight: 600;" th:text="#{common.save}">
                         Konto erstellen & loslegen
                     </button>
                 </form>

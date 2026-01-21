@@ -4,7 +4,7 @@
       layout:decorate="~{layout}">
 
 <head>
-  <title>Termin buchen</title>
+  <title th:text="#{book.title}">Termin buchen</title>
 </head>
 
 <body>
@@ -12,7 +12,7 @@
   <div class="container" style="max-width: 600px; margin: 2rem auto; padding: 0 1rem;">
 
     <div class="form-header">
-      <h2 class="form-title">Termin buchen</h2>
+      <h2 class="form-title" th:text="#{book.title}">Termin buchen</h2>
       <p class="form-subtitle" th:text="${course.title}" style="color: var(--accent);">Kurs Titel</p>
     </div>
 
@@ -23,18 +23,18 @@
 
     <div th:if="${timeSlots.isEmpty()}" class="no-ratings">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      <p>Aktuell sind keine Termine für diesen Kurs verfügbar.</p>
+      <p th:text="#{book.no.timeslots}">Aktuell sind keine Termine verfügbar.</p>
       <div style="margin-top: 1.5rem;">
-        <a th:href="@{/courses}" class="btn-secondary">Zurück zu den Kursen</a>
+        <a th:href="@{/courses}" class="btn-secondary" th:text="#{common.back}">Zurück zu den Kursen</a>
       </div>
     </div>
 
     <form th:if="${!timeSlots.isEmpty()}" th:action="@{/course/{id}/book(id=${course.id})}" method="post" class="card-base" style="padding: 2rem;">
 
       <div class="form-group">
-        <label for="timeSlotId" class="form-label">Wähle einen Termin</label>
+        <label for="timeSlotId" class="form-label" th:text="#{book.select.timeslot}">Wähle einen Termin</label>
         <select name="timeSlotId" id="timeSlotId" class="form-input" required style="cursor: pointer;">
-          <option value="">-- Bitte wählen --</option>
+          <option value="">-- <span th:text="#{common.select}">Bitte wählen</span> --</option>
           <option th:each="slot : ${timeSlots}"
                   th:value="${slot.id}"
                   th:text="${slot.date} + ' (' + ${slot.startTime} + ' - ' + ${slot.endTime} + ')'">
@@ -44,14 +44,14 @@
 
       <div class="form-group" style="background: var(--bg-hover); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span class="text-muted">Preis pro Stunde:</span>
+          <span class="text-muted" th:text="#{book.hourly.rate} + ':'">Preis pro Stunde:</span>
           <span style="font-weight: 700; font-size: 1.2rem; color: var(--text-main);" th:text="${#numbers.formatDecimal(hourlyRate, 1, 2) + ' €'}"></span>
         </div>
       </div>
 
       <div class="form-actions">
-        <a th:href="@{/courses}" class="btn-secondary">Abbrechen</a>
-        <button type="submit" class="btn-primary">Jetzt verbindlich buchen</button>
+        <a th:href="@{/courses}" class="btn-secondary" th:text="#{common.cancel}">Abbrechen</a>
+        <button type="submit" class="btn-primary" th:text="#{book.confirm}">Jetzt verbindlich buchen</button>
       </div>
     </form>
 

@@ -15,7 +15,8 @@ public class BaseDTO implements DTOI {
     @JsonIgnore
     protected List<Field> formFields;
     @JsonIgnore
-    private String submitLabel = "Speichern";
+//    private String submitLabel = "Speichern";
+    private String submitLabel = null;
     public BaseDTO() {
         initFields();
     }

@@ -4,18 +4,18 @@
       layout:decorate="~{layout}">
 
 <head>
-  <title>Erhaltene Buchungen</title>
+  <title th:text="#{bookings.tutor.title}">Erhaltene Buchungen</title>
 </head>
 
 <body>
 <section layout:fragment="mybody">
   <div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
 
-    <h1 class="text-main" style="margin-bottom: 2rem; font-weight: 700;">Erhaltene Buchungen</h1>
+    <h1 class="text-main" style="margin-bottom: 2rem; font-weight: 700;" th:text="#{bookings.tutor.title}">Erhaltene Buchungen</h1>
 
     <div th:if="${bookings.isEmpty()}" class="no-ratings">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      <p>Noch keine Buchungen erhalten.</p>
+      <p th:text="#{bookings.empty}">Noch keine Buchungen erhalten.</p>
     </div>
 
     <div th:if="${!bookings.isEmpty()}" class="table-wrapper">
@@ -23,10 +23,10 @@
         <thead>
         <tr>
           <th>Student</th>
-          <th>Buchung</th>
-          <th>Preis</th>
-          <th>Status</th>
-          <th class="text-end">Beleg</th>
+          <th th:text="#{bookings.booking}">Buchung</th>
+          <th th:text="#{common.price}">Preis</th>
+          <th th:text="#{common.status}">Status</th>
+          <th class="text-end" th:text="#{bookings.receipt}">Beleg</th>
         </tr>
         </thead>
         <tbody>
@@ -42,16 +42,16 @@
           <td style="font-weight: 600;" th:text="${booking.bookingDescription}"></td>
           <td th:text="${#numbers.formatDecimal(booking.price, 1, 2) + ' €'}"></td>
           <td>
-            <span th:if="${booking.status.name() == 'PENDING'}" class="badge status-pending">Ausstehend</span>
-            <span th:if="${booking.status.name() == 'CONFIRMED'}" class="badge status-confirmed">Bezahlung eingegangen</span>
-            <span th:if="${booking.status.name() == 'COMPLETED'}" class="badge status-completed">Abgeschlossen</span>
-            <span th:if="${booking.status.name() == 'CANCELLED'}" class="badge status-cancelled">Storniert</span>
+            <span th:if="${booking.status.name() == 'PENDING'}" class="badge status-pending" th:text="#{bookings.status.pending}">Ausstehend</span>
+            <span th:if="${booking.status.name() == 'CONFIRMED'}" class="badge status-confirmed" th:text="#{bookings.status.confirmed}">Bezahlung eingegangen</span>
+            <span th:if="${booking.status.name() == 'COMPLETED'}" class="badge status-completed" th:text="#{bookings.status.completed}">Abgeschlossen</span>
+            <span th:if="${booking.status.name() == 'CANCELLED'}" class="badge status-cancelled" th:text="#{bookings.status.cancelled}">Storniert</span>
           </td>
           <td class="text-end">
             <a th:if="${booking.invoiceId != null}"
                th:href="@{/tutor/invoice/{id}/download(id=${booking.invoiceId})}"
                class="btn-secondary btn-sm">
-              Beleg PDF
+              <span th:text="#{bookings.receipt}">Beleg</span> PDF
             </a>
           </td>
         </tr>

@@ -10,14 +10,14 @@
 <section layout:fragment="mybody">
     <div class="profile-container">
 
-        <!-- Admin Actions Section - Nur für Admins sichtbar -->
+        <!-- Admin Actions Section -->
         <div class="admin-actions" sec:authorize="hasRole('ADMIN')" th:if="${!isOwnProfile}">
             <h3 class="admin-actions-title">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                 </svg>
-                Admin Aktionen
+                <span th:text="#{admin.actions}">Admin Aktionen</span>
                 <span class="admin-badge">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
@@ -31,16 +31,16 @@
                 <form th:if="${user.accountNonLocked == false}"
                       th:action="@{/admin/users/{id}/unban(id=${user.id})}"
                       method="post"
-                      onsubmit="return confirm('Möchtest du diesen Benutzer wirklich entsperren?');">
+                      th:onsubmit="'return confirm(\'' + #{users.unblock.confirm} + '\');'">
                     <button type="submit" class="admin-action-btn action-green">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                             <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
                         </svg>
                         <div>
-                            <div>Benutzer entsperren</div>
-                            <div class="admin-action-description">
-                                Zugriff wiederherstellen und Strikes zurücksetzen
+                            <div th:text="#{users.unblock}">Benutzer entsperren</div>
+                            <div class="admin-action-description" th:text="#{users.unblock.desc}">
+                                Zugriff wiederherstellen
                             </div>
                         </div>
                     </button>
@@ -50,15 +50,15 @@
                 <form th:if="${user.accountNonLocked != false}"
                       th:action="@{/admin/users/{id}/ban(id=${user.id})}"
                       method="post"
-                      onsubmit="return confirm('Möchtest du diesen Benutzer wirklich sperren?');">
+                      th:onsubmit="'return confirm(\'' + #{users.block.confirm} + '\');'">
                     <button type="submit" class="admin-action-btn action-red">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                         </svg>
                         <div>
-                            <div>Benutzer sperren</div>
-                            <div class="admin-action-description">
+                            <div th:text="#{users.block}">Benutzer sperren</div>
+                            <div class="admin-action-description" th:text="#{users.block.desc}">
                                 Zugriff komplett entziehen
                             </div>
                         </div>
@@ -69,16 +69,16 @@
                 <form th:if="${user.strikes > 0}"
                       th:action="@{/admin/users/{id}/reset-strikes(id=${user.id})}"
                       method="post"
-                      onsubmit="return confirm('Möchtest du die Strikes wirklich zurücksetzen?');">
+                      th:onsubmit="'return confirm(\'' + #{users.reset.strikes.confirm} + '\');'">
                     <button type="submit" class="admin-action-btn action-warning">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="1 4 1 10 7 10"/>
                             <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
                         </svg>
                         <div>
-                            <div>Strikes zurücksetzen</div>
+                            <div th:text="#{users.reset.strikes}">Strikes zurücksetzen</div>
                             <div class="admin-action-description">
-                                Aktuelle Strikes: <span th:text="${user.strikes}">0</span> → Auf 0 setzen
+                                <span th:text="#{users.current.strikes}">Aktuelle Strikes:</span> <span th:text="${user.strikes}">0</span> → 0
                             </div>
                         </div>
                     </button>
@@ -86,12 +86,11 @@
             </div>
         </div>
 
-        <!-- Card Container im gleichen Stil wie Course-Cards -->
+        <!-- Card Container -->
         <div class="course-card">
 
             <!-- Profil Header -->
             <div class="profile-header">
-                <!-- Avatar Circle -->
                 <div class="profile-avatar">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -103,39 +102,35 @@
                     <div class="profile-badges">
                         <span class="profile-badge" th:text="'ID: ' + ${user.id}">ID: 123</span>
 
-                        <!-- Status Badge -->
                         <span th:if="${user.accountNonLocked == false}" class="badge status-cancelled">
-                            🔒 GESPERRT
+                            🔒 <span th:text="#{users.status.blocked}">GESPERRT</span>
                         </span>
                         <span th:if="${user.active && user.accountNonLocked != false}" class="badge status-active">
-                            ✓ Aktiv
+                            ✓ <span th:text="#{users.status.active}">Aktiv</span>
                         </span>
 
-                        <!-- Strikes Badge -->
                         <span th:if="${user.strikes > 0}"
                               class="badge"
                               th:classappend="${user.strikes >= 2} ? 'status-cancelled' : 'status-pending'"
                               th:text="'⚠️ ' + ${user.strikes} + ' Strike(s)'">
-                            ⚠️ 0 Strike(s)
                         </span>
                     </div>
                 </div>
 
                 <div class="profile-actions">
                     <form th:if="${isOwnProfile}" th:action="@{/user/delete/self}" method="post"
-                          onsubmit="return confirm('Möchtest du deinen Account wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.');">
+                          th:onsubmit="'return confirm(\'' + #{users.delete.self.confirm} + '\');'">
                         <input type="hidden" name="_method" value="delete"/>
-                        <button type="submit" class="btn-danger">
+                        <button type="submit" class="btn-danger" th:text="#{users.delete.self}">
                             Deinen Account löschen
                         </button>
                     </form>
 
-                    <!-- Admin Delete Button - Nur für Admins bei fremden Profilen -->
                     <form th:if="${!isOwnProfile}" sec:authorize="hasRole('ADMIN')"
                           th:action="@{/user/delete/{id}(id=${user.id})}" method="post"
-                          onsubmit="return confirm('Möchtest du diesen Account wirklich PERMANENT löschen? Diese Aktion kann nicht rückgängig gemacht werden!');">
+                          th:onsubmit="'return confirm(\'' + #{users.delete.confirm} + '\');'">
                         <input type="hidden" name="_method" value="delete"/>
-                        <button type="submit" class="btn-danger">
+                        <button type="submit" class="btn-danger" th:text="#{users.delete}">
                             Account löschen
                         </button>
                     </form>

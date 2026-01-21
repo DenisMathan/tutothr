@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
-<head><title>Dashboard</title></head>
+<head><title th:text="#{dashboard.title}">Dashboard</title></head>
 
 <section layout:fragment="mybody">
     <div class="container dashboard-page">
 
         <div class="dashboard-welcome">
-            <h1>Willkommen zurück, <span th:text="${user.username}">User</span>!</h1>
-            <p class="dashboard-subtitle text-muted" th:text="${#temporals.format(#temporals.createNow(), 'EEEE, dd. MMMM yyyy', new java.util.Locale('de'))}">
+            <h1><span th:text="#{dashboard.welcome}">Willkommen zurück,</span> <span th:text="${user.username}">User</span>!</h1>
+            <p class="dashboard-subtitle text-muted" th:text="${#temporals.format(#temporals.createNow(), 'EEEE, dd. MMMM yyyy', #locale)}">
                 Montag, 21. Januar 2025
             </p>
         </div>
@@ -23,14 +23,14 @@
                 </div>
                 <div class="stat-content">
                     <div class="stat-value" th:text="${stats.unreadMessages}">0</div>
-                    <div class="stat-label">Ungelesene Nachrichten</div>
+                    <div class="stat-label" th:text="#{dashboard.unread.messages}">Ungelesene Nachrichten</div>
                 </div>
             </div>
         </div>
 
         <!-- Tutor Stats -->
         <div th:if="${stats.activeCourses != null}">
-            <h2 class="dashboard-section-title">Tutor-Statistiken</h2>
+            <h2 class="dashboard-section-title" th:text="#{dashboard.tutor.stats}">Tutor-Statistiken</h2>
 
             <div class="stats-grid">
                 <!-- Aktive Kurse -->
@@ -43,7 +43,7 @@
                     </div>
                     <div class="stat-content">
                         <div class="stat-value" th:text="${stats.activeCourses}">0</div>
-                        <div class="stat-label">Aktive Kurse</div>
+                        <div class="stat-label" th:text="#{dashboard.active.courses}">Aktive Kurse</div>
                     </div>
                 </div>
 
@@ -56,8 +56,8 @@
                     </div>
                     <div class="stat-content">
                         <div class="stat-value" th:text="${#numbers.formatDecimal(stats.averageRating, 1, 1)} + ' ⭐'">0.0 ⭐</div>
-                        <div class="stat-label">Durchschnittsbewertung</div>
-                        <div class="stat-sublabel">Über alle deine Kurse</div>
+                        <div class="stat-label" th:text="#{dashboard.average.rating}">Durchschnittsbewertung</div>
+                        <div class="stat-sublabel" th:text="#{dashboard.rating.subtitle}">Über alle deine Kurse</div>
                     </div>
                 </div>
 
@@ -73,7 +73,7 @@
                     </div>
                     <div class="stat-content">
                         <div class="stat-value" th:text="${stats.receivedBookings}">0</div>
-                        <div class="stat-label">Erhaltene Buchungen</div>
+                        <div class="stat-label" th:text="#{dashboard.received.bookings}">Erhaltene Buchungen</div>
                     </div>
                 </div>
 
@@ -87,13 +87,13 @@
                     </div>
                     <div class="stat-content">
                         <div class="stat-value" th:text="${#numbers.formatDecimal(stats.totalRevenue, 1, 2)} + ' €'">0,00 €</div>
-                        <div class="stat-label">Gesamtumsatz</div>
+                        <div class="stat-label" th:text="#{dashboard.total.revenue}">Gesamtumsatz</div>
                     </div>
                 </div>
             </div>
 
             <!-- Top Performing Courses -->
-            <h3 class="dashboard-section-title">Deine Top-Kurse</h3>
+            <h3 class="dashboard-section-title" th:text="#{dashboard.top.courses}">Deine Top-Kurse</h3>
 
             <div class="stats-grid">
                 <!-- Meistgebuchter Kurs -->
@@ -108,7 +108,7 @@
                     </div>
                     <div class="stat-content">
                         <div class="stat-value" th:text="${stats.mostBookedCourseCount}">0</div>
-                        <div class="stat-label">Meistgebuchter Kurs</div>
+                        <div class="stat-label" th:text="#{dashboard.most.booked}">Meistgebuchter Kurs</div>
                         <div class="stat-sublabel" th:text="${stats.mostBookedCourseTitle}">Kursname</div>
                     </div>
                 </div>
@@ -122,10 +122,10 @@
                     </div>
                     <div class="stat-content">
                         <div class="stat-value" th:text="${#numbers.formatDecimal(stats.bestRatedCourseRating, 1, 1)} + ' ⭐'">0.0 ⭐</div>
-                        <div class="stat-label">Bestbewerteter Kurs</div>
+                        <div class="stat-label" th:text="#{dashboard.best.rated}">Bestbewerteter Kurs</div>
                         <div class="stat-sublabel">
                             <span th:text="${stats.bestRatedCourseTitle}">Kursname</span>
-                            <span th:text="' (' + ${stats.bestRatedCourseReviews} + ' Bewertungen)'">(0 Bewertungen)</span>
+                            <span th:text="' (' + ${stats.bestRatedCourseReviews} + ' ' + #{dashboard.reviews} + ')'">(0 Bewertungen)</span>
                         </div>
                     </div>
                 </div>
@@ -134,7 +134,7 @@
 
         <!-- Student Stats -->
         <div th:if="${stats.myBookings != null}">
-            <h2 class="dashboard-section-title">🎓 Student-Statistiken</h2>
+            <h2 class="dashboard-section-title">🎓 <span th:text="#{dashboard.student.stats}">Student-Statistiken</span></h2>
 
             <div class="stats-grid">
                 <!-- Meine Buchungen -->
@@ -149,7 +149,7 @@
                     </div>
                     <div class="stat-content">
                         <div class="stat-value" th:text="${stats.myBookings}">0</div>
-                        <div class="stat-label">Meine Buchungen</div>
+                        <div class="stat-label" th:text="#{dashboard.my.bookings}">Meine Buchungen</div>
                     </div>
                 </div>
 
@@ -163,7 +163,7 @@
                     </div>
                     <div class="stat-content">
                         <div class="stat-value" th:text="${#numbers.formatDecimal(stats.totalSpent, 1, 2)} + ' €'">0,00 €</div>
-                        <div class="stat-label">Gesamtausgaben</div>
+                        <div class="stat-label" th:text="#{dashboard.total.spent}">Gesamtausgaben</div>
                     </div>
                 </div>
 
@@ -177,8 +177,8 @@
                     </div>
                     <div class="stat-content">
                         <div class="stat-value" th:text="${#numbers.formatDecimal(stats.spentLastMonth, 1, 2)} + ' €'">0,00 €</div>
-                        <div class="stat-label">Ausgaben letzter Monat</div>
-                        <div class="stat-sublabel">Letzte 30 Tage</div>
+                        <div class="stat-label" th:text="#{dashboard.spent.last.month}">Ausgaben letzter Monat</div>
+                        <div class="stat-sublabel" th:text="#{dashboard.last.30.days}">Letzte 30 Tage</div>
                     </div>
                 </div>
             </div>
@@ -186,23 +186,23 @@
 
         <!-- Schnellzugriff -->
         <div class="dashboard-section" sec:authorize="hasAnyRole('STUDENT', 'TUTOR')">
-            <h3 class="dashboard-section-title">⚡ Schnellzugriff</h3>
+            <h3 class="dashboard-section-title">⚡ <span th:text="#{dashboard.quick.access}">Schnellzugriff</span></h3>
             <div class="quick-actions">
-                <a th:href="@{/courses}" class="btn-primary">Neue Kurse entdecken</a>
-                <a th:href="@{/messages/inbox}" class="btn-secondary">Nachrichten</a>
-                <a th:href="@{/my-bookings}" class="btn-secondary" sec:authorize="hasRole('STUDENT')">Meine Buchungen</a>
-                <a th:href="@{/tutor/bookings}" class="btn-secondary" sec:authorize="hasRole('TUTOR')">Erhaltene Buchungen</a>
-                <a th:href="@{/tutor/my-courses}" class="btn-secondary" sec:authorize="hasRole('TUTOR')">Meine Kurse</a>
+                <a th:href="@{/courses}" class="btn-primary" th:text="#{dashboard.discover.courses}">Neue Kurse entdecken</a>
+                <a th:href="@{/messages/inbox}" class="btn-secondary" th:text="#{nav.messages}">Nachrichten</a>
+                <a th:href="@{/my-bookings}" class="btn-secondary" sec:authorize="hasRole('STUDENT')" th:text="#{dashboard.my.bookings}">Meine Buchungen</a>
+                <a th:href="@{/tutor/bookings}" class="btn-secondary" sec:authorize="hasRole('TUTOR')" th:text="#{dashboard.received.bookings}">Erhaltene Buchungen</a>
+                <a th:href="@{/tutor/my-courses}" class="btn-secondary" sec:authorize="hasRole('TUTOR')" th:text="#{dashboard.my.courses}">Meine Kurse</a>
             </div>
         </div>
 
         <!-- Admin-Bereich -->
         <div class="dashboard-section" sec:authorize="hasRole('ADMIN')">
-            <h3 class="dashboard-section-title">🛡️ Admin-Bereich</h3>
+            <h3 class="dashboard-section-title">🛡️ <span th:text="#{dashboard.admin.area}">Admin-Bereich</span></h3>
             <div class="quick-actions">
-                <a th:href="@{/admin/all}" class="btn-secondary">User-Management</a>
-                <a th:href="@{/admin/categories}" class="btn-secondary">Kategorie Management</a>
-                <a th:href="@{/admin/reports}" class="btn-secondary">Moderation</a>
+                <a th:href="@{/admin/all}" class="btn-secondary" th:text="#{dashboard.user.management}">User-Management</a>
+                <a th:href="@{/admin/categories}" class="btn-secondary" th:text="#{dashboard.category.management}">Kategorie Management</a>
+                <a th:href="@{/admin/reports}" class="btn-secondary" th:text="#{dashboard.moderation}">Moderation</a>
             </div>
         </div>
 

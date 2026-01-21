@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
-
 <head>
-    <title>2FA Verifizierung</title>
+    <title th:text="#{verify.2fa.title}">2FA Verifizierung</title>
 </head>
-
 <section layout:fragment="mybody" class="d-flex align-items-center justify-content-center" style="min-height: 80vh;">
     <div class="container" style="max-width: 500px;">
-        <!-- Card im Style des User-Profils -->
         <div class="course-card" style="padding: 0; overflow: hidden; border: 1px solid var(--border-color); background: var(--bg-card); border-radius: 16px;">
             
             <!-- Header -->
             <div style="background: var(--bg-hover); padding: 2rem; text-align: center; border-bottom: 1px solid var(--border-color);">
-                <h2 style="margin: 0; color: var(--text-main); font-weight: 700;">Zwei-Faktor-Authentifizierung</h2>
-                <p style="margin: 0.5rem 0 0; color: var(--text-muted);">Bitte gib deinen Bestätigungscode ein</p>
+                <h2 style="margin: 0; color: var(--text-main); font-weight: 700;" th:text="#{verify.2fa.title}">Zwei-Faktor-Authentifizierung</h2>
+                <p style="margin: 0.5rem 0 0; color: var(--text-muted);" th:text="#{verify.2fa.subtitle}">Bitte gib deinen Bestätigungscode ein</p>
             </div>
 
             <!-- Body -->
@@ -21,21 +18,19 @@
                 <form th:action="@{/login/verify-2fa-check}" method="post">
                     
                     <div class="mb-3">
-                        <label for="code" class="form-label" style="color: var(--text-main); font-weight: 500;">Authentifizierungs-Code</label>
+                        <label for="code" class="form-label" style="color: var(--text-main); font-weight: 500;" th:text="#{verify.2fa.code}">Authentifizierungs-Code</label>
                         <input id="code" name="code" type="text" class="form-control" required autofocus 
                                style="background: var(--bg-input); border-color: var(--border-color); color: var(--text-main); padding: 0.75rem;" />
                         <div class="form-text mt-2" style="color: var(--text-muted); font-size: 0.9rem;">
                             Bitte gib den Code ein, der dir per E-Mail zugesendet wurde.
                         </div>
                     </div>
-
                     <div class="d-grid gap-2 mt-4">
-                        <button type="submit" class="btn btn-primary" style="background: var(--accent); border: none; font-weight: 600; padding: 0.75rem;">Verifizieren</button>
+                        <button type="submit" class="btn btn-primary" style="background: var(--accent); border: none; font-weight: 600; padding: 0.75rem;" th:text="#{verify.2fa.submit}">Verifizieren</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </section>
-
 </html>
