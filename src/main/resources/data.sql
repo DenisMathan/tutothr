@@ -4,11 +4,11 @@ VALUES ('Lilly', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi8
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
 VALUES ('Paul', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'paul@email', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
-VALUES ('Denis', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'denis@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, false, 0);
+VALUES ('Denis', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'denis@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
+-- INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
+-- VALUES ('Denis', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'denis.mathan@gmail.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
-VALUES ('Denis', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'denis.mathan@gmail.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, true, true, 0);
-INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
-VALUES ('Tutor', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'tutor@email', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
+VALUES ('Tutor', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'thomi@web.de', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
 VALUES ('Student', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'student@email', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
@@ -45,6 +45,8 @@ INSERT INTO user_roles(user_id, role) VALUES (1, 'ADMIN');
 INSERT INTO user_roles(user_id, role) VALUES (2, 'ADMIN');
 INSERT INTO user_roles(user_id, role) VALUES (3, 'ADMIN');
 INSERT INTO user_roles(user_id, role) VALUES (3, 'TUTOR');
+INSERT INTO user_roles(user_id, role) VALUES (4, 'ADMIN');
+INSERT INTO user_roles(user_id, role) VALUES (4, 'TUTOR');
 INSERT INTO user_roles(user_id, role) VALUES (5, 'TUTOR');
 INSERT INTO user_roles(user_id, role) VALUES (6, 'STUDENT');
 INSERT INTO user_roles(user_id, role) VALUES (14, 'STUDENT');

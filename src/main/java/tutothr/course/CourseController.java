@@ -48,14 +48,6 @@ public class CourseController {
 		this.hashtagService = hashtagService;
 		this.contentAccessService = contentAccessService;
 	}
-
-//    @GetMapping("/courses")
-//    public String getMethodName(Model model) {
-//        List<CourseDTO> courses = courseService.getAllDTOs();
-//        model.addAttribute("courses", courses);
-//        return "/views/courses/courses";
-//    }
-
 	@GetMapping("/courses")
 	public String getCourses(@ModelAttribute CourseSearchDTO searchDTO, Model model) {
 		Page<CourseDTO> coursePage = courseService.search(searchDTO);
@@ -71,6 +63,13 @@ public class CourseController {
 		model.addAttribute("categories", categories);
 
 		return "/views/courses/courses";
+	}
+	@GetMapping({ "/tutor/courses/add" })
+	public String getCreatePage(Model model, @PathVariable(required = false) Long id) {
+		CourseDTO course = new CourseDTO();
+		course.updateCategoryField(categoryService.getAllDTOs());
+		model.addAttribute("course", course);
+		return "/views/courses/course-edit";
 	}
 
 	@GetMapping("/courses/{id}")
