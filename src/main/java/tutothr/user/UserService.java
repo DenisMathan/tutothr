@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import tutothr.auth.config.CustomOidcUser;
 import tutothr.auth.verifikation.VerificationRepositoryI;
@@ -103,5 +104,89 @@ public class UserService extends BaseService<UserDTO, User> implements UserServi
 			OAuth2AuthenticationToken newToken = new OAuth2AuthenticationToken(newPrincipal, oldToken.getAuthorities(), oldToken.getAuthorizedClientRegistrationId());
 			SecurityContextHolder.getContext().setAuthentication(newToken);
 		}
+	}
+
+	@Transactional
+	public boolean incrementStrikes(Long userId) {
+		User user = getUserById(userId);
+
+		int currentStrikes = user.getStrikes();
+		int newStrikes = currentStrikes + 1;
+
+		user.setStrikes(newStrikes);
+
+		// Bei 3 Strikes: Account automatisch sperren
+		if (newStrikes >= 3) {
+			user.setAccountNonLocked(false);
+			userRepository.save(user);
+
+			System.out.println("⚠️ USER GESPERRT: " + user.getUsername() +
+					" (ID: " + user.getId() + ") nach " + newStrikes + " Strikes");
+
+			return true;  // User wurde durch diesen Strike gesperrt
+		}
+
+		userRepository.save(user);
+
+		System.out.println("⚠️ Strike vergeben an " + user.getUsername() +
+				" (Strikes: " + newStrikes + "/3)");
+
+		return false;  // User noch nicht gesperrt
+	}
+
+	@Transactional
+	public void banUser(Long userId) {
+		User user = getUserById(userId);
+
+		if (!user.isAccountNonLocked()) {
+			throw new IllegalStateException("User ist bereits gesperrt");
+		}
+
+		user.setAccountNonLocked(false);
+		userRepository.save(user);
+
+		System.out.println("🔒 USER MANUELL GESPERRT: " + user.getUsername() +
+				" (ID: " + user.getId() + ")");
+	}
+
+	@Transactional
+	public void unbanUser(Long userId) {
+		User user = getUserById(userId);
+
+		if (user.isAccountNonLocked()) {
+			throw new IllegalStateException("User ist nicht gesperrt");
+		}
+
+		user.setAccountNonLocked(true);
+		user.setStrikes(0);  // Strikes zurücksetzen bei Entsperrung
+		userRepository.save(user);
+
+		System.out.println("🔓 USER ENTSPERRT: " + user.getUsername() +
+				" (ID: " + user.getId() + ") - Strikes zurückgesetzt");
+	}
+
+	@Transactional
+	public void resetStrikes(Long userId) {
+		User user = getUserById(userId);
+
+		int oldStrikes = user.getStrikes();
+		user.setStrikes(0);
+		userRepository.save(user);
+
+		System.out.println("↺ Strikes zurückgesetzt für " + user.getUsername() +
+				" (von " + oldStrikes + " auf 0)");
+	}
+
+	public boolean isUserBanned(Long userId) {
+		User user = getUserById(userId);
+		return !user.isAccountNonLocked();
+	}
+
+	public List<User> getBannedUsers() {
+		return userRepository.findByAccountNonLockedFalse();
+	}
+
+	public List<User> getUsersWithStrikes() {
+		return userRepository.findByStrikesGreaterThan(0);
 	}
 }

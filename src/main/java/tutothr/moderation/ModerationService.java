@@ -12,6 +12,7 @@ import tutothr.course.CourseService;
 import tutothr.moderation.interfaces.ModerationMapperI;
 import tutothr.moderation.interfaces.ReportRepositoryI;
 import tutothr.user.User;
+import tutothr.user.UserService;
 import tutothr.user.interfaces.UserRepositoryI;
 
 import java.util.List;
@@ -21,16 +22,24 @@ public class ModerationService {
 
     @Autowired
     private ReportRepositoryI reportRepository;
+
     @Autowired
     private UserRepositoryI userRepository;
+
     @Autowired
     private MessageRepositoryI messageRepositoryI;
+
     @Autowired
     private CourseService courseService;
+
     @Autowired
     private ModerationMapperI moderationMapperI;
+
     @Autowired
     private ChapterService chapterService;
+
+    @Autowired
+    private UserService userService;
 
     public void reportMessage(Long reporterId, Long messageId, String reason) {
         User reporter = userRepository.findById(reporterId).orElseThrow();
@@ -75,7 +84,6 @@ public class ModerationService {
         reportRepository.save(new Report(reporter, chapter, reason));
     }
 
-    // --- ADMIN METHODEN ---
 
     public List<ReportDTO> getPendingReports() {
         List<Report> reports = reportRepository.findByStatusOrderByReportedAtDesc(ReportStatus.PENDING);
@@ -98,36 +106,71 @@ public class ModerationService {
         if (issueStrike) {
             report.setStatus(ReportStatus.ACCEPTED);
 
-            User offender = null;
-            switch (report.getType()) {
-                case MESSAGE:
-                    offender = report.getMessage().getSender();
-                    break;
-
-                case COURSE:
-                    Long creatorId = report.getCourse().getOwnerId();
-                    offender = userRepository.findById(creatorId).orElse(null);
-                    break;
-
-                case CHAPTER:
-                    Long chapterCreatorId = report.getChapter().getCourse().getOwnerId();
-                    offender = userRepository.findById(chapterCreatorId).orElse(null);
-                    break;
-            }
+            // Bestimme den betroffenen User basierend auf Report-Typ
+            User offender = getOffenderFromReport(report);
 
             if (offender != null) {
-                int newStrikes = offender.getStrikes() + 1;
-                offender.setStrikes(newStrikes);
+                // Nutze UserService für Strike-Vergabe (inkl. Auto-Ban)
+                boolean userWasBanned = userService.incrementStrikes(offender.getId());
 
-                if (newStrikes >= 3) {
-                    offender.setAccountNonLocked(false);
+                // Logging passiert bereits in UserService.incrementStrikes()
+
+                // Optional: Weitere Aktionen bei Ban
+                if (userWasBanned) {
+                    handleUserBanned(offender, report);
                 }
-                userRepository.save(offender);
+            } else {
+                System.err.println("⚠️ WARNUNG: Konnte Offender für Report " + reportId + " nicht finden!");
             }
         } else {
+            // Report ignorieren
             report.setStatus(ReportStatus.REJECTED);
+            System.out.println("ℹ️ Report " + reportId + " wurde ignoriert");
         }
 
         reportRepository.save(report);
+    }
+
+    private User getOffenderFromReport(Report report) {
+        switch (report.getType()) {
+            case MESSAGE:
+                return report.getMessage().getSender();
+
+            case COURSE:
+                Long courseOwnerId = report.getCourse().getOwnerId();
+                return userRepository.findById(courseOwnerId).orElse(null);
+
+            case CHAPTER:
+                Long chapterOwnerId = report.getChapter().getCourse().getOwnerId();
+                return userRepository.findById(chapterOwnerId).orElse(null);
+
+            default:
+                return null;
+        }
+    }
+
+    private void handleUserBanned(User user, Report report) {
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("🚨 USER AUTOMATISCH GESPERRT");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("User: " + user.getUsername() + " (ID: " + user.getId() + ")");
+        System.out.println("Email: " + user.getEmail());
+        System.out.println("Strikes: " + user.getStrikes());
+        System.out.println("Grund (letzter Report): " + report.getReason());
+        System.out.println("Report-Typ: " + report.getType());
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+        // TODO: Hier weitere Aktionen implementieren:
+        // - emailService.sendBanNotification(user);
+        // - auditLogService.logUserBan(user, report);
+        // - notificationService.notifyAdmins(user);
+    }
+
+    public List<User> getBannedUsers() {
+        return userService.getBannedUsers();
+    }
+
+    public List<User> getUsersWithStrikes() {
+        return userService.getUsersWithStrikes();
     }
 }
