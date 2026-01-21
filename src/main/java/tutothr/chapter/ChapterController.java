@@ -46,7 +46,7 @@ public class ChapterController {
             // Make sure the course view knows we are adding a chapter
             course.setAddChapter(chapterDTO);
             model.addAttribute("course", course);
-            return "/views/courses/course";
+            return "views/courses/course";
         }
         
         logger.debug("Saving chapter for course: {}", chapterDTO.getCourseId());
@@ -79,7 +79,7 @@ public class ChapterController {
                     .toList());
             
             model.addAttribute("course", course);
-            return "/views/courses/course";
+            return "views/courses/course";
         }
         
         chapterService.update(chapterDTO);

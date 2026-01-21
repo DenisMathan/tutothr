@@ -70,7 +70,7 @@ public class CourseController {
 		List<CategoryDTO> categories = categoryService.getAllDTOs();
 		model.addAttribute("categories", categories);
 
-		return "/views/courses/courses";
+		return "views/courses/courses";
 	}
 
 	@GetMapping("/tutor/courses/add")
@@ -79,7 +79,7 @@ public class CourseController {
 		CourseDTO course = new CourseDTO();
 		course.updateCategoryField(categoryService.getAllDTOs());
 		model.addAttribute("course", course);
-		return "/views/courses/course-edit";
+		return "views/courses/course-edit";
 	}
 
 	@GetMapping("/courses/{id}")
@@ -108,7 +108,7 @@ public class CourseController {
 		List<ChapterViewModel> chapterViews = createChapterViewModels(courseDTO, userId, id);
 		model.addAttribute("chapterViews", chapterViews);
 
-		return "/views/courses/course";
+		return "views/courses/course";
 	}
 
 	@GetMapping("/tutor/courses/update/{id}")
@@ -125,7 +125,7 @@ public class CourseController {
 		course.updateCategoryField(categoryService.getAllDTOs());
 		model.addAttribute("course", course);
 		
-		return "/views/courses/course-edit";
+		return "views/courses/course-edit";
 	}
 
 	@PostMapping("/tutor/courses/save")
@@ -136,7 +136,7 @@ public class CourseController {
 			course.updateCategoryField(categoryService.getAllDTOs());
 			course = courseService.handleValidationErrors(course, result.getFieldErrors());
 			model.addAttribute("course", course);
-			return "/views/courses/course-edit";
+			return "views/courses/course-edit";
 		}
 		
 		Course courseEntity = courseService.mapToEntity(course);
@@ -162,7 +162,7 @@ public class CourseController {
 			courseDTO.updateCategoryField(categoryService.getAllDTOs());
 			courseDTO = courseService.handleValidationErrors(courseDTO, result.getFieldErrors());
 			model.addAttribute("course", courseDTO);
-			return "/views/courses/course-edit";
+			return "views/courses/course-edit";
 		}
 
 		Course existingCourse = courseService.findById(id);

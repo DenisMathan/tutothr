@@ -29,7 +29,7 @@ public class CategoryController {
     public String getCategories(Model model) {
         List<CategoryDTO> categories = categoryService.getAllDTOs();
         model.addAttribute("categories", categories);
-        return "/views/category/categories";
+        return "views/category/categories";
     }
 
     @GetMapping({ "/admin/categories/add", "/admin/categories/update/{id}" })
