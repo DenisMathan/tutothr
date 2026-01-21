@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
-import tutothr.auth.config.AppPrincipal;
 import tutothr.auth.config.MyUserDetails;
 import tutothr.booking.BookingService;
 import tutothr.booking.ContentAccessService;
@@ -34,20 +34,28 @@ import tutothr.rating.Rating;
 
 @Controller
 public class CourseController {
-	private CourseService courseService;
-	private CategoryService categoryService;
-	private HashtagService hashtagService;
-	@Autowired
-	private BookingService bookingService;
-	private ContentAccessService contentAccessService;
+	
+	private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
-	public CourseController(CourseService courseService, CoursePermissionService coursePermissionService,
-			CategoryService categoryService, HashtagService hashtagService, ContentAccessService contentAccessService) {
+	private final CourseService courseService;
+	private final CategoryService categoryService;
+	private final HashtagService hashtagService;
+	private final BookingService bookingService;
+	private final ContentAccessService contentAccessService;
+    // Injecting the permission service is not strictly needed for @PreAuthorize string, 
+    // but good to have if we used it programmatically. 
+    // Here we rely on SpEL finding the bean by name "coursePermissionService".
+
+	public CourseController(CourseService courseService,
+			CategoryService categoryService, HashtagService hashtagService, 
+			BookingService bookingService, ContentAccessService contentAccessService) {
 		this.courseService = courseService;
 		this.categoryService = categoryService;
 		this.hashtagService = hashtagService;
+		this.bookingService = bookingService;
 		this.contentAccessService = contentAccessService;
 	}
+
 	@GetMapping("/courses")
 	public String getCourses(@ModelAttribute CourseSearchDTO searchDTO, Model model) {
 		Page<CourseDTO> coursePage = courseService.search(searchDTO);
@@ -64,8 +72,10 @@ public class CourseController {
 
 		return "/views/courses/courses";
 	}
-	@GetMapping({ "/tutor/courses/add" })
-	public String getCreatePage(Model model, @PathVariable(required = false) Long id) {
+
+	@GetMapping("/tutor/courses/add")
+    @PreAuthorize("hasRole('TUTOR')")
+	public String getCreatePage(Model model) {
 		CourseDTO course = new CourseDTO();
 		course.updateCategoryField(categoryService.getAllDTOs());
 		model.addAttribute("course", course);
@@ -73,107 +83,101 @@ public class CourseController {
 	}
 
 	@GetMapping("/courses/{id}")
-	public String addCourse(Model model, @PathVariable(required = true) Long id) {
-	    Course course = courseService.findById(id);
-	    if (course == null) {
-	        model.addAttribute("errorMessage", "Course not found");
-	        return "/error/404";
-	    }
-	    CourseDTO courseDTO = courseService.mapToDTO(course);
-	    double avgRating = course.getRatings().stream().mapToInt(Rating::getStars).average().orElse(0.0);
-	    model.addAttribute("avgRating", avgRating);
-	    model.addAttribute("course", courseDTO);
+	public String getCourseDetails(Model model, @PathVariable Long id, @AuthenticationPrincipal MyUserDetails userDetails) {
+		Course course = courseService.findById(id);
+		if (course == null) {
+			model.addAttribute("errorMessage", "Course not found");
+			return "/error/404";
+		}
+		
+		CourseDTO courseDTO = courseService.mapToDTO(course);
+		double avgRating = course.getRatings().stream().mapToInt(Rating::getStars).average().orElse(0.0);
+		model.addAttribute("avgRating", avgRating);
+		model.addAttribute("course", courseDTO);
 
-	    Long userId = getCurrentUserId();
-	    boolean hasBooked = bookingService.hasUserBookedCourse(userId, id);
-	    model.addAttribute("hasBooked", hasBooked);
-	    model.addAttribute("hourlyRate", course.getOwner().getHourlyRate());
-	    
-	    // ChapterViewModels erstellen
-	    boolean isOwner = courseDTO.getIsOwner();
-	    Set<Long> accessibleChapterIds = contentAccessService.getAccessibleChapterIds(userId, id);
-	    boolean hasCourseAccess = (accessibleChapterIds == null); // null = ganzer Kurs gekauft
-	    
-	    List<ChapterViewModel> chapterViews = new ArrayList<>();
-	    for (ChapterDTO chapter : courseDTO.getChapters()) {
-	        boolean accessible = isOwner || !chapter.isPaywalled() || hasCourseAccess 
-	                || (accessibleChapterIds != null && accessibleChapterIds.contains(chapter.getId()));
-	        boolean purchasable = !isOwner && chapter.isPaywalled() && !accessible;
-	        chapterViews.add(new ChapterViewModel(chapter, accessible, purchasable));
-	    }
-	    model.addAttribute("chapterViews", chapterViews);
-	    
-	    return "/views/courses/course";
+		Long userId = userDetails != null ? userDetails.getId() : null;
+		
+		boolean hasBooked = false;
+		if (userId != null) {
+			hasBooked = bookingService.hasUserBookedCourse(userId, id);
+		}
+		model.addAttribute("hasBooked", hasBooked);
+		model.addAttribute("hourlyRate", course.getOwner().getHourlyRate());
+
+		// Create Chapter View Models
+		List<ChapterViewModel> chapterViews = createChapterViewModels(courseDTO, userId, id);
+		model.addAttribute("chapterViews", chapterViews);
+
+		return "/views/courses/course";
 	}
 
-	@GetMapping({ "/tutor/courses/update/{id}" })
-	public String getUpdatePage(Model model, @PathVariable(required = true) Long id) {
+	@GetMapping("/tutor/courses/update/{id}")
+    @PreAuthorize("@coursePermissionService.isTutorAndOwnerOrAdmin(#id)")
+	public String getUpdatePage(Model model, @PathVariable Long id) {
 		CourseDTO course = courseService.findDTOById(id);
 
-		if (course != null) {
-			if (!course.getIsOwner()) {
-				// Handle unauthorized access
-				model.addAttribute("errorMessage", "You are not authorized to edit this course.");
-				return "/error/403"; // Assuming you have a 403 error view
-			}
-			course.updateCategoryField(categoryService.getAllDTOs());
-			model.addAttribute("course", course);
-		} else {
-			// Handle the case where the course is not found
+		if (course == null) {
 			model.addAttribute("errorMessage", "Course not found");
-			return "/error/404"; // Assuming you have an error view
+			return "/error/404";
 		}
+		
 
+		course.updateCategoryField(categoryService.getAllDTOs());
+		model.addAttribute("course", course);
+		
 		return "/views/courses/course-edit";
 	}
 
-	@PostMapping({ "/tutor/courses/save" })
-	public String processCourseForm(Model model, @ModelAttribute @Valid CourseDTO course, BindingResult result) {
+	@PostMapping("/tutor/courses/save")
+    @PreAuthorize("hasRole('TUTOR')")
+	public String processCourseForm(Model model, @ModelAttribute @Valid CourseDTO course, BindingResult result, 
+			@AuthenticationPrincipal MyUserDetails userDetails) {
 		if (result.hasErrors()) {
 			course.updateCategoryField(categoryService.getAllDTOs());
 			course = courseService.handleValidationErrors(course, result.getFieldErrors());
 			model.addAttribute("course", course);
 			return "/views/courses/course-edit";
 		}
+		
 		Course courseEntity = courseService.mapToEntity(course);
-		List<Category> categories = new java.util.ArrayList<>();
+		List<Category> categories = new ArrayList<>();
 		if (course.getCategoryIds() != null) {
 			categories = categoryService.findAllEntitiesByIds(course.getCategoryIds());
 		}
 		courseEntity.setCategories(categories);
+		courseEntity.setOwner(userDetails.getDbUser());
 
-		courseEntity.setOwner(((tutothr.auth.config.MyUserDetails) SecurityContextHolder.getContext()
-		        .getAuthentication().getPrincipal()).getDbUser());
-		// Creating a new course
 		courseService.save(courseEntity);
 		return "redirect:/courses";
 	}
 
 	@PutMapping("/tutor/courses/save/{id}")
-	public String putMethodName(Model model, @ModelAttribute @Valid CourseDTO course, BindingResult result,
-			@PathVariable(required = true) Long id) {
-		System.out.println("DEBUG: Updating course " + id + ", title: '" + course.getTitle() + "'");
+    @PreAuthorize("@coursePermissionService.isTutorAndOwnerOrAdmin(#id)")
+	public String updateCourse(Model model, @ModelAttribute @Valid CourseDTO courseDTO, BindingResult result,
+			@PathVariable Long id) {
+		logger.debug("Updating course {}, title: '{}'", id, courseDTO.getTitle());
+		
 		if (result.hasErrors()) {
-			System.out.println("DEBUG: Validation errors: " + result.getAllErrors());
-			course.updateCategoryField(categoryService.getAllDTOs());
-			course = courseService.handleValidationErrors(course, result.getFieldErrors());
-			model.addAttribute("course", course);
+			logger.debug("Validation errors: {}", result.getAllErrors());
+			courseDTO.updateCategoryField(categoryService.getAllDTOs());
+			courseDTO = courseService.handleValidationErrors(courseDTO, result.getFieldErrors());
+			model.addAttribute("course", courseDTO);
 			return "/views/courses/course-edit";
 		}
 
 		Course existingCourse = courseService.findById(id);
 		if (existingCourse == null) {
-			return "redirect:/courses"; // handle error better ideally
+			return "redirect:/courses"; 
 		}
 
 		// Update fields from DTO
-		existingCourse.setTitle(course.getTitle());
-		existingCourse.setDescription(course.getDescription());
-		existingCourse.setPrice(course.getPrice());
+		existingCourse.setTitle(courseDTO.getTitle());
+		existingCourse.setDescription(courseDTO.getDescription());
+		existingCourse.setPrice(courseDTO.getPrice());
 
-		List<Category> categories = new java.util.ArrayList<>();
-		if (course.getCategoryIds() != null) {
-			categories = categoryService.findAllEntitiesByIds(course.getCategoryIds());
+		List<Category> categories = new ArrayList<>();
+		if (courseDTO.getCategoryIds() != null) {
+			categories = categoryService.findAllEntitiesByIds(courseDTO.getCategoryIds());
 		}
 		existingCourse.setCategories(categories);
 
@@ -182,7 +186,8 @@ public class CourseController {
 	}
 
 	@DeleteMapping("/tutor/courses/delete/{id}")
-	public String deleteCourse(@PathVariable(required = true) Long id) {
+    @PreAuthorize("@coursePermissionService.isTutorAndOwnerOrAdmin(#id)")
+	public String deleteCourse(@PathVariable Long id) {
 		courseService.deleteById(id);
 		return "redirect:/courses";
 	}
@@ -191,6 +196,7 @@ public class CourseController {
 	 * Hashtags zu einem Kurs hinzufuegen
 	 */
 	@PostMapping("/courses/{id}/hashtags")
+    @PreAuthorize("@coursePermissionService.isTutorAndOwnerOrAdmin(#id)")
 	public String addHashtags(@PathVariable Long id, @RequestParam String hashtags,
 			@AuthenticationPrincipal MyUserDetails userDetails) {
 		hashtagService.addHashtagsToCourse(id, hashtags, userDetails.getDbUser());
@@ -201,6 +207,7 @@ public class CourseController {
 	 * Hashtag von einem Kurs entfernen
 	 */
 	@DeleteMapping("/courses/{id}/hashtags/{hashtagId}")
+    @PreAuthorize("@coursePermissionService.isTutorAndOwnerOrAdmin(#id)")
 	public String removeHashtag(@PathVariable Long id, @PathVariable Long hashtagId,
 			@AuthenticationPrincipal MyUserDetails userDetails) {
 		boolean isAdmin = userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
@@ -208,7 +215,26 @@ public class CourseController {
 		return "redirect:/courses/" + id;
 	}
 
-	private Long getCurrentUserId() {
-		return ((AppPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+	private List<ChapterViewModel> createChapterViewModels(CourseDTO courseDTO, Long userId, Long courseId) {
+		boolean isOwner = courseDTO.getIsOwner();
+		Set<Long> accessibleChapterIds = null;
+		boolean hasCourseAccess = false;
+		
+		if (userId != null) {
+			accessibleChapterIds = contentAccessService.getAccessibleChapterIds(userId, courseId);
+			hasCourseAccess = (accessibleChapterIds == null); // null = whole course purchased
+		}
+
+		List<ChapterViewModel> chapterViews = new ArrayList<>();
+		for (ChapterDTO chapter : courseDTO.getChapters()) {
+			boolean isAccessible = isOwner 
+					|| !chapter.isPaywalled() 
+					|| hasCourseAccess
+					|| (accessibleChapterIds != null && accessibleChapterIds.contains(chapter.getId()));
+			
+			boolean isPurchasable = !isOwner && chapter.isPaywalled() && !isAccessible;
+			chapterViews.add(new ChapterViewModel(chapter, isAccessible, isPurchasable));
+		}
+		return chapterViews;
 	}
 }

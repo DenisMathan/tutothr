@@ -25,7 +25,7 @@
             </div>
 
             <div class="course-list-actions">
-                <th:block th:if="${course.isOwner}">
+                <th:block th:if="${@coursePermissionService.isTutorAndOwnerOrAdmin(course.id)}">
                     <button class="btn-icon-action"
                             th:title="#{common.edit}"
                             th:onclick="|event.stopPropagation(); window.location.href='/tutor/courses/update/${course.id}'|">

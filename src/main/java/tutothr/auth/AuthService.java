@@ -130,7 +130,9 @@ public class AuthService extends BaseService<RegisterUserDTO, User> implements U
         Object principal = authentication.getPrincipal();
 
         if (principal instanceof AppPrincipal) {
-            return ((AppPrincipal) principal).getDbUser();
+            // Reload user from DB to ensure fresh state (e.g. updated roles, username)
+            Long userId = ((AppPrincipal) principal).getId();
+            return ((UserRepositoryI) repository).findById(userId).orElse(null);
         }
         
         // Fallback for OAuth2User if it doesn't implement AppPrincipal
