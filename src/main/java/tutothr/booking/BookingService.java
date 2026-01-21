@@ -51,16 +51,26 @@ public class BookingService {
 				.map(this::toDTO);
 	}
 
+//	public List<BookingDTO> findByTutor(User tutor) {
+//		return bookingRepository.findByTutor(tutor)
+//				.stream()
+//				.map(this::toDTO)
+//				.collect(Collectors.toList());
+//	}
 	public List<BookingDTO> findByTutor(User tutor) {
-		return bookingRepository.findByTutor(tutor)
-				.stream()
-				.map(this::toDTO)
-				.collect(Collectors.toList());
+	    return bookingRepository.findByTutorIdNative(tutor.getId(), Pageable.unpaged())
+	            .stream()
+	            .map(this::toDTO)
+	            .collect(Collectors.toList());
 	}
 	
+//	public Page<BookingDTO> findByTutorPaged(User tutor, Pageable pageable) {
+//		return bookingRepository.findByTutor(tutor, pageable)
+//				.map(this::toDTO);
+//	}
 	public Page<BookingDTO> findByTutorPaged(User tutor, Pageable pageable) {
-		return bookingRepository.findByTutor(tutor, pageable)
-				.map(this::toDTO);
+	    return bookingRepository.findByTutorIdNative(tutor.getId(), pageable)
+	            .map(this::toDTO);
 	}
 
 	public void deleteById(Long id) {

@@ -126,4 +126,17 @@ public abstract class BaseEntity {
 	public void setDeletedBy(String deletedBy) {
 		this.deletedBy = deletedBy;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+	    if (this == o) return true;
+	    if (o == null || getClass() != o.getClass()) return false;
+	    BaseEntity that = (BaseEntity) o;
+	    return id != null && id.equals(that.id);
+	}
+
+	@Override
+	public int hashCode() {
+	    return getClass().hashCode();
+	}
 }
