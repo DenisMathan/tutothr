@@ -35,6 +35,12 @@ public class ModerationController {
         return handleReport(() -> moderationService.reportChapter(getCurrentUserId(), id, reason));
     }
 
+    @PostMapping("/hashtags/{id}/report")
+    @ResponseBody
+    public ResponseEntity<?> reportHashtag(@PathVariable Long id, @RequestParam String reason) {
+        return handleReport(() -> moderationService.reportHashtag(getCurrentUserId(), id, reason));
+    }
+
     // Helper für JSON Responses
     private ResponseEntity<?> handleReport(Runnable action) {
         Map<String, String> response = new HashMap<>();

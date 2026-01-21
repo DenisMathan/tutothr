@@ -1,6 +1,7 @@
 package tutothr.moderation.interfaces;
 
 import tutothr.common.MyBaseRepository;
+import tutothr.hashtag.Hashtag;
 import tutothr.message.Message;
 import tutothr.course.Course;
 import tutothr.chapter.Chapter;
@@ -16,4 +17,5 @@ public interface ReportRepositoryI extends MyBaseRepository<Report, Long> {
     boolean existsByReporterAndMessageAndStatus(User reporter, Message message, ReportStatus status);
     boolean existsByReporterAndCourseAndStatus(User reporter, Course course, ReportStatus status);
     boolean existsByReporterAndChapterAndStatus(User reporter, Chapter chapter, ReportStatus status);
+    boolean existsByReporterAndHashtagAndStatus(User reporter, Hashtag hashtag, ReportStatus status);
 }

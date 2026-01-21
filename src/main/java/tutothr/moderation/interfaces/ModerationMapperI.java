@@ -94,6 +94,20 @@ public abstract class ModerationMapperI {
                     }
                 }
                 break;
+            case HASHTAG:
+                if(report.getHashtag() != null) {
+                    dto.setTargetId(report.getHashtag().getId());
+                    dto.setContentPreview(report.getHashtag().getName());
+                    dto.setContextInfo("Hashtag");
+
+                    var creator = report.getHashtag().getCreator();
+                    if (creator != null) {
+                        dto.setOffenderId(creator.getId());
+                        dto.setOffenderUsername(creator.getUsername());
+                        dto.setOffenderStrikes(creator.getStrikes());
+                    }
+                }
+                break;
         }
     }
 }
