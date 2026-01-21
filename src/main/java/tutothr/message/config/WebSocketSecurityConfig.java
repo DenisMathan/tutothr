@@ -18,7 +18,7 @@ public class WebSocketSecurityConfig {
             MessageMatcherDelegatingAuthorizationManager.Builder messages) {
 
         messages
-                // 1. Technische Nachrichten (Connect/Disconnect) IMMER erlauben
+                // 1. Technische Nachrichten (Connect/Disconnect) immer erlauben
                 .nullDestMatcher().permitAll()
                 .simpTypeMatchers(SimpMessageType.CONNECT, SimpMessageType.DISCONNECT, SimpMessageType.HEARTBEAT).permitAll()
 
@@ -34,7 +34,7 @@ public class WebSocketSecurityConfig {
         return messages.build();
     }
 
-    // WICHTIG: Überschreibt den Standard-CSRF-Interceptor.
+    // Überschreibt den Standard-CSRF-Interceptor.
     // Verhindert, dass CONNECT Frames geblockt werden, weil kein X-XSRF-TOKEN Header dabei ist.
     @Bean
     public ChannelInterceptor csrfChannelInterceptor() {

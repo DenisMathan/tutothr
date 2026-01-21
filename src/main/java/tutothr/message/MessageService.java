@@ -59,10 +59,6 @@ public class MessageService {
                 });
     }
 
-    /**
-     * Gibt eine Liste von Konversations-Vorschauen zurück (als DTO).
-     * Dient der Anzeige in der Inbox.
-     */
     public List<ConversationDTO> getConversations(Long userId) {
         List<Message> allMessages = getAllMessagesByUserId(userId);
 
@@ -84,7 +80,7 @@ public class MessageService {
         for (Map.Entry<Long, List<Message>> entry : conversationMap.entrySet()) {
             List<Message> messages = entry.getValue();
 
-            // Sortierung: Erst nach Zeit (neueste zuerst), dann nach ID (als Tie-Breaker)
+            // Sortierung: Erst nach Zeit (neueste zuerst), dann nach ID
             messages.sort((m1, m2) -> {
                 int timeComparison = m2.getSentAt().compareTo(m1.getSentAt());
                 if (timeComparison != 0) {
@@ -105,7 +101,7 @@ public class MessageService {
                     ? latestMessage.getReceiver()
                     : latestMessage.getSender();
 
-            // DTO erstellen (statt innerer Klasse)
+            // DTO erstellen
             ConversationDTO dto = new ConversationDTO(
                     otherUser.getId(),
                     otherUser.getUsername(),

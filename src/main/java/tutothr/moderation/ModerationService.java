@@ -110,22 +110,19 @@ public class ModerationService {
             User offender = getOffenderFromReport(report);
 
             if (offender != null) {
-                // Nutze UserService für Strike-Vergabe (inkl. Auto-Ban)
                 boolean userWasBanned = userService.incrementStrikes(offender.getId());
 
-                // Logging passiert bereits in UserService.incrementStrikes()
-
-                // Optional: Weitere Aktionen bei Ban
+                // weitere Aktionen bei Ban
                 if (userWasBanned) {
                     handleUserBanned(offender, report);
                 }
             } else {
-                System.err.println("⚠️ WARNUNG: Konnte Offender für Report " + reportId + " nicht finden!");
+                System.err.println("WARNUNG: Konnte Offender für Report " + reportId + " nicht finden!");
             }
         } else {
             // Report ignorieren
             report.setStatus(ReportStatus.REJECTED);
-            System.out.println("ℹ️ Report " + reportId + " wurde ignoriert");
+            System.out.println("ℹReport " + reportId + " wurde ignoriert");
         }
 
         reportRepository.save(report);
@@ -151,7 +148,7 @@ public class ModerationService {
 
     private void handleUserBanned(User user, Report report) {
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        System.out.println("🚨 USER AUTOMATISCH GESPERRT");
+        System.out.println("  USER AUTOMATISCH GESPERRT");
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         System.out.println("User: " + user.getUsername() + " (ID: " + user.getId() + ")");
         System.out.println("Email: " + user.getEmail());
@@ -160,10 +157,7 @@ public class ModerationService {
         System.out.println("Report-Typ: " + report.getType());
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
-        // TODO: Hier weitere Aktionen implementieren:
         // - emailService.sendBanNotification(user);
-        // - auditLogService.logUserBan(user, report);
-        // - notificationService.notifyAdmins(user);
     }
 
     public List<User> getBannedUsers() {

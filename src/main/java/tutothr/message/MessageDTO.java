@@ -2,10 +2,6 @@ package tutothr.message;
 
 import java.time.LocalDateTime;
 
-/**
- * DTO für Message-Übertragung zwischen Backend und Frontend
- * Verwendet für WebSocket und REST API
- */
 public class MessageDTO {
 
     private Long id;
@@ -18,21 +14,15 @@ public class MessageDTO {
     private boolean read;
 
     public enum MessageType {
-        CHAT,       // Normale Chat-Nachricht
-        TYPING,     // Typing-Indikator
-        READ        // Read-Benachrichtigung
+        CHAT,
+        TYPING,
+        READ
     }
 
-    /**
-     * Leerer Constructor für JSON Deserialization
-     */
     public MessageDTO() {
         this.type = MessageType.CHAT;
     }
 
-    /**
-     * Constructor aus Message Entity
-     */
     public MessageDTO(Message message) {
         this.id = message.getId();
         this.content = message.getContent();
@@ -44,10 +34,6 @@ public class MessageDTO {
         this.type = MessageType.CHAT;
     }
 
-    /**
-     * Factory method für TYPING notification
-     * Vereinfacht die Erstellung im WebSocketController
-     */
     public static MessageDTO createTypingNotification(Long senderId, Long receiverId) {
         MessageDTO dto = new MessageDTO();
         dto.setSenderId(senderId);
@@ -56,10 +42,6 @@ public class MessageDTO {
         return dto;
     }
 
-    /**
-     * Factory method für READ notification
-     * Vereinfacht die Erstellung im WebSocketController
-     */
     public static MessageDTO createReadNotification(Long senderId, Long receiverId) {
         MessageDTO dto = new MessageDTO();
         dto.setSenderId(senderId);
@@ -67,8 +49,6 @@ public class MessageDTO {
         dto.setType(MessageType.READ);
         return dto;
     }
-
-    // Getters and Setters
 
     public Long getId() {
         return id;

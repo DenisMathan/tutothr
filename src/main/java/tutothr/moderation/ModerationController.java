@@ -49,7 +49,7 @@ public class ModerationController {
         }
     }
 
-    // ADMIN VIEW
+    // Moderations View
     @GetMapping("/admin/reports")
     @PreAuthorize("hasRole('ADMIN')")
     public String showReports(Model model) {
@@ -58,7 +58,7 @@ public class ModerationController {
         return "views/admin/reports";
     }
 
-    // RESOLVE
+    // Report resolven
     @PostMapping("/admin/reports/{id}/resolve")
     @PreAuthorize("hasRole('ADMIN')")
     public String resolveReport(@PathVariable Long id, @RequestParam boolean strike) {

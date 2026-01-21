@@ -72,12 +72,10 @@ public class RatingController {
         newRating.setCourse(course);
         newRating.setAuthor(currentUser);
 
-        // Rating speichern
         ratingService.save(newRating);
 
         System.out.println("Rating saved with ID: " + newRating.getId());
 
-        // Zurück zur Kursseite
         return "redirect:/courses/" + id;
     }
 
