@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tutothr.auth.config.CustomOidcUser;
 import tutothr.auth.verifikation.VerificationRepositoryI;
 import tutothr.common.BaseService;
+import tutothr.message.interfaces.MessageRepositoryI;
 import tutothr.hashtag.HashtagService;
 import tutothr.user.interfaces.UserMapperI;
 import tutothr.user.interfaces.UserRepositoryI;
@@ -25,15 +26,18 @@ public class UserService extends BaseService<UserDTO, User> implements UserServi
 	private final UserRepositoryI userRepository;
 	private final HashtagService hashtagService;
 	private final VerificationRepositoryI verificationRepository;
+	private final MessageRepositoryI messageRepository;
 
 	@Autowired
 	private UserMapperI userMapper;
 
-	public UserService(UserRepositoryI userRepository, HashtagService hashtagService, VerificationRepositoryI verificationRepository) {
+	public UserService(UserRepositoryI userRepository, HashtagService hashtagService, 
+			VerificationRepositoryI verificationRepository, MessageRepositoryI messageRepository) {
 		super(userRepository);
 		this.userRepository = userRepository;
 		this.hashtagService = hashtagService;
 		this.verificationRepository = verificationRepository;
+		this.messageRepository = messageRepository;
 	}
 
 	@Override
@@ -78,8 +82,19 @@ public class UserService extends BaseService<UserDTO, User> implements UserServi
 
 	@Override
 	public void delete(User user) {
+		// 1. Verification Token löschen
 		verificationRepository.findByUserId(user.getId()).ifPresent(verificationRepository::delete);
+		
+		// 2. Hashtag-Creator auf null setzen
 		hashtagService.releaseHashtagsFromCreator(user);
+		
+		// 3. Nachrichten löschen (wo User Sender oder Empfänger ist)
+		messageRepository.findBySenderIdOrderBySentAtDesc(user.getId())
+			.forEach(messageRepository::delete);
+		messageRepository.findByReceiverIdOrderBySentAtDesc(user.getId())
+			.forEach(messageRepository::delete);
+		
+		// 4. User löschen
 		userRepository.delete(user);
 	}
 

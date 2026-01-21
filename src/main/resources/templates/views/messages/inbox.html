@@ -39,7 +39,8 @@
                                 Username
                             </h3>
                             <p style="margin: 0.25rem 0 0 0; color: var(--text-muted); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                               th:text="${msg.sender.id == currentUser.id ? #{messages.you} + ': ' + msg.content : msg.content}">
+                               th:with="youLabel=#{messages.you}"
+                               th:text="${msg.sender.id == currentUser.id ? youLabel + ': ' + msg.content : msg.content}">
                                 Vorschau...
                             </p>
                         </div>

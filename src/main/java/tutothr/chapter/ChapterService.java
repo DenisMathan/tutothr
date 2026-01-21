@@ -63,7 +63,14 @@ public class ChapterService extends BaseService<ChapterDTO, Chapter> {
     public ChapterDTO update(ChapterDTO chapterDTO) {
         Chapter existingChapter = findById(chapterDTO.getId());
         
-        // Handle new files (append)
+        // Felder manuell übertragen (nur die, die im Formular sind)
+        existingChapter.setTitle(chapterDTO.getTitle());
+        existingChapter.setDescription(chapterDTO.getDescription());
+        existingChapter.setPaywalled(chapterDTO.isPaywalled());
+        existingChapter.setPrice(chapterDTO.getPrice());
+        // WICHTIG: position und attachmentUrls NICHT überschreiben!
+        
+        // Handle new files (append to existing)
         if (chapterDTO.getFiles() != null) {
             for (org.springframework.web.multipart.MultipartFile file : chapterDTO.getFiles()) {
                 if (!file.isEmpty()) {
@@ -72,10 +79,9 @@ public class ChapterService extends BaseService<ChapterDTO, Chapter> {
                 }
             }
         }
-        // Re-use logic from BaseService but we must pass the modified entity context or save it first.
+        
         repository.save(existingChapter);
-        // Now call super to update the rest (title, description etc)
-        return super.update(chapterDTO);
+        return mapToDTO(existingChapter);
     }
 
     public CourseDTO findCourseDTOById(Long id) {

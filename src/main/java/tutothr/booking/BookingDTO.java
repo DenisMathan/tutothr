@@ -2,7 +2,14 @@ package tutothr.booking;
 
 import tutothr.common.BaseDTO;
 
+/**
+ * DTO fuer Buchungen. Enthaelt Daten fuer alle drei Buchungstypen
+ * (Kurs, Kapitel, Tutorium) sowie Anzeige-Informationen fuer Views.
+ */
 public class BookingDTO extends BaseDTO {
+	
+	// === Felder ===
+	
 	private Long studentId;
 	private Long timeSlotId;
 	private Long courseId;
@@ -11,8 +18,7 @@ public class BookingDTO extends BaseDTO {
 	private float price;
 	private Long invoiceId;
 	
-	// Buchungstyp
-    private String bookingType;
+	private String bookingType;
 	
 	// Fuer die Anzeige in Views
 	private String studentName;
@@ -20,15 +26,18 @@ public class BookingDTO extends BaseDTO {
 	private String bookingDescription;
 		
 	// Fuer Tutor-Benachrichtigungen
-    private String tutorName;
-    private String tutorEmail;
+	private String tutorName;
+	private String tutorEmail;
+	
+	// === Methoden ===
 	
 	@Override
 	public void initFields() {
 		// Formular manuell erstellt
 	}
 
-	// Getter und Setter
+	// === Getter und Setter ===
+	
 	public Long getStudentId() {
 		return studentId;
 	}
@@ -54,12 +63,12 @@ public class BookingDTO extends BaseDTO {
 	}
 
 	public Long getChapterId() {
-        return chapterId;
-    }
+		return chapterId;
+	}
 
-    public void setChapterId(Long chapterId) {
-        this.chapterId = chapterId;
-    }
+	public void setChapterId(Long chapterId) {
+		this.chapterId = chapterId;
+	}
 	
 	public BookingStatus getStatus() {
 		return status;
@@ -78,11 +87,11 @@ public class BookingDTO extends BaseDTO {
 	}
 
 	public String getBookingType() {
-	    return bookingType;
+		return bookingType;
 	}
 
 	public void setBookingType(String bookingType) {
-	    this.bookingType = bookingType;
+		this.bookingType = bookingType;
 	}
 	
 	public String getStudentName() {
@@ -94,42 +103,42 @@ public class BookingDTO extends BaseDTO {
 	}
 
 	public String getStudentEmail() {
-	    return studentEmail;
+		return studentEmail;
 	}
 
 	public void setStudentEmail(String studentEmail) {
-	    this.studentEmail = studentEmail;
+		this.studentEmail = studentEmail;
 	}
 	
 	public String getBookingDescription() {
-        return bookingDescription;
-    }
+		return bookingDescription;
+	}
 
-    public void setBookingDescription(String bookingDescription) {
-        this.bookingDescription = bookingDescription;
-    }
+	public void setBookingDescription(String bookingDescription) {
+		this.bookingDescription = bookingDescription;
+	}
 	
 	public Long getInvoiceId() {
-	    return invoiceId;
+		return invoiceId;
 	}
 
 	public void setInvoiceId(Long invoiceId) {
-	    this.invoiceId = invoiceId;
+		this.invoiceId = invoiceId;
 	}
 	
 	public String getTutorName() {
-	    return tutorName;
+		return tutorName;
 	}
 
 	public void setTutorName(String tutorName) {
-	    this.tutorName = tutorName;
+		this.tutorName = tutorName;
 	}
 
 	public String getTutorEmail() {
-	    return tutorEmail;
+		return tutorEmail;
 	}
 
 	public void setTutorEmail(String tutorEmail) {
-	    this.tutorEmail = tutorEmail;
+		this.tutorEmail = tutorEmail;
 	}
 }

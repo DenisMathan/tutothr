@@ -90,7 +90,7 @@ public class HashtagService {
 				.orElseThrow(() -> new RuntimeException("Hashtag nicht gefunden"));
 		
 		boolean isCourseOwner = course.getOwnerId().equals(currentUserId);
-		boolean isHashtagCreator = hashtag.getCreator().getId().equals(currentUserId);
+		boolean isHashtagCreator = hashtag.getCreator() != null && hashtag.getCreator().getId().equals(currentUserId);
 		
 		if (!isAdmin && !isCourseOwner && !isHashtagCreator) {
 			throw new RuntimeException("Keine Berechtigung");
