@@ -30,8 +30,8 @@ VALUES ('markus', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgR
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
 VALUES ('test', '{bcrypt}$2a$12$B5h5d.cmb6RHYYkjApOJpucQwf9b.t8IE4SUqDDSRuufiFDVVZ55.', 'test@test.de', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 
-INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, auth_provider, verified, two_factor_enabled, account_non_locked, strikes)
-VALUES ('Denice', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'denis.mathan@googlemail.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, 'GOOGLE', true, false, true, 0);
+-- INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, auth_provider, verified, two_factor_enabled, account_non_locked, strikes)
+-- VALUES ('Denice', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'denis.mathan@googlemail.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, 'GOOGLE', true, false, true, 0);
 
 
 -- INSERT INTO verification_token (token, user_id, created_at, expires_at) VALUES ('token123', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + INTERVAL '24 HOURS');
@@ -50,8 +50,8 @@ INSERT INTO user_roles(user_id, role) VALUES (4, 'TUTOR');
 INSERT INTO user_roles(user_id, role) VALUES (5, 'STUDENT');
 INSERT INTO user_roles(user_id, role) VALUES (6, 'STUDENT');
 INSERT INTO user_roles(user_id, role) VALUES (14, 'STUDENT');
-INSERT INTO user_roles(user_id, role) VALUES (15, 'ADMIN');
-INSERT INTO user_roles(user_id, role) VALUES (15, 'TUTOR');
+-- INSERT INTO user_roles(user_id, role) VALUES (15, 'ADMIN');
+-- INSERT INTO user_roles(user_id, role) VALUES (15, 'TUTOR');
 
 
 
