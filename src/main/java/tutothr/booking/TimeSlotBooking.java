@@ -8,9 +8,15 @@ import tutothr.booking.timeslot.TimeSlot;
 import tutothr.course.Course;
 import tutothr.user.User;
 
+/**
+ * Buchung fuer ein Tutorium (TimeSlot).
+ */
 @Entity
 @DiscriminatorValue("TIMESLOT")
 public class TimeSlotBooking extends Booking {
+	
+	// === Felder ===
+	
 	@ManyToOne
 	@JoinColumn(name = "course_id")
 	private Course course;
@@ -19,8 +25,9 @@ public class TimeSlotBooking extends Booking {
 	@JoinColumn(name = "timeslot_id")
 	private TimeSlot timeSlot;
 
+	// === Konstruktoren ===
+	
 	public TimeSlotBooking() {
-
 	}
 
 	public TimeSlotBooking(User student, Course course, TimeSlot timeSlot, float price) {
@@ -29,6 +36,8 @@ public class TimeSlotBooking extends Booking {
 		this.timeSlot = timeSlot;
 	}
 
+	// === Getter und Setter ===
+	
 	public Course getCourse() {
 		return course;
 	}
@@ -45,6 +54,8 @@ public class TimeSlotBooking extends Booking {
 		this.timeSlot = timeSlot;
 	}
 
+	// === Ueberschriebene Methoden ===
+	
 	@Override
 	public String getBookingDescription() {
 		return "Tutorium: " + course.getTitle() + " (" + timeSlot.getDate() + ", " + timeSlot.getStartTime() + "-"
@@ -53,15 +64,15 @@ public class TimeSlotBooking extends Booking {
 	
 	@Override
 	public User getTutor() {
-	    return timeSlot.getTutor();
+		return timeSlot.getTutor();
 	}
 	
 	@Override
 	public TimeSlot cleanup() {
-	    if (timeSlot != null) {
-	        timeSlot.setAvailable(true);
-	        return timeSlot;
-	    }
-	    return null;
+		if (timeSlot != null) {
+			timeSlot.setAvailable(true);
+			return timeSlot;
+		}
+		return null;
 	}
 }

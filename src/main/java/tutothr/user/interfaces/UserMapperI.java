@@ -29,6 +29,7 @@ public abstract class UserMapperI {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "authProvider", ignore = true)
+    @Mapping(target = "username", source = "username")
     public abstract void updateUserFromDTO(UserDTO dto, @MappingTarget User user);
 
     @AfterMapping

@@ -110,7 +110,15 @@ public class MessageController {
                 "/queue/messages",
                 dto
         );
-        mailService.sendNewChatMail(recipient, sender);
+        
+        // Mail-Versand - Fehler abfangen, damit Nachricht trotzdem gesendet wird
+        try {
+            mailService.sendNewChatMail(recipient, sender);
+        } catch (Exception e) {
+            // Mail konnte nicht gesendet werden - Log und weitermachen
+            System.err.println("Mail konnte nicht gesendet werden: " + e.getMessage());
+        }
+        
         return "redirect:/messages/inbox";
     }
 

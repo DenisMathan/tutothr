@@ -16,11 +16,18 @@ import tutothr.booking.timeslot.TimeSlot;
 import tutothr.common.BaseEntity;
 import tutothr.user.User;
 
+/**
+ * Abstrakte Basisklasse fuer alle Buchungstypen (Kurs, Kapitel, Tutorium).
+ * Verwendet Single-Table-Inheritance mit Discriminator-Spalte.
+ */
 @Entity
 @Table(name = "booking")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "booking_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class Booking extends BaseEntity {
+
+	// === Felder ===
+	
 	@ManyToOne
 	@JoinColumn(name = "student_id", nullable = false)
 	private User student;
@@ -33,23 +40,27 @@ public abstract class Booking extends BaseEntity {
 	@OneToOne(mappedBy = "booking")
 	private Invoice invoice;
 	
+	// === Konstruktoren ===
+	
 	public Booking() {
 		// Default-Konstruktor (fuer JPA)
 	}
 	
 	public Booking(User student, float price) {
-        this.student = student;
-        this.price = price;
-    }
+		this.student = student;
+		this.price = price;
+	}
 	
-	// Abstrakte Methode fuer Anzeige
-    public abstract String getBookingDescription();
-    
-    public abstract User getTutor();
-    
-    public abstract TimeSlot cleanup();
+	// === Abstrakte Methoden ===
 	
-	// Getter und Setter
+	public abstract String getBookingDescription();
+	
+	public abstract User getTutor();
+	
+	public abstract TimeSlot cleanup();
+	
+	// === Getter und Setter ===
+	
 	public User getStudent() {
 		return student;
 	}
@@ -75,10 +86,10 @@ public abstract class Booking extends BaseEntity {
 	}
 	
 	public Invoice getInvoice() {
-	    return invoice;
+		return invoice;
 	}
 
 	public void setInvoice(Invoice invoice) {
-	    this.invoice = invoice;
+		this.invoice = invoice;
 	}
 }
