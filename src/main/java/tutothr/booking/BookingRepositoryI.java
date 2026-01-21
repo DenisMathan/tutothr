@@ -85,4 +85,15 @@ public interface BookingRepositoryI extends MyBaseRepository<Booking, Long> {
 
 	@Query("SELECT b.chapter.id FROM ChapterBooking b WHERE b.student.id = :studentId AND b.chapter.course.id = :courseId AND b.status = 'CONFIRMED'")
 	Set<Long> findPurchasedChapterIdsByUserAndCourse(@Param("studentId") Long studentId, @Param("courseId") Long courseId);
+
+    //meistgebuchter Kurs
+	@Query("""
+    SELECT TREAT(b AS TimeSlotBooking).course.title, COUNT(b.id)
+    FROM Booking b
+    WHERE TYPE(b) = TimeSlotBooking
+    AND TREAT(b AS TimeSlotBooking).timeSlot.tutor = :tutor
+    GROUP BY TREAT(b AS TimeSlotBooking).course.title
+    ORDER BY COUNT(b.id) DESC
+    """)
+	List<Object[]> findMostBookedCourse(@Param("tutor") User tutor, PageRequest pageable);
 }
