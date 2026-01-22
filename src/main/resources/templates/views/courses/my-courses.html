@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout}">
+
+<head>
+    <title th:text="#{tutor.courses.title}">Meine Kurse</title>
+</head>
+
+<section layout:fragment="mybody">
+
+    <div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1 class="text-main" style="margin: 0; font-weight: 700;" th:text="#{tutor.courses.title}">Meine Kurse</h1>
+            <a th:href="@{/tutor/courses/add}" class="btn-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+                <span th:text="#{courses.create}">Neuer Kurs</span>
+            </a>
+        </div>
+
+        <div class="mb-3" th:if="${totalItems != null and totalItems > 0}">
+            <span class="text-muted" th:text="${totalItems} + ' ' + #{courses.created.count}">Kurse erstellt</span>
+        </div>
+
+        <div th:if="${#lists.isEmpty(courses)}" class="alert-info" style="margin-top: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); padding: 3rem; border-radius: 8px; text-align: center;">
+            <div style="background: var(--bg-body); padding: 1rem; border-radius: 50%;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+            </div>
+            <div>
+                <h3 style="margin: 0 0 0.5rem 0; color: var(--text-main);" th:text="#{tutor.courses.empty.title}">Keine Kurse vorhanden</h3>
+                <p style="margin: 0;" th:text="#{tutor.courses.empty.desc}">Du hast noch keine Kurse erstellt. Starte jetzt!</p>
+            </div>
+            <a th:href="@{/tutor/courses/add}" class="btn-primary" th:text="#{courses.create}">Neuer Kurs</a>
+        </div>
+
+        <div class="courses-grid" th:if="${!#lists.isEmpty(courses)}">
+            <th:block th:each="course : ${courses}">
+                <div th:replace="~{fragments/courses/course-card :: course-card(${course})}"></div>
+            </th:block>
+        </div>
+
+        <div th:if="${totalPages > 1}" style="margin-top: 2rem;">
+            <div th:replace="~{fragments/pagination :: render(${currentPage}, ${totalPages})}"></div>
+        </div>
+
+    </div>
+
+</section>
+</html>

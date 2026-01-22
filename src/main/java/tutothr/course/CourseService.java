@@ -22,6 +22,8 @@ import tutothr.category.Category;
 import tutothr.category.CategoryService;
 import tutothr.hashtag.Hashtag;
 import tutothr.hashtag.HashtagService;
+import tutothr.user.User;
+
 import java.util.List;
 
 @Service
@@ -36,6 +38,8 @@ public class CourseService extends BaseService<CourseDTO, Course> {
 	private final HashtagService hashtagService;
 	@Autowired
 	private CourseMapperI mapper;
+	@Autowired
+	private CourseRepositoryI courseRepository;
 
 	public CourseService(CourseRepositoryI courseRepository, CoursePermissionService coursePermissionService,
 			CourseMapperI mapper, CategoryService categoryService, HashtagService hashtagService) {
@@ -101,6 +105,16 @@ public class CourseService extends BaseService<CourseDTO, Course> {
 			}
 		}
 		return ids;
+	}
+
+	public List<CourseDTO> findByOwner(User user) {
+
+		List<Course> courses = courseRepository.findByOwner(user);
+		List<CourseDTO> coursesDTO = new ArrayList<CourseDTO>();
+		for (Course course : courses) {
+			coursesDTO.add(mapToDTO(course));
+		}
+		return coursesDTO;
 	}
 
 	@Override

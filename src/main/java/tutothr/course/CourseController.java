@@ -31,6 +31,7 @@ import tutothr.chapter.ChapterDTO;
 import tutothr.chapter.ChapterViewModel;
 import tutothr.hashtag.HashtagService;
 import tutothr.rating.Rating;
+import tutothr.user.UserService;
 
 @Controller
 public class CourseController {
@@ -42,18 +43,20 @@ public class CourseController {
 	private final HashtagService hashtagService;
 	private final BookingService bookingService;
 	private final ContentAccessService contentAccessService;
+	private final UserService userService;
     // Injecting the permission service is not strictly needed for @PreAuthorize string, 
     // but good to have if we used it programmatically. 
     // Here we rely on SpEL finding the bean by name "coursePermissionService".
 
 	public CourseController(CourseService courseService,
 			CategoryService categoryService, HashtagService hashtagService, 
-			BookingService bookingService, ContentAccessService contentAccessService) {
+			BookingService bookingService, ContentAccessService contentAccessService, UserService userService) {
 		this.courseService = courseService;
 		this.categoryService = categoryService;
 		this.hashtagService = hashtagService;
 		this.bookingService = bookingService;
 		this.contentAccessService = contentAccessService;
+		this.userService = userService;
 	}
 
 	@GetMapping("/courses")
@@ -71,6 +74,15 @@ public class CourseController {
 		model.addAttribute("categories", categories);
 
 		return "views/courses/courses";
+	}
+
+	@GetMapping("/tutor/courses")
+	@PreAuthorize("hasRole('TUTOR')")
+	public String getMyCourses(Model model, @AuthenticationPrincipal AppPrincipal userDetails) {
+		Long userId = userDetails.getId();
+		List<CourseDTO> courses = courseService.findByOwner(userService.getUserById(userId));
+		model.addAttribute("courses", courses);
+		return "views/courses/my-courses";
 	}
 
 	@GetMapping("/tutor/courses/add")
