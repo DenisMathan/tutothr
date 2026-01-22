@@ -5,13 +5,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import tutothr.auth.config.MyUserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import jakarta.validation.Valid;
+import tutothr.auth.config.AppPrincipal;
 import tutothr.course.Course;
 import tutothr.course.CourseService;
 import tutothr.user.User;
-
-import jakarta.validation.Valid;
 import tutothr.user.UserService;
 
 @Controller
@@ -59,10 +62,13 @@ public class RatingController {
             return "views/courses/course-add-rating";
         }
 
-        Long userId = ((MyUserDetails) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal())
-                .getId();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId;
+        if (principal instanceof AppPrincipal appPrincipal) {
+            userId = appPrincipal.getId();
+        } else {
+            throw new RuntimeException("Unbekannter Principal-Typ");
+        }
 
         User currentUser = userService.getUserById(userId);
 

@@ -119,7 +119,10 @@ public interface BookingRepositoryI extends MyBaseRepository<Booking, Long> {
 
 	// === Zugriffspruefungen ===
 	
-	@Query("SELECT COUNT(b) > 0 FROM CourseBooking b WHERE b.student.id = :studentId AND b.course.id = :courseId AND b.status = 'CONFIRMED'")
+	@Query("SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END FROM Booking b WHERE " +
+		       "b.student.id = :studentId AND b.status = 'CONFIRMED' AND (" +
+		       "(TYPE(b) = CourseBooking AND TREAT(b AS CourseBooking).course.id = :courseId) OR " +
+		       "(TYPE(b) = TimeSlotBooking AND TREAT(b AS TimeSlotBooking).course.id = :courseId))")
 	boolean existsByStudentIdAndCourseId(@Param("studentId") Long studentId, @Param("courseId") Long courseId);
 	
 	@Query("SELECT COUNT(b) > 0 FROM ChapterBooking b WHERE b.student.id = :studentId AND b.chapter.id = :chapterId AND b.status = 'CONFIRMED'")
