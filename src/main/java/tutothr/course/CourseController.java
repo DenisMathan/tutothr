@@ -77,7 +77,7 @@ public class CourseController {
 	}
 
 	@GetMapping("/tutor/courses")
-	@PreAuthorize("@coursePermissionService.isTutorAndOwnerOrAdmin(#id)")
+	@PreAuthorize("hasRole('TUTOR')")
 	public String getMyCourses(Model model, @AuthenticationPrincipal AppPrincipal userDetails) {
 		Long userId = userDetails.getId();
 		List<CourseDTO> courses = courseService.findByOwner(userService.getUserById(userId));
