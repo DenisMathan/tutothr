@@ -41,39 +41,43 @@
                     Noch keine Nachrichten in dieser Konversation
                 </div>
 
-                <div th:each="message : ${messages}"
-                     th:if="${message.sender.id != currentUserId}"
-                     th:data-message-id="${message.id}"
-                     class="message-row received"> <div class="msg-content">
-                    <span class="msg-sender" th:text="${message.sender.username}">Sender</span>
-                    <p style="margin: 0; line-height: 1.4;" th:text="${message.content}">Inhalt</p>
+                <th:block th:each="message : ${messages}">
 
-                    <div class="msg-footer">
-                        <button th:onclick="'openReportModal(\'MESSAGE\', ' + ${message.id} + ')'"
-                                type="button"
-                                class="btn-chat-report"
-                                th:title="#{report.submit}">
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-                                <line x1="4" y1="22" x2="4" y2="15"></line>
-                            </svg>
-                            <span th:text="#{report.submit}">Melden</span>
-                        </button>
-                        <span class="msg-meta" th:text="${#temporals.format(message.sentAt, 'HH:mm')}">12:00</span>
-                    </div>
-                </div>
-                </div>
+                    <div th:if="${message.sender.id != currentUserId}"
+                         th:data-message-id="${message.id}"
+                         class="message-row received">
+                        <div class="msg-content">
+                            <span class="msg-sender" th:text="${message.sender.username}">Sender</span>
+                            <p style="margin: 0; line-height: 1.4;" th:text="${message.content}">Inhalt</p>
 
-                <div th:each="message : ${messages}"
-                     th:if="${message.sender.id == currentUserId}"
-                     th:data-message-id="${message.id}"
-                     class="message-row sent"> <div class="msg-content">
-                    <p style="margin: 0; line-height: 1.4;" th:text="${message.content}">Inhalt</p>
-                    <div class="msg-footer">
-                        <span class="msg-meta" th:text="${#temporals.format(message.sentAt, 'HH:mm')}">12:00</span>
+                            <div class="msg-footer">
+                                <button th:onclick="'openReportModal(\'MESSAGE\', ' + ${message.id} + ')'"
+                                        type="button"
+                                        class="btn-chat-report"
+                                        th:title="#{report.submit}">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                                        <line x1="4" y1="22" x2="4" y2="15"></line>
+                                    </svg>
+                                    <span th:text="#{report.submit}">Melden</span>
+                                </button>
+                                <span class="msg-meta" th:text="${#temporals.format(message.sentAt, 'HH:mm')}">12:00</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                </div>
+
+                    <div th:if="${message.sender.id == currentUserId}"
+                         th:data-message-id="${message.id}"
+                         class="message-row sent">
+                        <div class="msg-content">
+                            <p style="margin: 0; line-height: 1.4;" th:text="${message.content}">Inhalt</p>
+                            <div class="msg-footer">
+                                <span class="msg-meta" th:text="${#temporals.format(message.sentAt, 'HH:mm')}">12:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </th:block>
 
             </div>
 
