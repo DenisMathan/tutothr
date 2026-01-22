@@ -8,14 +8,14 @@
                 Learn the fundamentals...
             </p>
 
-            <div class="course-list-rating" th:classappend="${course.rating > 0} ? 'rating-active' : ''">
+            <!-- <div class="course-list-rating" th:classappend="${course.rating > 0} ? 'rating-active' : ''">
                 <svg th:if="${course.rating > 0}" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                 </svg>
                 <span th:if="${course.rating > 0}" th:text="${course.rating} + ' ' + #{courses.stars}">4.5 Sterne</span>
                 <span th:if="${course.rating == 0}" th:text="#{courses.new}">Neu</span>
                 <span th:if="${course.rating > 0}" style="opacity: 0.5; font-weight: 400; margin-left: 4px;" th:text="#{courses.rating}">Bewertung</span>
-            </div>
+            </div> -->
         </div>
 
         <div class="course-content-right">
