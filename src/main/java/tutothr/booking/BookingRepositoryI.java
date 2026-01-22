@@ -55,6 +55,21 @@ public interface BookingRepositoryI extends MyBaseRepository<Booking, Long> {
 	       "(TYPE(b) = ChapterBooking AND TREAT(b AS ChapterBooking).chapter.course.owner = :tutor)")
 	long countByTutor(@Param("tutor") User tutor);
 	
+	/**
+	 * Native Count-Query fuer Tutor-Buchungen - zuverlaessiger als JPQL TYPE/TREAT.
+	 * Zaehlt alle Buchungen (TimeSlot, Course, Chapter) wo der Tutor Owner ist.
+	 */
+	@Query(value = "SELECT COUNT(b.id) FROM booking b " +
+	       "LEFT JOIN timeslot ts ON ts.id = b.timeslot_id " +
+	       "LEFT JOIN course c ON c.id = b.course_id " +
+	       "LEFT JOIN chapter ch ON ch.id = b.chapter_id " +
+	       "LEFT JOIN course c2 ON c2.id = ch.course_id " +
+	       "WHERE (b.booking_type = 'TIMESLOT' AND ts.tutor_id = :tutorId) " +
+	       "OR (b.booking_type = 'COURSE' AND c.owner_id = :tutorId) " +
+	       "OR (b.booking_type = 'CHAPTER' AND c2.owner_id = :tutorId)",
+	       nativeQuery = true)
+	long countByTutorIdNative(@Param("tutorId") Long tutorId);
+	
 	@Query(value = "SELECT b.* FROM booking b " +
 		       "LEFT JOIN timeslot ts ON ts.id = b.timeslot_id " +
 		       "LEFT JOIN course c ON c.id = b.course_id " +
@@ -119,10 +134,12 @@ public interface BookingRepositoryI extends MyBaseRepository<Booking, Long> {
 
 	// === Zugriffspruefungen ===
 	
-	@Query("SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END FROM Booking b WHERE " +
-		       "b.student.id = :studentId AND b.status = 'CONFIRMED' AND (" +
-		       "(TYPE(b) = CourseBooking AND TREAT(b AS CourseBooking).course.id = :courseId) OR " +
-		       "(TYPE(b) = TimeSlotBooking AND TREAT(b AS TimeSlotBooking).course.id = :courseId))")
+	/**
+	 * Prueft ob ein Student den KURS selbst gekauft hat.
+	 * TimeSlot-Buchungen zaehlen NICHT als Kurskauf (sind unabhaengig).
+	 */
+	@Query("SELECT COUNT(b) > 0 FROM CourseBooking b WHERE " +
+	       "b.student.id = :studentId AND b.status = 'CONFIRMED' AND b.course.id = :courseId")
 	boolean existsByStudentIdAndCourseId(@Param("studentId") Long studentId, @Param("courseId") Long courseId);
 	
 	@Query("SELECT COUNT(b) > 0 FROM ChapterBooking b WHERE b.student.id = :studentId AND b.chapter.id = :chapterId AND b.status = 'CONFIRMED'")

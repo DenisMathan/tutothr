@@ -43,8 +43,8 @@ public class DashboardService {
             Double avg = courseRepository.getAverageRatingByTutor(user.getId());
             dto.setAverageRating(avg != null ? avg : 0.0);
             
-            // Anzahl erhaltener Buchungen
-            dto.setReceivedBookings(bookingRepository.countByTutor(user));
+            // Anzahl erhaltener Buchungen (native Query fuer zuverlaessige Ergebnisse)
+            dto.setReceivedBookings(bookingRepository.countByTutorIdNative(user.getId()));
 
             // Gesamtumsatz
             Double courseRevenue = bookingRepository.calculateCourseRevenue(user.getId());

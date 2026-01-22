@@ -112,6 +112,7 @@ public class BookingController {
 
 	@GetMapping("/my-bookings")
 	public String myBookings(@AuthenticationPrincipal /*MyUserDetails*/ AppPrincipal userDetails,
+			org.springframework.security.core.Authentication authentication,
 			@RequestParam(defaultValue = "0") int page, Model model) {
 		Page<BookingDTO> bookingPage = bookingService.findByStudentPaged(userDetails.getDbUser(),
 				PageRequest.of(page, DEFAULT_SIZE, Sort.by(Sort.Direction.DESC, "createdAt")));
@@ -120,6 +121,10 @@ public class BookingController {
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", bookingPage.getTotalPages());
 		model.addAttribute("totalItems", bookingPage.getTotalElements());
+		
+		// Prüfen ob User mit Google eingeloggt ist (für Kalender-Sync)
+		boolean isGoogleUser = authentication instanceof OAuth2AuthenticationToken;
+		model.addAttribute("isGoogleUser", isGoogleUser);
 
 		return "views/booking/my-bookings";
 	}

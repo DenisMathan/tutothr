@@ -62,7 +62,7 @@
                th:text="#{bookings.cancel}">
               Stornieren
             </a>
-            <a th:if="${booking.status.name() == 'CONFIRMED'}"
+            <a th:if="${booking.status.name() == 'CONFIRMED' and booking.bookingType == 'TIMESLOT' and isGoogleUser}"
                th:href="@{/booking/{id}/add-to-calendar(id=${booking.id})}"
                class="btn-secondary btn-sm"
                style="margin-left: 5px;"
