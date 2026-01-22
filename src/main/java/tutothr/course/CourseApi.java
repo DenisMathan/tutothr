@@ -53,8 +53,12 @@ public class CourseApi {
     @PreAuthorize("hasRole('TUTOR') or hasRole('ADMIN')")
     @Operation(summary = "Create a new course", description = "Creates a new course (Tutor only)")
     public ResponseEntity<CourseDTO> create(@RequestBody @Valid CourseDTO courseDTO, @AuthenticationPrincipal AppPrincipal user) {
-        courseDTO.setOwnerId(user.getId());
-        courseService.saveDTO(courseDTO);
+        Course courseEntity = courseService.mapToEntity(courseDTO);
+        courseEntity.setOwner(user.getDbUser());
+        System.out.println("Creating course for user ID: " + user.getId());
+        courseService.save(courseEntity);
+        courseDTO.setId(courseEntity.getId());
+        // courseService.saveDTO(courseDTO);
         return ResponseEntity.ok(courseDTO);
     }
 

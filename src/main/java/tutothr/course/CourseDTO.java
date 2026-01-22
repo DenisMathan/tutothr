@@ -37,11 +37,13 @@ public class CourseDTO extends BaseDTO {
     private List<Long> categoryIds = new ArrayList<>();
     
     @Schema(description = "Chapters of the course")
+    @JsonIgnore
     private List<ChapterDTO> chapters;
 
     @Schema(hidden = true)
     private boolean isOwner = false;
 
+    @JsonIgnore
     @Schema(hidden = true)
     private ChapterDTO addChapter;
 
@@ -54,9 +56,11 @@ public class CourseDTO extends BaseDTO {
     @Schema(hidden = true)
     private List<Rating> ratings = new ArrayList<>();
 
+    @JsonIgnore
     private List<HashtagDTO> hashtags = new ArrayList<>();
     
     @Override
+    @JsonIgnore
     public void initFields() {
         formFields = List.of(
             new tutothr.common.models.Field("title", "Titel", "text"),

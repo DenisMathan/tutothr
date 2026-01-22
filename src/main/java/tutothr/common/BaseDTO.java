@@ -11,6 +11,7 @@ import tutothr.common.models.Field;
 
 public class BaseDTO implements DTOI {
     private Long id;
+    @JsonIgnore
     private Map<String, String> validationErrors = new HashMap<>();
     @JsonIgnore
     protected List<Field> formFields;

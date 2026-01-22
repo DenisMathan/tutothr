@@ -50,6 +50,7 @@ INSERT INTO user_roles(user_id, role) VALUES (4, 'TUTOR');
 INSERT INTO user_roles(user_id, role) VALUES (5, 'STUDENT');
 INSERT INTO user_roles(user_id, role) VALUES (6, 'STUDENT');
 INSERT INTO user_roles(user_id, role) VALUES (14, 'STUDENT');
+INSERT INTO user_roles(user_id, role) VALUES (14, 'TUTOR');
 -- INSERT INTO user_roles(user_id, role) VALUES (15, 'ADMIN');
 -- INSERT INTO user_roles(user_id, role) VALUES (15, 'TUTOR');
 
