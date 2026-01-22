@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +18,7 @@ import tutothr.user.UserService;
 import tutothr.course.Course;
 import tutothr.course.CourseService;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -46,8 +47,10 @@ public class MessageController {
     private MessageRepositoryI messageRepository;
 
     @GetMapping("/inbox")
-    public String showInbox(@RequestParam(defaultValue = "0") int page, Model model) {
-        Long currentUserId = getCurrentUserId();
+    public String showInbox(@RequestParam(defaultValue = "0") int page,
+                            Model model,
+                            Principal principal) {
+        Long currentUserId = getCurrentUserId(principal);
 
         int pageSize = 10;
         Pageable pageable = PageRequest.of(page, pageSize);
@@ -93,14 +96,15 @@ public class MessageController {
     public String sendMessage(
             @RequestParam Long recipientId,
             @RequestParam String content,
-            @RequestParam(required = false) Long courseId) {
+            @RequestParam(required = false) Long courseId,
+            Principal principal) {
 
-        Long senderId = getCurrentUserId();
+        Long senderId = getCurrentUserId(principal);
 
         Message message = messageService.sendMessage(senderId, recipientId, content, courseId);
 
         User recipient = userService.getUserById(recipientId);
-        Long currentUserId = getCurrentUserId();
+        Long currentUserId = getCurrentUserId(principal);
         User sender = userService.getUserById(currentUserId);
 
         MessageDTO dto = new MessageDTO(message);
@@ -123,8 +127,8 @@ public class MessageController {
     }
 
     @GetMapping("/conversation/{userId}")
-    public String showConversation(@PathVariable Long userId, Model model) {
-        Long currentUserId = getCurrentUserId();
+    public String showConversation(@PathVariable Long userId, Model model, Principal principal) {
+        Long currentUserId = getCurrentUserId(principal);
 
         List<Message> messages = messageService.getConversation(currentUserId, userId);
         User otherUser = userService.getUserById(userId);
@@ -141,18 +145,22 @@ public class MessageController {
     @PostMapping("/conversation/{userId}/reply")
     public String replyToConversation(
             @PathVariable Long userId,
-            @RequestParam String content) {
+            @RequestParam String content,
+            Principal principal) {
 
-        Long senderId = getCurrentUserId();
+        Long senderId = getCurrentUserId(principal);
         messageService.sendMessage(senderId, userId, content, null);
 
         return "redirect:/messages/conversation/" + userId;
     }
 
-    private Long getCurrentUserId() {
-        return ((AppPrincipal) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal())
-                .getId();
+    private Long getCurrentUserId(Principal principal) {
+        if (principal instanceof Authentication auth) {
+            Object p = auth.getPrincipal();
+            if (p instanceof AppPrincipal appPrincipal) {
+                return appPrincipal.getId();
+            }
+        }
+        return null;
     }
 }
