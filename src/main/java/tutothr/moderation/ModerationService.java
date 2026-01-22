@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tutothr.chapter.Chapter;
 import tutothr.chapter.ChapterService;
+import tutothr.common.services.MailService;
 import tutothr.hashtag.Hashtag;
 import tutothr.hashtag.HashtagRepositoryI;
 import tutothr.message.Message;
@@ -45,6 +46,9 @@ public class ModerationService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MailService mailService;
 
     public void reportMessage(Long reporterId, Long messageId, String reason) {
         User reporter = userRepository.findById(reporterId).orElseThrow();
@@ -166,17 +170,8 @@ public class ModerationService {
     }
 
     private void handleUserBanned(User user, Report report) {
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        System.out.println("  USER AUTOMATISCH GESPERRT");
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        System.out.println("User: " + user.getUsername() + " (ID: " + user.getId() + ")");
-        System.out.println("Email: " + user.getEmail());
-        System.out.println("Strikes: " + user.getStrikes());
-        System.out.println("Grund (letzter Report): " + report.getReason());
-        System.out.println("Report-Typ: " + report.getType());
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-
-        // - emailService.sendBanNotification(user);
+        System.out.println("USER AUTOMATISCH GESPERRT User:" + user.getUsername() + " (ID: " + user.getId() + ")");
+        mailService.sendBanMail(user);
     }
 
     public List<User> getBannedUsers() {

@@ -3,12 +3,15 @@ package tutothr.moderation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
+import tutothr.auth.config.AppPrincipal;
 import tutothr.auth.config.MyUserDetails;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,26 +22,26 @@ public class ModerationController {
 
     @PostMapping("/messages/{id}/report")
     @ResponseBody
-    public ResponseEntity<?> reportMessage(@PathVariable Long id, @RequestParam String reason) {
-        return handleReport(() -> moderationService.reportMessage(getCurrentUserId(), id, reason));
+    public ResponseEntity<?> reportMessage(@PathVariable Long id, @RequestParam String reason, Principal principal) {
+        return handleReport(() -> moderationService.reportMessage(getCurrentUserId(principal), id, reason));
     }
 
     @PostMapping("/courses/{id}/report")
     @ResponseBody
-    public ResponseEntity<?> reportCourse(@PathVariable Long id, @RequestParam String reason) {
-        return handleReport(() -> moderationService.reportCourse(getCurrentUserId(), id, reason));
+    public ResponseEntity<?> reportCourse(@PathVariable Long id, @RequestParam String reason, Principal principal) {
+        return handleReport(() -> moderationService.reportCourse(getCurrentUserId(principal), id, reason));
     }
 
     @PostMapping("/chapters/{id}/report")
     @ResponseBody
-    public ResponseEntity<?> reportChapter(@PathVariable Long id, @RequestParam String reason) {
-        return handleReport(() -> moderationService.reportChapter(getCurrentUserId(), id, reason));
+    public ResponseEntity<?> reportChapter(@PathVariable Long id, @RequestParam String reason, Principal principal) {
+        return handleReport(() -> moderationService.reportChapter(getCurrentUserId(principal), id, reason));
     }
 
     @PostMapping("/hashtags/{id}/report")
     @ResponseBody
-    public ResponseEntity<?> reportHashtag(@PathVariable Long id, @RequestParam String reason) {
-        return handleReport(() -> moderationService.reportHashtag(getCurrentUserId(), id, reason));
+    public ResponseEntity<?> reportHashtag(@PathVariable Long id, @RequestParam String reason, Principal principal) {
+        return handleReport(() -> moderationService.reportHashtag(getCurrentUserId(principal), id, reason));
     }
 
     // Helper für JSON Responses
@@ -72,7 +75,13 @@ public class ModerationController {
         return "redirect:/admin/reports";
     }
 
-    private Long getCurrentUserId() {
-        return ((MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+    private Long getCurrentUserId(Principal principal) {
+        if (principal instanceof Authentication auth) {
+            Object p = auth.getPrincipal();
+            if (p instanceof AppPrincipal appPrincipal) {
+                return appPrincipal.getId();
+            }
+        }
+        return null;
     }
 }

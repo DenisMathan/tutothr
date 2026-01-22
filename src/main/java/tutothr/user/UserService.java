@@ -136,18 +136,10 @@ public class UserService extends BaseService<UserDTO, User> implements UserServi
 		if (newStrikes >= 3) {
 			user.setAccountNonLocked(false);
 			userRepository.save(user);
-
-			System.out.println("⚠️ USER GESPERRT: " + user.getUsername() +
-					" (ID: " + user.getId() + ") nach " + newStrikes + " Strikes");
-
-			return true;  // User wurde durch diesen Strike gesperrt
+			return true;
 		}
 
 		userRepository.save(user);
-
-		System.out.println("⚠️ Strike vergeben an " + user.getUsername() +
-				" (Strikes: " + newStrikes + "/3)");
-
 		return false;  // User noch nicht gesperrt
 	}
 
