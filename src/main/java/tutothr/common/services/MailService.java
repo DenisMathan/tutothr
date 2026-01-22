@@ -84,6 +84,21 @@ public class MailService {
         mailSender.send(message);
     }
 
+    public void sendBanMail(tutothr.user.User user) {
+        if(mail == null || mailPw == null) {
+            throw new IllegalStateException("Mail credentials are not set in environment variables.");
+        }
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("Du wurdest gebannt...");
+        message.setText("Hallo " + user.getUsername() + " \n\n" +
+                "aufgrund von 3 Verstößen gegen unsere Community-Guidelines wurdest du temporär gesperrt.\n\n" +
+                "Wenn du dagegen vorgehen möchtest, kannst du gerne unsere Admins kontaktieren.\n\n" +
+                "Viele Grüße,\n" +
+                "Dein TutOTHr-Team");
+        mailSender.send(message);
+    }
+
     public void sendBookingConfirmationToStudent(BookingDTO booking, InvoiceDTO invoice) {
     	String text = "Hallo " + booking.getStudentName() + ",\n\n" +
                 "deine Buchung wurde erfolgreich abgeschlossen!\n\n" +
