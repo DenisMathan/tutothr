@@ -23,7 +23,7 @@
             <!-- Label with proper styling (muted text) -->
             <label th:if="${field.type != 'hidden' and field.type != 'checkbox'}" 
                    th:for="${field.name}" 
-                   th:text="${field.label}"
+                   th:text="${#messages.msg(field.label)}"
                    style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; font-weight: 500;">
             </label>
             
@@ -70,7 +70,7 @@
                             th:disabled="${field.readonly or subField.readonly}">
                      <label class="btn btn-tag btn-sm rounded-pill" 
                             th:for="${subField.name}" 
-                            th:text="${subField.label}"
+                            th:text="${#messages.msg(subField.label)}"
                             th:classappend="${(subField.readonly) ? ' disabled' : ''}"
                             th:style="${(field.readonly or subField.readonly) ? 'pointer-events: none; opacity: 0.65;' : ''}"></label>
                  </div>
@@ -105,7 +105,7 @@
                        th:disabled="${field.readonly}">
                 <label class="form-check-label" 
                        th:for="${field.name}" 
-                       th:text="${field.label}"
+                       th:text="${#messages.msg(field.label)}"
                        style="color: var(--text-main);">
                 </label>
             </div>
@@ -123,7 +123,7 @@
     <button type="submit" 
             class="btn-primary w-100" 
             style="justify-content: center; margin-top: 1rem; height: 48px; font-size: 1rem;" 
-            th:text="${object.submitLabel} ?: #{common.save}">
+            th:text="${object.submitLabel != null ? #messages.msg(object.submitLabel) : #messages.msg('common.save')}">
         Speichern
     </button>
     

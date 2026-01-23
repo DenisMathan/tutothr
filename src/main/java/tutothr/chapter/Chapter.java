@@ -28,9 +28,9 @@ public class Chapter extends BaseEntity {
 
     public void init() {
        formFields = List.of(
-            new Field("title", "Titel", "text"),
-            new Field("description", "Beschreibung", "textarea"),
-            new Field("files", "PDF Material", "file")
+            new Field("title", "field.title", "text"),
+            new Field("description", "field.description", "textarea"),
+            new Field("files", "field.filesPdf", "file")
         ); 
     }
 

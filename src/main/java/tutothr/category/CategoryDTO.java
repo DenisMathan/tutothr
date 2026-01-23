@@ -16,8 +16,8 @@ public class CategoryDTO extends BaseDTO {
     public void initFields() {
         // Initialize any Category-specific fields or validation here
         formFields = List.of(
-                new tutothr.common.models.Field("title", "Titel", "text"),
-                new tutothr.common.models.Field("description", "Beschreibung", "textarea"));
+                new tutothr.common.models.Field("title", "field.title", "text"),
+                new tutothr.common.models.Field("description", "field.description", "textarea"));
     }
     public String getTitle() {
         return title;

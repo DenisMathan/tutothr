@@ -50,4 +50,7 @@ public interface MessageRepositoryI extends MyBaseRepository<Message, Long> {
         """,
             nativeQuery = true)
     Page<Message> findLatestConversations(@Param("userId") Long userId, Pageable pageable);
+    
+    List<Message> findBySenderIdOrReceiverId(Long senderId, Long receiverId);
+    void deleteBySenderIdOrReceiverId(Long senderId, Long receiverId);
 }

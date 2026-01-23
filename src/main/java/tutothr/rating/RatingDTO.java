@@ -21,9 +21,9 @@ public class RatingDTO extends BaseDTO {
 
     public void initFields() {
         formFields = List.of(
-                new Field("author", "Autor", "long"),
-                new Field("stars", "Sterne", "int"),
-                new Field("comment", "Kommentar", "textarea")
+                new Field("author", "field.author", "long"),
+                new Field("stars", "field.stars", "int"),
+                new Field("comment", "field.comment", "textarea")
         );
     }
 

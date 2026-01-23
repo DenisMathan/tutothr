@@ -34,12 +34,12 @@ public class ChapterDTO extends BaseDTO {
     @Override
     public void initFields() {
        formFields = List.of(
-            new Field("courseId", "Kurs ID", "hidden"),
-            new Field("title", "Titel", "text"),
-            new Field("description", "Beschreibung", "textarea"),
-            new Field("files", "Dateien (PDF)", "file"),
-            new Field("paywalled", "Paywalled", "checkbox"),
-            new Field("price", "Preis (€)", "number")
+            new Field("courseId", "field.courseId", "hidden"),
+            new Field("title", "field.title", "text"),
+            new Field("description", "field.description", "textarea"),
+            new Field("files", "field.files", "file"),
+            new Field("paywalled", "field.paywalled", "checkbox"),
+            new Field("price", "field.priceEuro", "number")
         ); 
     }
 

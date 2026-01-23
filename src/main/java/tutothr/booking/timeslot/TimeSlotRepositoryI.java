@@ -9,4 +9,6 @@ public interface TimeSlotRepositoryI extends MyBaseRepository<TimeSlot, Long> {
 	List<TimeSlot> findByTutor(User tutor);
 	
 	List<TimeSlot> findByTutorAndAvailableTrue(User tutor);
+	
+	void deleteByTutor(User tutor);
 }

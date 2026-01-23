@@ -26,12 +26,12 @@ public class RegisterUserDTO extends BaseDTO {
 	@Override
 	public void initFields() {
 		formFields = List.of(
-				new Field("username", "Benutzername", "text"),
-				new Field("email", "Email", "text"),
-				new Field("password", "Passwort", "password"),
-				new Field("confirmPassword", "Passwort bestätigen", "password")
+				new Field("username", "field.username", "text"),
+				new Field("email", "field.email", "text"),
+				new Field("password", "field.password", "password"),
+				new Field("confirmPassword", "field.confirmPassword", "password")
 		);
-		setSubmitLabel("Registrieren");
+		setSubmitLabel("register.submit");
 	}
 
 	public String getUsername() {

@@ -1,5 +1,6 @@
 package tutothr.booking;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
@@ -37,7 +38,7 @@ public abstract class Booking extends BaseEntity {
 	
 	private float price;
 	
-	@OneToOne(mappedBy = "booking")
+	@OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Invoice invoice;
 	
 	// === Konstruktoren ===

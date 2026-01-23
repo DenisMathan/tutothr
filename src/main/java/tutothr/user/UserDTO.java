@@ -36,29 +36,29 @@ public class UserDTO extends BaseDTO {
 
     public void setAdminFields() {
         formFields = List.of(
-                new tutothr.common.models.Field("username", "Benutzername", "text"),
-                // new tutothr.common.models.Field("email", "E-Mail", "email"),
-                new tutothr.common.models.Field("roles", "Rollen", "group", List.of(
-                        new tutothr.common.models.Field("admin", "Administrator", "checkbox"),
-                        new tutothr.common.models.Field("tutor", "Tutor", "checkbox"),
-                        new tutothr.common.models.Field("student", "Student", "checkbox"))),
-                new tutothr.common.models.Field("strikes", "Strikes", "number"),
-                new tutothr.common.models.Field("verified", "Verifiziert", "checkbox"),
-                new tutothr.common.models.Field("accountNonLocked", "Nicht gesperrt", "checkbox"),
-                new tutothr.common.models.Field("twoFactorEnabled", "Zwei-Faktor-Authentifizierung aktiviert", "checkbox"));
+                new tutothr.common.models.Field("username", "field.username", "text"),
+                // new tutothr.common.models.Field("email", "field.email", "email"),
+                new tutothr.common.models.Field("roles", "field.roles", "group", List.of(
+                        new tutothr.common.models.Field("admin", "field.admin", "checkbox"),
+                        new tutothr.common.models.Field("tutor", "field.tutor", "checkbox"),
+                        new tutothr.common.models.Field("student", "field.student", "checkbox"))),
+                new tutothr.common.models.Field("strikes", "field.strikes", "number"),
+                new tutothr.common.models.Field("verified", "field.verified", "checkbox"),
+                new tutothr.common.models.Field("accountNonLocked", "field.accountNonLocked", "checkbox"),
+                new tutothr.common.models.Field("twoFactorEnabled", "field.twoFactorEnabled", "checkbox"));
     }
 
     public void setUserFields() {
         formFields = List.of(
-            new tutothr.common.models.Field("username", "Benutzername", "text"),
-            new tutothr.common.models.Field("roles", "Rollen", "group", List.of(
-                new tutothr.common.models.Field("admin", "Administrator", "checkbox", true),
-                new tutothr.common.models.Field("tutor", "Tutor", "checkbox", true),
-                new tutothr.common.models.Field("student", "Student", "checkbox", true)
+            new tutothr.common.models.Field("username", "field.username", "text"),
+            new tutothr.common.models.Field("roles", "field.roles", "group", List.of(
+                new tutothr.common.models.Field("admin", "field.admin", "checkbox", true),
+                new tutothr.common.models.Field("tutor", "field.tutor", "checkbox", true),
+                new tutothr.common.models.Field("student", "field.student", "checkbox", true)
             )),
-            new tutothr.common.models.Field("strikes", "Verwarnungen", "number", true),
-            new tutothr.common.models.Field("verified", "Verifiziert", "checkbox", true),
-            new tutothr.common.models.Field("twoFactorEnabled", "Zwei-Faktor-Authentifizierung aktiviert", "checkbox")
+            new tutothr.common.models.Field("strikes", "field.strikes", "number", true),
+            new tutothr.common.models.Field("verified", "field.verified", "checkbox", true),
+            new tutothr.common.models.Field("twoFactorEnabled", "field.twoFactorEnabled", "checkbox")
         );
     }
 

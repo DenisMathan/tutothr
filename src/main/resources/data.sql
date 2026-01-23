@@ -14,21 +14,21 @@ INSERT INTO user (username, password, email, active, created_at, updated_at, cre
 VALUES ('Student', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'student@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
-VALUES ('anja', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'anja@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
+VALUES ('anja', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'anja@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
-VALUES ('tanja', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'tanja@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
+VALUES ('tanja', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'tanja@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
-VALUES ('martin', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'martin@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
+VALUES ('martin', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'martin@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
-VALUES ('lisa', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'lisa@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
+VALUES ('lisa', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'lisa@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
-VALUES ('mario', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'mario@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
+VALUES ('mario', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'mario@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
-VALUES ('peter', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'peter@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
+VALUES ('peter', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'peter@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
-VALUES ('leonard', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'leonard@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
+VALUES ('leonard', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'leonard@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 INSERT INTO user (username, password, email, active, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by, verified, two_factor_enabled, account_non_locked, strikes)
-VALUES ('markus', '{bcrypt}$2a$12$69GBDheB9KxZ4p4Zl9BLueq.C3ONV1VMxvx/cyoIVmzkgRziB9uFa', 'markus@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
+VALUES ('markus', '{bcrypt}$2a$12$aqjGiDTeIey5KFiZ.q/MjuvrnNAixFwqP1P4zQUOmXKjFi87pcClW', 'markus@email.com', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, true, false, true, 0);
 
 
 
@@ -71,15 +71,15 @@ VALUES ('Tutor-Testkurs', 'Ein Testkurs', 29.99, 4.0, 4, CURRENT_TIMESTAMP, CURR
 
 -- Hashtags (ohne creator_id - jetzt pro-Kurs ueber CourseHashtagLink)
 INSERT INTO hashtag (name, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('anfaenger', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+VALUES ('Anfaenger', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO hashtag (name, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('klausurvorbereitung', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+VALUES ('Klausurvorbereitung', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO hashtag (name, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('fortgeschritten', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+VALUES ('Fortgeschritten', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO hashtag (name, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('praxisorientiert', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+VALUES ('Praxisorientiert', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO hashtag (name, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('theorie', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+VALUES ('Theorie', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 
 -- Verknuepfungen: course_hashtag_link (course_id, hashtag_id, added_by_id)
 INSERT INTO course_hashtag_link (course_id, hashtag_id, added_by_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 

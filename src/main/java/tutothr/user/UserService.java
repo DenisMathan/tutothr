@@ -13,10 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import tutothr.auth.config.CustomOidcUser;
 import tutothr.auth.verifikation.VerificationRepositoryI;
+import tutothr.booking.Booking;
+import tutothr.booking.BookingRepositoryI;
+import tutothr.booking.timeslot.TimeSlotRepositoryI;
 import tutothr.common.BaseService;
 import tutothr.course.Course;
 import tutothr.course.interfaces.CourseRepositoryI;
 import tutothr.hashtag.HashtagService;
+import tutothr.message.interfaces.MessageRepositoryI;
+import tutothr.moderation.interfaces.ReportRepositoryI;
+import tutothr.rating.interfaces.RatingRepositoryI;
 import tutothr.user.interfaces.UserMapperI;
 import tutothr.user.interfaces.UserRepositoryI;
 import tutothr.user.interfaces.UserServiceI;
@@ -28,17 +34,30 @@ public class UserService extends BaseService<UserDTO, User> implements UserServi
 	private final HashtagService hashtagService;
 	private final VerificationRepositoryI verificationRepository;
 	private final CourseRepositoryI courseRepository;
+	private final TimeSlotRepositoryI timeSlotRepository;
+	private final BookingRepositoryI bookingRepository;
+	private final MessageRepositoryI messageRepository;
+	private final RatingRepositoryI ratingRepository;
+	private final ReportRepositoryI reportRepository;
 
 	@Autowired
 	private UserMapperI userMapper;
 
 	public UserService(UserRepositoryI userRepository, HashtagService hashtagService, 
-			VerificationRepositoryI verificationRepository, CourseRepositoryI courseRepository) {
+			VerificationRepositoryI verificationRepository, CourseRepositoryI courseRepository,
+			TimeSlotRepositoryI timeSlotRepository, BookingRepositoryI bookingRepository,
+			MessageRepositoryI messageRepository, RatingRepositoryI ratingRepository,
+			ReportRepositoryI reportRepository) {
 		super(userRepository);
 		this.userRepository = userRepository;
 		this.hashtagService = hashtagService;
 		this.verificationRepository = verificationRepository;
 		this.courseRepository = courseRepository;
+		this.timeSlotRepository = timeSlotRepository;
+		this.bookingRepository = bookingRepository;
+		this.messageRepository = messageRepository;
+		this.ratingRepository = ratingRepository;
+		this.reportRepository = reportRepository;
 	}
 
 	@Override
@@ -84,19 +103,48 @@ public class UserService extends BaseService<UserDTO, User> implements UserServi
 	@Override
 	@Transactional
 	public void delete(User user) {
-		// 1. Verifications löschen
-		verificationRepository.findByUserId(user.getId()).ifPresent(verificationRepository::delete);
+		Long userId = user.getId();
 		
-		// 2. Hashtag-Links lösen (addedBy auf null setzen)
+		// 1. Verifications löschen
+		verificationRepository.findByUserId(userId).ifPresent(verificationRepository::delete);
+		
+		// 2. Reports löschen (wo User der Reporter ist)
+		reportRepository.deleteByReporter(user);
+		
+		// 3. Ratings löschen (wo User der Author ist)
+		ratingRepository.deleteByAuthor(user);
+		
+		// 4. Messages löschen (wo User Sender oder Empfänger ist)
+		messageRepository.deleteBySenderIdOrReceiverId(userId, userId);
+		
+		// 5. Bookings löschen (wo User Student ist)
+		// Invoices werden durch CascadeType.ALL automatisch mitgelöscht
+		bookingRepository.deleteByStudent(user);
+		
+		// 6. Bookings löschen, die sich auf TimeSlots/Kurse des Users beziehen (als Tutor)
+		// Muss VOR dem Löschen der TimeSlots und Kurse passieren
+		List<Booking> tutorBookings = new java.util.ArrayList<>(bookingRepository.findTimeSlotBookingsByTutor(user));
+		tutorBookings.addAll(bookingRepository.findCourseBookingsByOwner(user));
+		tutorBookings.addAll(bookingRepository.findChapterBookingsByOwner(user));
+		for (Booking booking : tutorBookings) {
+			bookingRepository.delete(booking);
+		}
+		
+		// 7. TimeSlots löschen (wo User Tutor ist)
+		timeSlotRepository.deleteByTutor(user);
+		
+		// 8. Hashtag-Links anderer Kurse lösen (addedBy auf null setzen)
+		// WICHTIG: Dies muss VOR dem Löschen der eigenen Kurse passieren,
+		// um TransientObjectException zu vermeiden
 		hashtagService.releaseLinksFromUser(user);
 		
-		// 3. Kurse des Users löschen (damit FK Constraint nicht verletzt wird)
+		// 9. Kurse des Users löschen (CascadeType.ALL löscht auch die HashtagLinks dieser Kurse)
 		List<Course> courses = courseRepository.findByOwner(user);
 		for (Course course : courses) {
 			courseRepository.delete(course);
 		}
 		
-		// 4. User löschen
+		// 10. User löschen
 		userRepository.delete(user);
 	}
 

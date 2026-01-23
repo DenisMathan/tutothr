@@ -130,13 +130,18 @@ public class HashtagService {
 
 	/**
 	 * Setzt addedBy auf null fuer alle Links eines Users (wenn User geloescht wird).
+	 * Ignoriert Links zu Kursen die dem User selbst gehoeren (diese werden durch Cascade geloescht).
 	 */
 	@Transactional
 	public void releaseLinksFromUser(User user) {
 		List<CourseHashtagLink> links = linkRepository.findByAddedBy(user);
 		for (CourseHashtagLink link : links) {
-			link.setAddedBy(null);
-			linkRepository.save(link);
+			// Nur Links bearbeiten deren Kurs nicht dem User gehoert
+			// (Links zu eigenen Kursen werden durch CascadeType.ALL automatisch geloescht)
+			if (link.getCourse() != null && !link.getCourse().getOwner().getId().equals(user.getId())) {
+				link.setAddedBy(null);
+				linkRepository.save(link);
+			}
 		}
 	}
 

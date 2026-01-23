@@ -12,10 +12,10 @@ public class LoginUserDTO extends BaseDTO {
 	@Override
 	public void initFields() {
 		formFields = List.of(
-				new Field("email", "Email", "text"),
-				new Field("password", "Passwort", "password")
+				new Field("email", "field.email", "text"),
+				new Field("password", "field.password", "password")
 		);
-		setSubmitLabel("Login");
+		setSubmitLabel("login.submit");
 	}
 
 

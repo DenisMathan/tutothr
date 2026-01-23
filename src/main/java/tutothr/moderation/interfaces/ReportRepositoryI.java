@@ -18,4 +18,7 @@ public interface ReportRepositoryI extends MyBaseRepository<Report, Long> {
     boolean existsByReporterAndCourseAndStatus(User reporter, Course course, ReportStatus status);
     boolean existsByReporterAndChapterAndStatus(User reporter, Chapter chapter, ReportStatus status);
     boolean existsByReporterAndHashtagAndStatus(User reporter, Hashtag hashtag, ReportStatus status);
+    
+    List<Report> findByReporter(User reporter);
+    void deleteByReporter(User reporter);
 }

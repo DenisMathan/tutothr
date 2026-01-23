@@ -29,6 +29,19 @@ public interface BookingRepositoryI extends MyBaseRepository<Booking, Long> {
 	Page<Booking> findByStudent(User student, Pageable pageable);
 	
 	long countByStudent(User student);
+	
+	void deleteByStudent(User student);
+
+	// === Löschen für User-Deletion ===
+	
+	@Query("SELECT b FROM TimeSlotBooking b WHERE b.timeSlot.tutor = :tutor")
+	List<Booking> findTimeSlotBookingsByTutor(@Param("tutor") User tutor);
+	
+	@Query("SELECT b FROM CourseBooking b WHERE b.course.owner = :owner")
+	List<Booking> findCourseBookingsByOwner(@Param("owner") User owner);
+	
+	@Query("SELECT b FROM ChapterBooking b WHERE b.chapter.course.owner = :owner")
+	List<Booking> findChapterBookingsByOwner(@Param("owner") User owner);
 
 	// === TimeSlot-Abfrage ===
 	

@@ -63,9 +63,9 @@ public class CourseDTO extends BaseDTO {
     @JsonIgnore
     public void initFields() {
         formFields = List.of(
-            new tutothr.common.models.Field("title", "Titel", "text"),
-            new tutothr.common.models.Field("description", "Beschreibung", "textarea"),
-            new tutothr.common.models.Field("price", "Preis", "number")
+            new tutothr.common.models.Field("title", "field.title", "text"),
+            new tutothr.common.models.Field("description", "field.description", "textarea"),
+            new tutothr.common.models.Field("price", "field.price", "number")
         );
     }
 
@@ -148,7 +148,7 @@ public class CourseDTO extends BaseDTO {
         
         formFields.removeIf(f -> f.getName().equals("categoryIds"));
         
-        formFields.add(tutothr.common.models.Field.withOptions("categoryIds", "Kategorien", "checkbox-group", options));
+        formFields.add(tutothr.common.models.Field.withOptions("categoryIds", "field.categories", "checkbox-group", options));
     }
 
     public boolean getIsOwner() {
