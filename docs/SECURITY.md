@@ -9,6 +9,59 @@ Das Projekt setzt auf **Spring Security 6** und implementiert eine **hybride Aut
 
 ---
 
+## SecurityChain
+
+Abbildunng der Filter-Chains aus `SecurityConfig.java`. Es werden zwei separate Chains konfiguriert: eine für die API (Stateless, JWT) und eine für die Web-Applikation (Stateful, Session).
+
+```mermaid
+graph TD
+    Request([User Request]) --> Matcher{URL Pattern?}
+
+    %% API Chain Configuration
+    Matcher -->|"/api/**"| ApiStart
+    subgraph ApiChainScope ["API Security Chain (Stateless)"]
+        direction TB
+        ApiStart[Start] --> JwtFilter["JwtAuthenticationFilter<br>Validierung des Bearer Tokens"]
+        JwtFilter --> ApiAuthZ["AuthorizationFilter<br>Check permissions"]
+    end
+
+    %% Web Chain Configuration
+    Matcher -->|"/**"| WebStart
+    subgraph WebChainScope ["Web Security Chain (Stateful / Session)"]
+        direction TB
+        WebStart[Start] --> Context["SecurityContextHolderFilter<br>Session Restoration"]
+        Context --> TwoFactor["TwoFactorVerificationFilter<br>Pre-Auth Check"]
+        
+        TwoFactor --> AuthMech
+        
+        subgraph AuthMech ["Authentication Mechanisms"]
+            Form["UsernamePasswordAuthenticationFilter<br>Form Login"]
+            OAuth["OAuth2LoginAuthenticationFilter<br>Google Login"]
+            RememberMe[RememberMeAuthenticationFilter]
+        end
+        
+        AuthMech --> Anon[AnonymousAuthenticationFilter]
+        Anon --> RedirCheck["RedirectCheckFilter<br>Check Username / Onboarding"]
+        
+        RedirCheck -->|Incomplete Profile| SetUser([Redirect /set-username])
+        RedirCheck -->|Complete| WebAuthZ["AuthorizationFilter<br>RBAC / Access Control"]
+    end
+    
+    %% Endpoints
+    ApiAuthZ -->|Allowed| ApiController([API Endpoints])
+    WebAuthZ -->|Allowed| WebController([Web Controller])
+    
+    %% Error Handling
+    ApiAuthZ -->|Denied| ErrorNode([401/403 Error])
+    WebAuthZ -->|Denied| LoginRedirect([Redirect Login / Error])
+
+    %% Styling
+    classDef filter fill:#e1f5fe,stroke:#01579b,stroke-width:1px;
+    classDef decision fill:#fff3e0,stroke:#ef6c00,stroke-width:1px;
+    class JwtFilter,TwoFactor,Form,OAuth,RememberMe,Anon,RedirCheck,ApiAuthZ,WebAuthZ,Context filter;
+    class Matcher decision;
+```
+
 ## 🔐 Authentication (AuthN)
 
 Wir unterstützen zwei parallele Wege, um die Identität eines Nutzers festzustellen.
