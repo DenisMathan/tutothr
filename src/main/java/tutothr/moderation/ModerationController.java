@@ -7,6 +7,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import io.swagger.v3.oas.annotations.Hidden;
+
 import org.springframework.ui.Model;
 import tutothr.auth.config.AppPrincipal;
 import tutothr.auth.config.MyUserDetails;
@@ -22,24 +25,28 @@ public class ModerationController {
 
     @PostMapping("/messages/{id}/report")
     @ResponseBody
+    @Hidden
     public ResponseEntity<?> reportMessage(@PathVariable Long id, @RequestParam String reason, Principal principal) {
         return handleReport(() -> moderationService.reportMessage(getCurrentUserId(principal), id, reason));
     }
 
     @PostMapping("/courses/{id}/report")
     @ResponseBody
+    @Hidden
     public ResponseEntity<?> reportCourse(@PathVariable Long id, @RequestParam String reason, Principal principal) {
         return handleReport(() -> moderationService.reportCourse(getCurrentUserId(principal), id, reason));
     }
 
     @PostMapping("/chapters/{id}/report")
     @ResponseBody
+    @Hidden
     public ResponseEntity<?> reportChapter(@PathVariable Long id, @RequestParam String reason, Principal principal) {
         return handleReport(() -> moderationService.reportChapter(getCurrentUserId(principal), id, reason));
     }
 
     @PostMapping("/hashtags/{id}/report")
     @ResponseBody
+    @Hidden
     public ResponseEntity<?> reportHashtag(@PathVariable Long id, @RequestParam String reason, Principal principal) {
         return handleReport(() -> moderationService.reportHashtag(getCurrentUserId(principal), id, reason));
     }
