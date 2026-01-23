@@ -23,7 +23,7 @@
                     <span th:text="#{login.error}">Ungültiger Benutzername oder Passwort.</span>
                 </div>
                 <div th:if="${param.locked}" class="alert alert-danger" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; border-radius: 8px; font-size: 0.9rem;" role="alert">
-                    Dein Konto ist gesperrt. Bitte kontaktiere den Support für weitere Informationen.
+                    <span th:text="#{login.locked}">Dein Konto ist gesperrt. Bitte kontaktiere den Support für weitere Informationen.</span>
                 </div>
                 
                 <!-- Logout Alert -->
