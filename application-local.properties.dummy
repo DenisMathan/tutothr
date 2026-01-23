@@ -1,0 +1,17 @@
+spring.security.oauth2.client.registration.google.client-id=google-client-id
+spring.security.oauth2.client.registration.google.client-secret=your-google-secret
+spring.mail.username=your-email
+spring.mail.password=your-password
+
+paypal.client-id=paypal-id
+paypal.client-secret=paypal-secret
+paypal.mode=sandbox
+
+
+
+# Security
+app.security.remember-me.key=your-key
+
+# JWT
+security.jwt.secret-key=your-key
+

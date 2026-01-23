@@ -87,7 +87,11 @@ public abstract class BaseService<DTO extends BaseDTO, Entity extends BaseEntity
 
     @Override
     public DTO findDTOById(Long id) {
-        return mapToDTO(findById(id));
+        Entity res = findById(id);
+        if (res == null) {
+            return null;
+        }
+        return mapToDTO(res);
     }
 
     @Override
