@@ -97,9 +97,7 @@ public class ModerationService {
         User reporter = userRepository.findById(reporterId).orElseThrow();
         Hashtag hashtag = hashtagRepositoryI.findById(hashtagId).orElseThrow();
 
-        if(hashtag.getCreator().getId().equals(reporterId)) {
-            throw new IllegalArgumentException("Eigene Nachricht kann nicht gemeldet werden");
-        }
+        // Hashtags haben keinen globalen Creator mehr - Selbst-Report-Check entfaellt
         if(reportRepository.existsByReporterAndHashtagAndStatus(reporter, hashtag, ReportStatus.PENDING)) {
             throw new IllegalArgumentException("Bereits gemeldet");
         }

@@ -69,27 +69,35 @@ INSERT INTO course (title, description, price, rating, owner_id, created_at, upd
 INSERT INTO course (title, description, price, rating, owner_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
 VALUES ('Tutor-Testkurs', 'Ein Testkurs', 29.99, 4.0, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 
--- Hashtags (mit creator_id)
-INSERT INTO hashtag (name, creator_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('Anfaenger', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
-INSERT INTO hashtag (name, creator_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('Klausurvorbereitung', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
-INSERT INTO hashtag (name, creator_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('Fortgeschritten', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
-INSERT INTO hashtag (name, creator_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('Praxisorientiert', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
-INSERT INTO hashtag (name, creator_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('Theorie', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+-- Hashtags (ohne creator_id - jetzt pro-Kurs ueber CourseHashtagLink)
+INSERT INTO hashtag (name, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES ('anfaenger', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO hashtag (name, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES ('klausurvorbereitung', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO hashtag (name, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES ('fortgeschritten', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO hashtag (name, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES ('praxisorientiert', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO hashtag (name, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES ('theorie', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 
--- Verknuepfungen: courses_hashtags (course_id, hashtag_id)
-INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (1, 1);
-INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (1, 2);
-INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (2, 1);
-INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (2, 5);
-INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (3, 3);
-INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (3, 4);
-INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (5, 2);
-INSERT INTO courses_hashtags (course_id, hashtag_id) VALUES (5, 3);
+-- Verknuepfungen: course_hashtag_link (course_id, hashtag_id, added_by_id)
+INSERT INTO course_hashtag_link (course_id, hashtag_id, added_by_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES (1, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO course_hashtag_link (course_id, hashtag_id, added_by_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES (1, 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO course_hashtag_link (course_id, hashtag_id, added_by_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES (2, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO course_hashtag_link (course_id, hashtag_id, added_by_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES (2, 5, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO course_hashtag_link (course_id, hashtag_id, added_by_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES (3, 3, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO course_hashtag_link (course_id, hashtag_id, added_by_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES (3, 4, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO course_hashtag_link (course_id, hashtag_id, added_by_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES (5, 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+INSERT INTO course_hashtag_link (course_id, hashtag_id, added_by_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
+VALUES (5, 3, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 -- ========================================================================================================================
 
 -- Verknuepfungen: course_categories (id_course, id_category)

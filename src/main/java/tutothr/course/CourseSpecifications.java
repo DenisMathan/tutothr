@@ -11,6 +11,7 @@ import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
 import tutothr.booking.timeslot.TimeSlot;
 import tutothr.category.Category;
+import tutothr.hashtag.CourseHashtagLink;
 import tutothr.hashtag.Hashtag;
 import tutothr.user.User;
 
@@ -38,13 +39,24 @@ import tutothr.user.User;
  */
 public class CourseSpecifications {
 	/**
-	 * Sucht im Titel UND in der Beschreibung nach dem Text.
+	 * Sucht im Titel, in der Beschreibung UND in den Hashtags nach dem Text.
 	 */
 	public static Specification<Course> textContains(String text) {
 		return (root, query, cb) -> {
 			String pattern = "%" + text.toLowerCase() + "%";
-			return cb.or(cb.like(cb.lower(root.get("title")), pattern),
-					cb.like(cb.lower(root.get("description")), pattern));
+			
+			// Join zu Hashtags (LEFT JOIN damit Kurse ohne Hashtags auch gefunden werden)
+			Join<Course, CourseHashtagLink> links = root.join("hashtagLinks", JoinType.LEFT);
+			Join<CourseHashtagLink, Hashtag> hashtag = links.join("hashtag", JoinType.LEFT);
+			
+			// Duplikate vermeiden bei mehreren Hashtag-Matches
+			query.distinct(true);
+			
+			return cb.or(
+				cb.like(cb.lower(root.get("title")), pattern),
+				cb.like(cb.lower(root.get("description")), pattern),
+				cb.like(cb.lower(hashtag.get("name")), pattern)
+			);
 		};
 	}
 
@@ -117,11 +129,13 @@ public class CourseSpecifications {
 	
 	/**
 	 * Filtert nach Hashtag-Name.
+	 * Join-Pfad: Course -> hashtagLinks -> hashtag -> name
 	 */
 	public static Specification<Course> hasHashtag(String hashtag) {
 		return (root, query, cb) -> {
-			Join<Course, Hashtag> hashtags = root.join("hashtags", JoinType.INNER);
-			return cb.equal(cb.lower(hashtags.get("name")), hashtag.toLowerCase());
+			Join<Course, CourseHashtagLink> links = root.join("hashtagLinks", JoinType.INNER);
+			Join<CourseHashtagLink, Hashtag> hashtagJoin = links.join("hashtag", JoinType.INNER);
+			return cb.equal(cb.lower(hashtagJoin.get("name")), hashtag.toLowerCase());
 		};
 	}
 }

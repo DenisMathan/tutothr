@@ -87,8 +87,8 @@ public class UserService extends BaseService<UserDTO, User> implements UserServi
 		// 1. Verifications löschen
 		verificationRepository.findByUserId(user.getId()).ifPresent(verificationRepository::delete);
 		
-		// 2. Hashtags lösen
-		hashtagService.releaseHashtagsFromCreator(user);
+		// 2. Hashtag-Links lösen (addedBy auf null setzen)
+		hashtagService.releaseLinksFromUser(user);
 		
 		// 3. Kurse des Users löschen (damit FK Constraint nicht verletzt wird)
 		List<Course> courses = courseRepository.findByOwner(user);

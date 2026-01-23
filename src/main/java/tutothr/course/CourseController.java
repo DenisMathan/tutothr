@@ -120,6 +120,15 @@ public class CourseController {
 		List<ChapterViewModel> chapterViews = createChapterViewModels(courseDTO, userId, id);
 		model.addAttribute("chapterViews", chapterViews);
 
+		// Berechne welche Hashtags der User entfernen darf
+		Set<Long> removableHashtagIds = Set.of();
+		if (userId != null) {
+			boolean isAdmin = userDetails.getAuthorities().stream()
+					.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+			removableHashtagIds = hashtagService.getRemovableHashtagIds(id, userId, isAdmin);
+		}
+		model.addAttribute("removableHashtagIds", removableHashtagIds);
+
 		return "views/courses/course";
 	}
 
@@ -208,7 +217,7 @@ public class CourseController {
 	 * Hashtags zu einem Kurs hinzufuegen
 	 */
 	@PostMapping("/courses/{id}/hashtags")
-    @PreAuthorize("@coursePermissionService.isTutorAndOwnerOrAdmin(#id)")
+    @PreAuthorize("isAuthenticated()")
 	public String addHashtags(@PathVariable Long id, @RequestParam String hashtags,
 			@AuthenticationPrincipal AppPrincipal userDetails) {
 		hashtagService.addHashtagsToCourse(id, hashtags, userDetails.getDbUser());
@@ -219,7 +228,7 @@ public class CourseController {
 	 * Hashtag von einem Kurs entfernen
 	 */
 	@DeleteMapping("/courses/{id}/hashtags/{hashtagId}")
-    @PreAuthorize("@coursePermissionService.isTutorAndOwnerOrAdmin(#id)")
+    @PreAuthorize("isAuthenticated()")
 	public String removeHashtag(@PathVariable Long id, @PathVariable Long hashtagId,
 			@AuthenticationPrincipal AppPrincipal userDetails) {
 		boolean isAdmin = userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));

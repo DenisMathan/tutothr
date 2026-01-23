@@ -2,6 +2,7 @@ package tutothr.course;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -14,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import tutothr.category.Category;
 import tutothr.chapter.Chapter;
 import tutothr.common.BaseEntity;
+import tutothr.hashtag.CourseHashtagLink;
 import tutothr.hashtag.Hashtag;
 import tutothr.rating.Rating;
 import tutothr.user.User;
@@ -39,13 +41,8 @@ public class Course extends BaseEntity {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Chapter> chapters = new ArrayList<>();
     
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-    	name = "courses_hashtags",
-    	joinColumns = @JoinColumn(name = "course_id"),
-    	inverseJoinColumns = @JoinColumn(name = "hashtag_id")
-    )
-    private List<Hashtag> hashtags = new ArrayList<>();
+    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER)
+    private List<CourseHashtagLink> hashtagLinks = new ArrayList<>();
     
     public List<Chapter> getChapters() {
         return chapters;
@@ -115,12 +112,21 @@ public class Course extends BaseEntity {
         this.categories = categories;
     }
 
-    public List<Hashtag> getHashtags() {
-    	return hashtags;
+    public List<CourseHashtagLink> getHashtagLinks() {
+    	return hashtagLinks;
     }
     
-    public void setHashtags(List<Hashtag> hashtags) {
-    	this.hashtags = hashtags;
+    public void setHashtagLinks(List<CourseHashtagLink> hashtagLinks) {
+    	this.hashtagLinks = hashtagLinks;
+    }
+
+    /**
+     * Convenience-Methode: Gibt alle Hashtags dieses Kurses zurueck.
+     */
+    public List<Hashtag> getHashtags() {
+    	return hashtagLinks.stream()
+    			.map(CourseHashtagLink::getHashtag)
+    			.collect(Collectors.toList());
     }
     
     public double avgRating() {

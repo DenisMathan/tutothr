@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +22,6 @@ import tutothr.course.interfaces.CourseMapperI;
 import tutothr.course.interfaces.CourseRepositoryI;
 import tutothr.category.Category;
 import tutothr.category.CategoryService;
-import tutothr.hashtag.Hashtag;
 import tutothr.hashtag.HashtagService;
 import tutothr.user.User;
 
@@ -28,6 +29,7 @@ import java.util.List;
 
 @Service
 public class CourseService extends BaseService<CourseDTO, Course> {
+	private static final Logger logger = LoggerFactory.getLogger(CourseService.class);
 	private static final int DEFAULT_PAGE = 0;
 	private static final int DEFAULT_SIZE = 5;
 	private static final CourseSortFieldEnum DEFAULT_SORT_BY = CourseSortFieldEnum.TITLE;
@@ -75,17 +77,12 @@ public class CourseService extends BaseService<CourseDTO, Course> {
 		}
 	}
 
+	/**
+	 * Hashtags werden jetzt ueber den separaten Endpoint /courses/{id}/hashtags verwaltet.
+	 * Diese Methode ist deaktiviert.
+	 */
 	private void updateHashtags(Course course, Object value) {
-		if (value instanceof List) {
-			List<?> list = (List<?>) value;
-			if (!list.isEmpty()) {
-				List<Long> ids = extractIdsFromList(list);
-				List<Hashtag> hashtags = hashtagService.findAllEntitiesByIds(ids);
-				course.setHashtags(new ArrayList<>(hashtags));
-			} else {
-				course.setHashtags(new ArrayList<>());
-			}
-		}
+		logger.warn("updateHashtags ist deaktiviert - Hashtags werden ueber /courses/{id}/hashtags verwaltet");
 	}
 
 	private List<Long> extractIdsFromList(List<?> list) {

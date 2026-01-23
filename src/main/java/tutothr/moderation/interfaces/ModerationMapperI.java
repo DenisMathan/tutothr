@@ -99,13 +99,7 @@ public abstract class ModerationMapperI {
                     dto.setTargetId(report.getHashtag().getId());
                     dto.setContentPreview(report.getHashtag().getName());
                     dto.setContextInfo("Hashtag");
-
-                    var creator = report.getHashtag().getCreator();
-                    if (creator != null) {
-                        dto.setOffenderId(creator.getId());
-                        dto.setOffenderUsername(creator.getUsername());
-                        dto.setOffenderStrikes(creator.getStrikes());
-                    }
+                    // Hashtags haben keinen globalen Creator mehr - kein Offender
                 }
                 break;
         }

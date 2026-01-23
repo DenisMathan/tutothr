@@ -120,7 +120,7 @@
                               <line x1="4" y1="22" x2="4" y2="15"></line>
                           </svg>
                       </button>
-                    <form th:if="${course.isOwner or #authorization.expression('hasRole(''ADMIN'')')}" 
+                    <form th:if="${removableHashtagIds.contains(tag.id)}" 
                       th:action="@{/courses/{courseId}/hashtags/{hashtagId}(courseId=${course.id}, hashtagId=${tag.id})}" 
                       method="post" 
                       class="d-inline ms-1">
@@ -135,31 +135,23 @@
                     </form>
                   </div>
 
-                  <div th:if="${#authorization.expression('isAuthenticated()')}">
-                    <button type="button" 
-                      class="badge rounded-pill bg-primary text-decoration-none border-0"
-                      onclick="document.getElementById('hashtag-input').classList.toggle('d-none');"
-                      th:title="#{common.add}">
-                        +
-                    </button>
+                  <div th:if="${#authorization.expression('isAuthenticated()')}" class="d-inline-flex align-items-center">
+                    <form th:action="@{/courses/{id}/hashtags(id=${course.id})}" method="post" 
+                          class="d-inline-flex align-items-center gap-1" id="hashtag-form">
+                      <input type="text" 
+                        name="hashtags" 
+                        id="hashtag-input-field"
+                        class="form-control form-control-sm rounded-pill"
+                        placeholder="Neues Tag..."
+                        style="width: 120px; height: 24px; font-size: 0.75rem; padding: 0 10px;"/>
+                      <button type="submit" 
+                        class="badge rounded-pill bg-primary border-0"
+                        style="height: 24px; cursor: pointer;"
+                        th:title="#{common.add}">
+                          +
+                      </button>
+                    </form>
                   </div>
-                </div>
-
-                <div id="hashtag-input" class="d-none mt-2">
-                  <form th:action="@{/courses/{id}/hashtags(id=${course.id})}" method="post" class="d-flex gap-2">
-                    <input type="text" 
-                      name="hashtags" 
-                      class="form-control form-control-sm" 
-                      placeholder="Statistik, Mathe, Klausur"
-                      style="max-width: 300px;"/>
-                    <button type="submit" class="btn btn-sm btn-primary" th:text="#{common.add}">Hinzufügen</button>
-                    <button type="button" 
-                      class="btn btn-sm btn-secondary"
-                      onclick="document.getElementById('hashtag-input').classList.add('d-none');"
-                      th:text="#{common.cancel}">
-                        Abbrechen
-                    </button>
-                  </form>
                 </div>
             </div>
 
