@@ -14,10 +14,10 @@
     <h1 class="text-main" style="margin-bottom: 2rem; font-weight: 700;" th:text="#{bookings.title}">Meine Buchungen</h1>
 
     <div th:if="${success}" class="alert-info" style="border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.1); margin-bottom: 1.5rem;">
-      <span th:text="#{bookings.payment.success}">Zahlung erfolgreich!</span>
+      <span th:text="${success}">Erfolgreich</span>
     </div>
     <div th:if="${error}" class="alert-info" style="border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.1); margin-bottom: 1.5rem;">
-      <span th:text="#{bookings.payment.error}">Zahlung fehlgeschlagen.</span>
+      <span th:text="#{bookings.payment.error}">Zahlung fehlgeschlagen</span>
     </div>
 
     <div th:if="${bookings.isEmpty()}" class="no-ratings">

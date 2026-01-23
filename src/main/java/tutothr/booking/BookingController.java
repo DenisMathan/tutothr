@@ -1,8 +1,11 @@
 package tutothr.booking;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -36,6 +39,9 @@ public class BookingController {
 
 	@Autowired
 	private CalendarService calendarService;
+
+	@Autowired
+	private MessageSource messageSource;
 
 	public BookingController(BookingService bookingService, TimeSlotService timeSlotService,
 			CourseService courseService) {
@@ -150,7 +156,9 @@ public class BookingController {
 			calendarService.addEventToGoogleCalendar(auth, booking.getBookingDescription(), "Gebucht über Uni-App",
 					timeslot.getDate(), timeslot.getStartTime(), timeslot.getEndTime());
 
-			redirectAttributes.addFlashAttribute("success", "Termin erfolgreich zu Google Calendar hinzugefügt!");
+			Locale locale = LocaleContextHolder.getLocale();
+			String successMsg = messageSource.getMessage("bookings.calendar.success", null, locale);
+			redirectAttributes.addFlashAttribute("success", successMsg);
 		} catch (Exception e) {
 			e.printStackTrace(); // Fürs Debugging in der Konsole wichtig!
 			redirectAttributes.addFlashAttribute("error", "Fehler beim Kalender-Sync: " + e.getMessage());
