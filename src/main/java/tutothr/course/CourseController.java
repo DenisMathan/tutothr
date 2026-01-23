@@ -110,10 +110,13 @@ public class CourseController {
 		Long userId = userDetails != null ? userDetails.getId() : null;
 		
 		boolean hasBooked = false;
+		boolean canRate = false;
 		if (userId != null) {
 			hasBooked = bookingService.hasUserBookedCourse(userId, id);
+			canRate = bookingService.canUserRateCourse(userId, id);
 		}
 		model.addAttribute("hasBooked", hasBooked);
+		model.addAttribute("canRate", canRate);
 		model.addAttribute("hourlyRate", course.getOwner().getHourlyRate());
 
 		// Create Chapter View Models
@@ -231,8 +234,16 @@ public class CourseController {
     @PreAuthorize("isAuthenticated()")
 	public String removeHashtag(@PathVariable Long id, @PathVariable Long hashtagId,
 			@AuthenticationPrincipal AppPrincipal userDetails) {
+		logger.info("=== HASHTAG LÖSCHEN ===");
+		logger.info("Course ID: {}, Hashtag ID: {}, User ID: {}", id, hashtagId, userDetails.getId());
 		boolean isAdmin = userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-		hashtagService.removeHashtagFromCourse(id, hashtagId, userDetails.getId(), isAdmin);
+		logger.info("isAdmin: {}, Authorities: {}", isAdmin, userDetails.getAuthorities());
+		try {
+			hashtagService.removeHashtagFromCourse(id, hashtagId, userDetails.getId(), isAdmin);
+			logger.info("Hashtag erfolgreich gelöscht");
+		} catch (Exception e) {
+			logger.error("Fehler beim Löschen: {}", e.getMessage(), e);
+		}
 		return "redirect:/courses/" + id;
 	}
 

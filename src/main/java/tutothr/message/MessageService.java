@@ -3,6 +3,7 @@ package tutothr.message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tutothr.common.services.MailService;
 import tutothr.message.interfaces.MessageRepositoryI;
 import tutothr.user.User;
 import tutothr.user.UserService;
@@ -22,12 +23,19 @@ public class MessageService {
 
     @Autowired
     private CourseService courseService;
+    
+    @Autowired
+    private MailService mailService;
 
 
     @Transactional
     public Message sendMessage(Long senderId, Long receiverId, String content, Long courseId) {
         User sender = userService.getUserById(senderId);
         User receiver = userService.getUserById(receiverId);
+
+        // Pruefen ob es die erste Nachricht zwischen diesen Nutzern ist
+        List<Message> existingConversation = messageRepositoryI.findConversation(senderId, receiverId);
+        boolean isFirstMessage = existingConversation.isEmpty();
 
         Message message = new Message(content, sender, receiver);
 
@@ -36,7 +44,19 @@ public class MessageService {
             message.setCourse(course);
         }
 
-        return messageRepositoryI.save(message);
+        Message savedMessage = messageRepositoryI.save(message);
+        
+        // E-Mail nur bei erster Nachricht einer neuen Konversation senden
+        if (isFirstMessage) {
+            try {
+                mailService.sendNewChatMail(receiver, sender);
+            } catch (Exception e) {
+                // E-Mail-Fehler sollten das Senden der Nachricht nicht verhindern
+                System.err.println("Fehler beim Senden der E-Mail-Benachrichtigung: " + e.getMessage());
+            }
+        }
+
+        return savedMessage;
     }
 
     public List<Message> getConversation(Long userId1, Long userId2) {

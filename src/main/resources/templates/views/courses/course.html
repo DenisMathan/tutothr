@@ -55,7 +55,7 @@
                 <a th:href="@{/course/{id}/book(id=${course.id})}" class="btn-primary"
                    th:text="#{courses.book} + ' (' + ${#numbers.formatDecimal(hourlyRate, 1, 2)} + ' €/h)'">
                 </a>
-                <a th:href="@{/courses/{id}/addRating(id=${course.id})}" th:if="${hasBooked}" class="btn-secondary" th:text="#{course.details.add.rating}">
+                <a th:href="@{/courses/{id}/addRating(id=${course.id})}" th:if="${canRate}" class="btn-secondary" th:text="#{course.details.add.rating}">
                     Bewertung schreiben
                 </a>
                 <a th:href="@{/messages/new(recipientId=${course.ownerId},courseId=${course.id})}" class="btn-secondary" th:text="#{course.details.contact.tutor}">

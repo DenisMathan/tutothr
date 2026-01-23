@@ -155,6 +155,29 @@ public interface BookingRepositoryI extends MyBaseRepository<Booking, Long> {
 	       "b.student.id = :studentId AND b.status = 'CONFIRMED' AND b.course.id = :courseId")
 	boolean existsByStudentIdAndCourseId(@Param("studentId") Long studentId, @Param("courseId") Long courseId);
 	
+	/**
+	 * Prueft ob ein Student ein Tutorium (TimeSlot) fuer diesen Kurs gebucht hat.
+	 */
+	@Query("SELECT COUNT(b) > 0 FROM TimeSlotBooking b WHERE " +
+	       "b.student.id = :studentId AND b.status = 'CONFIRMED' AND b.course.id = :courseId")
+	boolean existsTimeSlotBookingByStudentIdAndCourseId(@Param("studentId") Long studentId, @Param("courseId") Long courseId);
+	
+	/**
+	 * Prueft ob ein Student irgendeine Buchung fuer diesen Kurs hat (Kurs, Kapitel oder Tutorium).
+	 * Wird verwendet um zu pruefen, ob der Student berechtigt ist, eine Bewertung abzugeben.
+	 * Beruecksichtigt PENDING, CONFIRMED und COMPLETED (nicht CANCELLED).
+	 */
+	@Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM booking b " +
+	       "LEFT JOIN chapter ch ON ch.id = b.chapter_id " +
+	       "WHERE b.student_id = :studentId " +
+	       "AND b.status != 'CANCELLED' " +
+	       "AND (" +
+	       "  (b.booking_type = 'COURSE' AND b.course_id = :courseId) OR " +
+	       "  (b.booking_type = 'CHAPTER' AND ch.course_id = :courseId) OR " +
+	       "  (b.booking_type = 'TIMESLOT' AND b.course_id = :courseId)" +
+	       ")", nativeQuery = true)
+	boolean existsAnyBookingByStudentIdAndCourseId(@Param("studentId") Long studentId, @Param("courseId") Long courseId);
+	
 	@Query("SELECT COUNT(b) > 0 FROM ChapterBooking b WHERE b.student.id = :studentId AND b.chapter.id = :chapterId AND b.status = 'CONFIRMED'")
 	boolean existsByStudentIdAndChapterId(@Param("studentId") Long studentId, @Param("chapterId") Long chapterId);
 

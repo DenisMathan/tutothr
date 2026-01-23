@@ -77,6 +77,14 @@ public class BookingService {
 	public boolean hasUserBookedCourse(Long userId, Long courseId) {
 		return bookingRepository.existsByStudentIdAndCourseId(userId, courseId);
 	}
+	
+	/**
+	 * Prueft ob ein User berechtigt ist, den Kurs zu bewerten.
+	 * Berechtigt ist, wer den Kurs, ein Kapitel oder ein Tutorium gebucht hat.
+	 */
+	public boolean canUserRateCourse(Long userId, Long courseId) {
+		return bookingRepository.existsAnyBookingByStudentIdAndCourseId(userId, courseId);
+	}
 
 	// === Erstellen ===
 

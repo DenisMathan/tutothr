@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,8 @@ import tutothr.user.User;
 
 @Service
 public class HashtagService {
+	private static final Logger logger = LoggerFactory.getLogger(HashtagService.class);
+	
 	private final HashtagRepositoryI hashtagRepository;
 	private final CourseRepositoryI courseRepository;
 	private final CourseHashtagLinkRepositoryI linkRepository;
@@ -85,20 +89,40 @@ public class HashtagService {
 	 */
 	@Transactional
 	public void removeHashtagFromCourse(Long courseId, Long hashtagId, Long currentUserId, boolean isAdmin) {
+		logger.info("removeHashtagFromCourse aufgerufen: courseId={}, hashtagId={}, userId={}, isAdmin={}", 
+				courseId, hashtagId, currentUserId, isAdmin);
+		
 		Course course = courseRepository.findById(courseId)
 				.orElseThrow(() -> new RuntimeException("Kurs nicht gefunden"));
+		logger.info("Kurs gefunden: {}", course.getTitle());
 
-		Hashtag hashtag = hashtagRepository.findById(hashtagId)
-				.orElseThrow(() -> new RuntimeException("Hashtag nicht gefunden"));
-		
-		CourseHashtagLink link = linkRepository.findByCourseAndHashtag(course, hashtag)
-				.orElseThrow(() -> new RuntimeException("Hashtag nicht mit diesem Kurs verknuepft"));
+		// FIX: Verwende ID-basierte Suche statt Entity-basierte Suche
+		CourseHashtagLink link = linkRepository.findByCourseIdAndHashtagId(courseId, hashtagId)
+				.orElseThrow(() -> {
+					logger.error("Link nicht gefunden für courseId={}, hashtagId={}", courseId, hashtagId);
+					return new RuntimeException("Hashtag nicht mit diesem Kurs verknuepft");
+				});
+		logger.info("Link gefunden: id={}, addedBy={}", link.getId(), 
+				link.getAddedBy() != null ? link.getAddedBy().getId() : "null");
 		
 		if (!canUserRemoveHashtag(link, course, currentUserId, isAdmin)) {
+			logger.warn("Keine Berechtigung: userId={}, courseOwnerId={}, linkAddedBy={}", 
+					currentUserId, course.getOwnerId(), 
+					link.getAddedBy() != null ? link.getAddedBy().getId() : "null");
 			throw new RuntimeException("Keine Berechtigung");
 		}
 		
-		linkRepository.delete(link);
+		logger.info("Berechtigung OK, lösche Link...");
+		
+		// FIX: Link aus der Course-Liste entfernen (wegen CascadeType.ALL + orphanRemoval)
+		// Direktes linkRepository.delete() funktioniert nicht, da Course noch eine Referenz hält
+		// Verwende removeIf mit ID-Vergleich, da equals() möglicherweise nicht korrekt ist
+		final Long linkId = link.getId();
+		boolean removed = course.getHashtagLinks().removeIf(l -> l.getId().equals(linkId));
+		logger.info("Link aus Liste entfernt: {}", removed);
+		courseRepository.save(course);
+		
+		logger.info("Link gelöscht");
 	}
 
 	/**
@@ -106,8 +130,9 @@ public class HashtagService {
 	 */
 	private boolean canUserRemoveHashtag(CourseHashtagLink link, Course course, Long userId, boolean isAdmin) {
 		if (isAdmin) return true;
-		if (course.getOwnerId().equals(userId)) return true;
-		if (link.getAddedBy() != null && link.getAddedBy().getId().equals(userId)) return true;
+		// FIX: Null-sichere Vergleiche - userId.equals() statt getOwnerId().equals() verhindert NPE
+		if (userId != null && userId.equals(course.getOwnerId())) return true;
+		if (link.getAddedBy() != null && userId != null && userId.equals(link.getAddedBy().getId())) return true;
 		return false;
 	}
 

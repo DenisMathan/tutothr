@@ -13,8 +13,8 @@ public class RatingDTO extends BaseDTO {
     @Min(1)
     @Max(5)
     private int stars;
-    @NotBlank
-    @Size(min = 5, max = 1000)
+    
+    @Size(max = 1000)
     private String comment;
     private User author;
     private Long courseId;

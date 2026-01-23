@@ -62,6 +62,8 @@ public class AuthenticationController {
             return "redirect:/home";
         }
         RegisterUserDTO form = new RegisterUserDTO();
+        form.setPassword("Password123"); // Vorausgefüllt für einfacheres Testen
+        form.setConfirmPassword("Password123");
         model.addAttribute("registrationForm", form);
 
         // nicht angemeldet -> Registrierungsseite zeigen
@@ -75,6 +77,7 @@ public class AuthenticationController {
             return "redirect:/home";
         }
         LoginUserDTO form = new LoginUserDTO();
+        form.setPassword("Password123"); // Vorausgefüllt für einfacheres Testen
         model.addAttribute("loginForm", form);
         return "views/auth/login";
     }

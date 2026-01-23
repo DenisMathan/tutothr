@@ -71,15 +71,15 @@ VALUES ('Tutor-Testkurs', 'Ein Testkurs', 29.99, 4.0, 4, CURRENT_TIMESTAMP, CURR
 
 -- Hashtags (ohne creator_id - jetzt pro-Kurs ueber CourseHashtagLink)
 INSERT INTO hashtag (name, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('Anfaenger', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+VALUES ('anfaenger', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO hashtag (name, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('Klausurvorbereitung', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+VALUES ('klausurvorbereitung', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO hashtag (name, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('Fortgeschritten', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+VALUES ('fortgeschritten', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO hashtag (name, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('Praxisorientiert', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+VALUES ('praxisorientiert', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 INSERT INTO hashtag (name, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
-VALUES ('Theorie', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
+VALUES ('theorie', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL);
 
 -- Verknuepfungen: course_hashtag_link (course_id, hashtag_id, added_by_id)
 INSERT INTO course_hashtag_link (course_id, hashtag_id, added_by_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by) 
